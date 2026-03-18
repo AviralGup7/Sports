@@ -1,7 +1,9 @@
-﻿"use client";
+"use client";
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+
+import { Profile } from "@/lib/types";
 
 const adminNav = [
   { href: "/admin", label: "Dashboard" },
@@ -11,7 +13,11 @@ const adminNav = [
   { href: "/admin/settings", label: "Settings" }
 ];
 
-export function AdminSidebar() {
+type AdminSidebarProps = {
+  profile: Profile;
+};
+
+export function AdminSidebar({ profile }: AdminSidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -19,7 +25,7 @@ export function AdminSidebar() {
       <div className="admin-side-top">
         <p className="eyebrow">Organizer zone</p>
         <h2>Admin Workspace</h2>
-        <p className="muted">Mock UI for auth, CRUD, and live data wiring.</p>
+        <p className="muted">{profile.name} · {profile.role.replace("_", " ")}</p>
       </div>
 
       <nav className="admin-nav" aria-label="Admin">

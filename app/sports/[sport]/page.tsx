@@ -1,8 +1,11 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { BracketBoard } from "@/components/bracket-board";
 import { MatchCard } from "@/components/match-card";
-import { getMatchesForSport, getSportBySlug, teams } from "@/lib/data";
+import { getSportPageData } from "@/lib/data";
+import { sportOrder } from "@/lib/mock-data";
+import { SportSlug } from "@/lib/types";
 
 type SportPageProps = {
   params: Promise<{
@@ -12,27 +15,27 @@ type SportPageProps = {
 
 export default async function SportPage({ params }: SportPageProps) {
   const { sport: sportSlug } = await params;
-  const sport = getSportBySlug(sportSlug);
-
-  if (!sport) {
+  if (!sportOrder.includes(sportSlug as SportSlug)) {
     notFound();
   }
 
-  const sportTeams = teams.filter((team) => team.sportIds.includes(sport.id));
-  const sportMatches = getMatchesForSport(sport.id);
+  const data = await getSportPageData(sportSlug as SportSlug);
+  if (!data) {
+    notFound();
+  }
 
   return (
     <div className="stack-xl">
       <section className="hero sport-hero">
         <div className="hero-copy">
           <p className="eyebrow">Sport detail</p>
-          <h1>{sport.name}</h1>
-          <p className="hero-text">{sport.rulesSummary}</p>
+          <h1>{data.sport.name}</h1>
+          <p className="hero-text">{data.sport.rulesSummary}</p>
         </div>
         <div className="hero-panel">
           <p className="eyebrow">Format snapshot</p>
-          <div className="hero-kicker">{sport.format}</div>
-          <p>Color token ready for future design-system mapping.</p>
+          <div className="hero-kicker">{data.sport.format}</div>
+          <p>Bracket flow uses stored `next_match_id` and `next_slot` links.</p>
         </div>
       </section>
 
@@ -44,7 +47,7 @@ export default async function SportPage({ params }: SportPageProps) {
           </div>
         </div>
         <div className="roster-grid">
-          {sportTeams.map((team) => (
+          {data.teams.map((team) => (
             <article key={team.id} className="roster-card">
               <p className="eyebrow">{team.association}</p>
               <h3>{team.name}</h3>
@@ -52,6 +55,16 @@ export default async function SportPage({ params }: SportPageProps) {
             </article>
           ))}
         </div>
+      </section>
+
+      <section className="stack-lg">
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Bracket</p>
+            <h2>Progression overview</h2>
+          </div>
+        </div>
+        <BracketBoard rounds={data.bracket} />
       </section>
 
       <section className="stack-lg">
@@ -65,7 +78,7 @@ export default async function SportPage({ params }: SportPageProps) {
           </Link>
         </div>
         <div className="card-grid">
-          {sportMatches.map((match) => (
+          {data.matches.map((match) => (
             <MatchCard key={match.id} match={match} />
           ))}
         </div>

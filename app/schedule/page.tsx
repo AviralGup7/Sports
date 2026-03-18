@@ -1,7 +1,8 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
 import { MatchCard } from "@/components/match-card";
-import { getScheduleDays, getScheduleForDay, getSportBySlug, sportOrder, sports } from "@/lib/data";
+import { getSchedulePageData, getSportBySlugFromCollection } from "@/lib/data";
+import { sportOrder } from "@/lib/mock-data";
 import { SportSlug } from "@/lib/types";
 
 type SchedulePageProps = {
@@ -13,17 +14,15 @@ type SchedulePageProps = {
 
 export default async function SchedulePage({ searchParams }: SchedulePageProps) {
   const params = (await searchParams) ?? {};
-  const days = getScheduleDays();
-  const selectedDay = params.day && days.includes(params.day) ? params.day : days[0];
   const selectedSport = sportOrder.includes(params.sport as SportSlug) ? (params.sport as SportSlug) : undefined;
-  const fixtures = getScheduleForDay(selectedDay, selectedSport);
+  const { days, selectedDay, sports, fixtures } = await getSchedulePageData(params.day, selectedSport);
 
   return (
     <div className="stack-xl">
       <section className="banner">
         <p className="eyebrow">Public schedule</p>
         <h1>Match Schedule</h1>
-        <p>Day and sport filters are working now, using mock records that can later move into Supabase.</p>
+        <p>Filter by day or sport. This view reads tournament fixtures from the shared repository layer.</p>
       </section>
 
       <section className="filter-strip">
@@ -31,10 +30,9 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
           <p className="eyebrow">Day</p>
           <div className="chip-row">
             {days.map((day) => {
-              const active = day === selectedDay;
               const href = selectedSport ? `/schedule?day=${day}&sport=${selectedSport}` : `/schedule?day=${day}`;
               return (
-                <Link key={day} href={href} className={active ? "chip chip-active" : "chip"}>
+                <Link key={day} href={href} className={day === selectedDay ? "chip chip-active" : "chip"}>
                   {day}
                 </Link>
               );
@@ -48,18 +46,15 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
             <Link href={`/schedule?day=${selectedDay}`} className={!selectedSport ? "chip chip-active" : "chip"}>
               All sports
             </Link>
-            {sports.map((sport) => {
-              const active = selectedSport === sport.id;
-              return (
-                <Link
-                  key={sport.id}
-                  href={`/schedule?day=${selectedDay}&sport=${sport.id}`}
-                  className={active ? "chip chip-active" : "chip"}
-                >
-                  {sport.name}
-                </Link>
-              );
-            })}
+            {sports.map((sport) => (
+              <Link
+                key={sport.id}
+                href={`/schedule?day=${selectedDay}&sport=${sport.id}`}
+                className={selectedSport === sport.id ? "chip chip-active" : "chip"}
+              >
+                {sport.name}
+              </Link>
+            ))}
           </div>
         </div>
       </section>
@@ -69,7 +64,7 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
           <div className="section-heading">
             <div>
               <p className="eyebrow">Filtered fixtures</p>
-              <h2>{getSportBySlug(selectedSport)?.name}</h2>
+              <h2>{getSportBySlugFromCollection(sports, selectedSport)?.name}</h2>
             </div>
           </div>
           <div className="card-grid">

@@ -1,15 +1,15 @@
-﻿import { AnnouncementCard } from "@/components/announcement-card";
-import { getVisibleAnnouncements } from "@/lib/data";
+import { AnnouncementCard } from "@/components/announcement-card";
+import { getAnnouncementsPageData } from "@/lib/data";
 
-export default function AnnouncementsPage() {
-  const items = getVisibleAnnouncements("public");
+export default async function AnnouncementsPage() {
+  const items = await getAnnouncementsPageData();
 
   return (
     <div className="stack-xl">
       <section className="banner">
         <p className="eyebrow">Public notices</p>
         <h1>Announcements</h1>
-        <p>Bulletin content is already separated from admin-only notes so visibility rules will be easy to add later.</p>
+        <p>Only published public notices are shown here, with pinned updates sorted first.</p>
       </section>
 
       <div className="stack-lg">

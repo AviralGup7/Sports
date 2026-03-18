@@ -1,6 +1,6 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 
-import { formatDateLabel, getStatusTone, getTeamById } from "@/lib/data";
+import { formatDateLabel, getStatusTone } from "@/lib/data";
 import { Match } from "@/lib/types";
 
 type MatchCardProps = {
@@ -9,17 +9,18 @@ type MatchCardProps = {
 };
 
 export function MatchCard({ match, showSport = false }: MatchCardProps) {
-  const teamA = getTeamById(match.teamAId);
-  const teamB = getTeamById(match.teamBId);
-  const winner = match.winnerTeamId ? getTeamById(match.winnerTeamId) : undefined;
+  const winner = match.result?.winner;
   const tone = getStatusTone(match.status);
 
   return (
     <article className="match-card">
       <div className="match-head">
         <div>
-          <p className="eyebrow">{showSport ? `${match.sportId} · ` : ""}{match.round}</p>
-          <h3>{teamA?.name ?? "TBD"} vs {teamB?.name ?? "TBD"}</h3>
+          <p className="eyebrow">
+            {showSport ? `${match.sportId} · ` : ""}
+            {match.round}
+          </p>
+          <h3>{match.teamA?.name ?? "TBD"} vs {match.teamB?.name ?? "TBD"}</h3>
         </div>
         <span className={`status-badge status-${tone}`}>{match.status}</span>
       </div>
@@ -35,9 +36,9 @@ export function MatchCard({ match, showSport = false }: MatchCardProps) {
         </div>
       </dl>
 
-      {match.scoreSummary ? <p className="match-score">{match.scoreSummary}</p> : null}
+      {match.result?.scoreSummary ? <p className="match-score">{match.result.scoreSummary}</p> : null}
       {winner ? <p className="muted">Winner: <strong>{winner.name}</strong></p> : null}
-      {match.note ? <p className="muted">{match.note}</p> : null}
+      {match.result?.note ? <p className="muted">{match.result.note}</p> : null}
 
       <Link href={`/matches/${match.id}`} className="inline-link">
         View match details
