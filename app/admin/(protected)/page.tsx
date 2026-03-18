@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import { ActionNotice } from "@/components/action-notice";
 import { ControlPanel } from "@/components/control-panel";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MotionIn } from "@/components/motion-in";
 import { NewsBulletin } from "@/components/news-bulletin";
@@ -61,9 +62,21 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
           }
         >
           <div className="fixture-stack">
-            {data.todaysMatches.map((match) => (
-              <FixtureStrip key={match.id} match={match} showSport admin />
-            ))}
+            {data.todaysMatches.length > 0 ? (
+              data.todaysMatches.map((match) => <FixtureStrip key={match.id} match={match} showSport admin />)
+            ) : (
+              <EmptyState
+                compact
+                eyebrow="Urgent Work"
+                title="No fixtures on today’s deck"
+                description="Seed matches or adjust day filters in the match control area to populate this queue."
+                action={
+                  <Link href="/admin/matches" className="button button-ghost">
+                    Open match control
+                  </Link>
+                }
+              />
+            )}
           </div>
         </ControlPanel>
 
@@ -96,9 +109,18 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
 
           <ControlPanel eyebrow="Feed Monitor" title="Recent notices" dense>
             <div className="news-feed news-feed-tight">
-              {data.announcements.map((announcement) => (
-                <NewsBulletin key={announcement.id} announcement={announcement} compact showAdminMeta />
-              ))}
+              {data.announcements.length > 0 ? (
+                data.announcements.map((announcement) => (
+                  <NewsBulletin key={announcement.id} announcement={announcement} compact showAdminMeta />
+                ))
+              ) : (
+                <EmptyState
+                  compact
+                  eyebrow="Feed Monitor"
+                  title="No notices have been published"
+                  description="Create the first announcement to start the public and admin feeds."
+                />
+              )}
             </div>
           </ControlPanel>
         </div>

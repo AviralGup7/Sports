@@ -1,5 +1,6 @@
 import { ActionNotice } from "@/components/action-notice";
 import { ControlPanel } from "@/components/control-panel";
+import { EmptyState } from "@/components/empty-state";
 import { FormCluster } from "@/components/form-cluster";
 import { MotionIn } from "@/components/motion-in";
 import { NewsBulletin } from "@/components/news-bulletin";
@@ -85,52 +86,60 @@ export default async function AdminAnnouncementsPage({ searchParams }: AdminAnno
         </ControlPanel>
 
         <div className="stack-lg">
-          {data.announcements.map((announcement) => (
-            <ControlPanel
-              key={announcement.id}
-              eyebrow="Editable bulletin"
-              title={announcement.title}
-              description={`${announcement.visibility} audience`}
-              dense
-            >
-              <NewsBulletin announcement={announcement} compact showAdminMeta />
-              <form action={upsertAnnouncementAction} className="stack-lg">
-                <input type="hidden" name="id" value={announcement.id} />
-                <div className="form-grid">
+          {data.announcements.length > 0 ? (
+            data.announcements.map((announcement) => (
+              <ControlPanel
+                key={announcement.id}
+                eyebrow="Editable bulletin"
+                title={announcement.title}
+                description={`${announcement.visibility} audience`}
+                dense
+              >
+                <NewsBulletin announcement={announcement} compact showAdminMeta />
+                <form action={upsertAnnouncementAction} className="stack-lg">
+                  <input type="hidden" name="id" value={announcement.id} />
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Title</span>
+                      <input name="title" defaultValue={announcement.title} required />
+                    </label>
+                    <label className="field">
+                      <span>Visibility</span>
+                      <select name="visibility" defaultValue={announcement.visibility}>
+                        <option value="public">Public</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                    </label>
+                  </div>
                   <label className="field">
-                    <span>Title</span>
-                    <input name="title" defaultValue={announcement.title} required />
+                    <span>Body</span>
+                    <textarea name="body" rows={4} defaultValue={announcement.body} required />
                   </label>
-                  <label className="field">
-                    <span>Visibility</span>
-                    <select name="visibility" defaultValue={announcement.visibility}>
-                      <option value="public">Public</option>
-                      <option value="admin">Admin</option>
-                    </select>
-                  </label>
-                </div>
-                <label className="field">
-                  <span>Body</span>
-                  <textarea name="body" rows={4} defaultValue={announcement.body} required />
-                </label>
-                <div className="selection-pills">
-                  <label className="selection-pill">
-                    <input type="checkbox" name="pinned" defaultChecked={announcement.pinned} />
-                    <span>Pinned</span>
-                  </label>
-                  <label className="selection-pill">
-                    <input type="checkbox" name="isPublished" defaultChecked={announcement.isPublished} />
-                    <span>Published</span>
-                  </label>
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="button button-ghost">
-                    Update announcement
-                  </button>
-                </div>
-              </form>
-            </ControlPanel>
-          ))}
+                  <div className="selection-pills">
+                    <label className="selection-pill">
+                      <input type="checkbox" name="pinned" defaultChecked={announcement.pinned} />
+                      <span>Pinned</span>
+                    </label>
+                    <label className="selection-pill">
+                      <input type="checkbox" name="isPublished" defaultChecked={announcement.isPublished} />
+                      <span>Published</span>
+                    </label>
+                  </div>
+                  <div className="form-actions">
+                    <button type="submit" className="button button-ghost">
+                      Update announcement
+                    </button>
+                  </div>
+                </form>
+              </ControlPanel>
+            ))
+          ) : (
+            <EmptyState
+              eyebrow="Editorial Queue"
+              title="No announcements yet"
+              description="Use the composer on the left to publish the first public or admin notice."
+            />
+          )}
         </div>
       </MotionIn>
     </div>

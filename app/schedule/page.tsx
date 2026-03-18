@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { BroadcastHero } from "@/components/broadcast-hero";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MotionIn } from "@/components/motion-in";
 import { formatDateLabel, getSchedulePageData, getSportBySlugFromCollection } from "@/lib/data";
@@ -79,19 +80,32 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
       </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.12}>
-        {scheduleGroups.map((group) => (
-          <section key={group.time} className="timeline-group">
-            <div className="timeline-marker">
-              <p className="eyebrow">Time Slot</p>
-              <h2>{group.label}</h2>
-            </div>
-            <div className="timeline-stack">
-              {group.matches.map((match) => (
-                <FixtureStrip key={match.id} match={match} showSport={!selectedSport} />
-              ))}
-            </div>
-          </section>
-        ))}
+        {scheduleGroups.length > 0 ? (
+          scheduleGroups.map((group) => (
+            <section key={group.time} className="timeline-group">
+              <div className="timeline-marker">
+                <p className="eyebrow">Time Slot</p>
+                <h2>{group.label}</h2>
+              </div>
+              <div className="timeline-stack">
+                {group.matches.map((match) => (
+                  <FixtureStrip key={match.id} match={match} showSport={!selectedSport} />
+                ))}
+              </div>
+            </section>
+          ))
+        ) : (
+          <EmptyState
+            eyebrow="Fixture Board"
+            title="No fixtures match this filter"
+            description="Try another day or sport filter, or seed more matches from the admin control room."
+            action={
+              <Link href="/admin/matches" className="button button-ghost">
+                Open match control
+              </Link>
+            }
+          />
+        )}
       </MotionIn>
     </div>
   );

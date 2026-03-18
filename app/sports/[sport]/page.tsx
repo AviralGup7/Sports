@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 
 import { BracketBoard } from "@/components/bracket-board";
 import { BroadcastHero } from "@/components/broadcast-hero";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MotionIn } from "@/components/motion-in";
 import { getSportPageData } from "@/lib/data";
@@ -56,7 +57,15 @@ export default async function SportPage({ params }: SportPageProps) {
             <h2>Progression overview</h2>
           </div>
         </div>
-        <BracketBoard rounds={data.bracket} />
+        {data.bracket.length > 0 ? (
+          <BracketBoard rounds={data.bracket} />
+        ) : (
+          <EmptyState
+            eyebrow="Bracket View"
+            title="Bracket will appear once rounds are linked"
+            description="Set next-match progression in the control room to turn this sport hub into a connected bracket board."
+          />
+        )}
       </MotionIn>
 
       <MotionIn className="section-shell" delay={0.12}>
@@ -67,13 +76,22 @@ export default async function SportPage({ params }: SportPageProps) {
           </div>
         </div>
         <div className="team-chip-grid">
-          {data.teams.map((team) => (
-            <article key={team.id} className="team-chip-card" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
-              <strong>{team.name}</strong>
-              <span>{team.association}</span>
-              <small>Seed {team.seed}</small>
-            </article>
-          ))}
+          {data.teams.length > 0 ? (
+            data.teams.map((team) => (
+              <article key={team.id} className="team-chip-card" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
+                <strong>{team.name}</strong>
+                <span>{team.association}</span>
+                <small>Seed {team.seed}</small>
+              </article>
+            ))
+          ) : (
+            <EmptyState
+              compact
+              eyebrow="Registered Sides"
+              title="No teams assigned yet"
+              description="Attach teams to this sport in the admin roster and they will show up here."
+            />
+          )}
         </div>
       </MotionIn>
 
@@ -88,9 +106,21 @@ export default async function SportPage({ params }: SportPageProps) {
           </Link>
         </div>
         <div className="fixture-stack">
-          {data.matches.map((match) => (
-            <FixtureStrip key={match.id} match={match} />
-          ))}
+          {data.matches.length > 0 ? (
+            data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
+          ) : (
+            <EmptyState
+              compact
+              eyebrow="Fixture Rail"
+              title="No fixtures for this sport yet"
+              description="Create sport fixtures from the control room to populate this board."
+              action={
+                <Link href="/admin/matches" className="button button-ghost">
+                  Open match control
+                </Link>
+              }
+            />
+          )}
         </div>
       </MotionIn>
     </div>

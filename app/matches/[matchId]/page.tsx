@@ -2,6 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BroadcastHero } from "@/components/broadcast-hero";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MotionIn } from "@/components/motion-in";
 import { StageBadge } from "@/components/stage-badge";
@@ -74,9 +75,16 @@ export default async function MatchPage({ params }: MatchPageProps) {
           </div>
         </div>
         <div className="fixture-stack">
-          {data.relatedMatches.map((relatedMatch) => (
-            <FixtureStrip key={relatedMatch.id} match={relatedMatch} />
-          ))}
+          {data.relatedMatches.length > 0 ? (
+            data.relatedMatches.map((relatedMatch) => <FixtureStrip key={relatedMatch.id} match={relatedMatch} />)
+          ) : (
+            <EmptyState
+              compact
+              eyebrow="Related Fixtures"
+              title="No linked fixtures yet"
+              description="Once the bracket fills out, nearby matches from the same sport will appear here."
+            />
+          )}
         </div>
       </MotionIn>
     </div>

@@ -61,7 +61,12 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           {desktopNav.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
-              <Link key={item.href} href={item.href} className={active ? "nav-link nav-link-active" : "nav-link"}>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={active ? "nav-link nav-link-active" : "nav-link"}
+                aria-current={active ? "page" : undefined}
+              >
                 {item.label}
               </Link>
             );
@@ -81,7 +86,12 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
                   ? pathname === "/"
                   : pathname.startsWith(item.href.replace("/#", "/"));
             return (
-              <Link key={item.label} href={item.href} className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}>
+              <Link
+                key={item.label}
+                href={item.href}
+                className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}
+                aria-current={active ? "page" : undefined}
+              >
                 <span>{item.label}</span>
               </Link>
             );

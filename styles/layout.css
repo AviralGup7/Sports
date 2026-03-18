@@ -1,0 +1,104 @@
+﻿.broadcast-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.8), transparent);
+}
+
+.bg-beam,
+.bg-glow {
+  position: absolute;
+  border-radius: 999px;
+  filter: blur(90px);
+  opacity: 0.22;
+}
+
+.bg-beam-one {
+  width: 30rem;
+  height: 16rem;
+  top: 4rem;
+  left: -6rem;
+  background: rgba(245, 158, 11, 0.3);
+  transform: rotate(-24deg);
+}
+
+.bg-beam-two {
+  width: 28rem;
+  height: 14rem;
+  top: 12rem;
+  right: -5rem;
+  background: rgba(34, 211, 238, 0.24);
+  transform: rotate(18deg);
+}
+
+.bg-glow-gold {
+  width: 24rem;
+  height: 24rem;
+  left: -8rem;
+  bottom: 10rem;
+  background: rgba(245, 158, 11, 0.18);
+}
+
+.bg-glow-cyan {
+  width: 24rem;
+  height: 24rem;
+  right: -6rem;
+  bottom: -3rem;
+  background: rgba(34, 211, 238, 0.15);
+}
+
+.page-shell {
+  position: relative;
+  width: min(1320px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 6rem;
+}
+
+.stack-hero,
+.stack-xl,
+.stack-lg,
+.stack-sm {
+  display: flex;
+  flex-direction: column;
+}
+
+.stack-hero {
+  gap: 1.75rem;
+}
+
+.stack-xl {
+  gap: 1.5rem;
+}
+
+.stack-lg {
+  gap: 1rem;
+}
+
+.stack-sm {
+  gap: 0.55rem;
+}
+
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--gold);
+  font-family: var(--font-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.muted {
+  color: var(--muted);
+}
+

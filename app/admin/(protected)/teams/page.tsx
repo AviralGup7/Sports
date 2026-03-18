@@ -1,5 +1,6 @@
 import { ActionNotice } from "@/components/action-notice";
 import { ControlPanel } from "@/components/control-panel";
+import { EmptyState } from "@/components/empty-state";
 import { FormCluster } from "@/components/form-cluster";
 import { MotionIn } from "@/components/motion-in";
 import { requireAdminProfile } from "@/lib/auth";
@@ -80,52 +81,60 @@ export default async function AdminTeamsPage({ searchParams }: AdminTeamsPagePro
         </ControlPanel>
 
         <div className="stack-lg">
-          {activeTeams.map((team) => (
-            <ControlPanel
-              key={team.id}
-              eyebrow="Active Team"
-              title={team.name}
-              description={`${team.association} | seed ${team.seed}`}
-              dense
-            >
-              <form action={upsertTeamAction} className="stack-lg">
-                <input type="hidden" name="id" value={team.id} />
-                <div className="form-grid">
-                  <label className="field">
-                    <span>Name</span>
-                    <input name="name" defaultValue={team.name} required />
-                  </label>
-                  <label className="field">
-                    <span>Association</span>
-                    <input name="association" defaultValue={team.association} required />
-                  </label>
-                  <label className="field">
-                    <span>Seed</span>
-                    <input name="seed" type="number" min="1" defaultValue={team.seed} required />
-                  </label>
-                </div>
-                <div className="selection-pills">
-                  {data.sports.map((sport) => (
-                    <label key={`${team.id}-${sport.id}`} className="selection-pill">
-                      <input name="sportIds" type="checkbox" value={sport.id} defaultChecked={team.sportIds.includes(sport.id)} />
-                      <span>{sport.name}</span>
+          {activeTeams.length > 0 ? (
+            activeTeams.map((team) => (
+              <ControlPanel
+                key={team.id}
+                eyebrow="Active Team"
+                title={team.name}
+                description={`${team.association} | seed ${team.seed}`}
+                dense
+              >
+                <form action={upsertTeamAction} className="stack-lg">
+                  <input type="hidden" name="id" value={team.id} />
+                  <div className="form-grid">
+                    <label className="field">
+                      <span>Name</span>
+                      <input name="name" defaultValue={team.name} required />
                     </label>
-                  ))}
-                </div>
-                <div className="form-actions">
-                  <button type="submit" className="button">
-                    Update team
+                    <label className="field">
+                      <span>Association</span>
+                      <input name="association" defaultValue={team.association} required />
+                    </label>
+                    <label className="field">
+                      <span>Seed</span>
+                      <input name="seed" type="number" min="1" defaultValue={team.seed} required />
+                    </label>
+                  </div>
+                  <div className="selection-pills">
+                    {data.sports.map((sport) => (
+                      <label key={`${team.id}-${sport.id}`} className="selection-pill">
+                        <input name="sportIds" type="checkbox" value={sport.id} defaultChecked={team.sportIds.includes(sport.id)} />
+                        <span>{sport.name}</span>
+                      </label>
+                    ))}
+                  </div>
+                  <div className="form-actions">
+                    <button type="submit" className="button">
+                      Update team
+                    </button>
+                  </div>
+                </form>
+                <form action={archiveTeamAction}>
+                  <input type="hidden" name="id" value={team.id} />
+                  <button type="submit" className="button button-danger">
+                    Archive team
                   </button>
-                </div>
-              </form>
-              <form action={archiveTeamAction}>
-                <input type="hidden" name="id" value={team.id} />
-                <button type="submit" className="button button-danger">
-                  Archive team
-                </button>
-              </form>
-            </ControlPanel>
-          ))}
+                </form>
+              </ControlPanel>
+            ))
+          ) : (
+            <EmptyState
+              eyebrow="Team Registry"
+              title="No active teams yet"
+              description="Use the create panel to seed the first association records for the tournament."
+            />
+          )}
 
           {archivedTeams.length > 0 ? (
             <ControlPanel eyebrow="Archive" title="Lower-priority records" dense>

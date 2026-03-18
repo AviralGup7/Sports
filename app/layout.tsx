@@ -38,6 +38,9 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+        <a href="#main-content" className="skip-link">
+          Skip to main content
+        </a>
         <div className="broadcast-backdrop">
           <div className="bg-grid" />
           <div className="bg-beam bg-beam-one" />
@@ -46,7 +49,9 @@ export default async function RootLayout({
           <div className="bg-glow bg-glow-cyan" />
         </div>
         <SiteHeader chrome={chrome} />
-        <main className="page-shell">{children}</main>
+        <main id="main-content" className="page-shell" tabIndex={-1}>
+          {children}
+        </main>
       </body>
     </html>
   );

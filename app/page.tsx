@@ -2,6 +2,7 @@ import { CSSProperties } from "react";
 import Link from "next/link";
 
 import { BroadcastHero } from "@/components/broadcast-hero";
+import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MetricTile } from "@/components/metric-tile";
 import { MotionIn } from "@/components/motion-in";
@@ -93,9 +94,18 @@ export default async function HomePage() {
           </div>
 
           <div className="podium-grid">
-            {championSpotlights.map((spotlight, index) => (
-              <PodiumCard key={spotlight.sport.id} spotlight={spotlight} index={index} />
-            ))}
+            {championSpotlights.length > 0 ? (
+              championSpotlights.map((spotlight, index) => (
+                <PodiumCard key={spotlight.sport.id} spotlight={spotlight} index={index} />
+              ))
+            ) : (
+              <EmptyState
+                compact
+                eyebrow="Champions"
+                title="Podium is waiting"
+                description="Finals have not been seeded yet, so no title spotlight is on the board."
+              />
+            )}
           </div>
         </section>
 
@@ -108,16 +118,25 @@ export default async function HomePage() {
           </div>
 
           <div className="poster-grid">
-            {sports.map((sport) => (
-              <article key={sport.id} className="sport-poster" style={{ "--sport-accent": sport.color } as CSSProperties}>
-                <p className="eyebrow">{sport.format}</p>
-                <h3>{sport.name}</h3>
-                <p>{sport.rulesSummary}</p>
-                <Link href={`/sports/${sport.id}`} className="inline-link">
-                  Enter {sport.name.toLowerCase()}
-                </Link>
-              </article>
-            ))}
+            {sports.length > 0 ? (
+              sports.map((sport) => (
+                <article key={sport.id} className="sport-poster" style={{ "--sport-accent": sport.color } as CSSProperties}>
+                  <p className="eyebrow">{sport.format}</p>
+                  <h3>{sport.name}</h3>
+                  <p>{sport.rulesSummary}</p>
+                  <Link href={`/sports/${sport.id}`} className="inline-link">
+                    Enter {sport.name.toLowerCase()}
+                  </Link>
+                </article>
+              ))
+            ) : (
+              <EmptyState
+                compact
+                eyebrow="Sport Posters"
+                title="Sports will appear here"
+                description="Once the control room seeds sports, each arena lane gets its own poster card."
+              />
+            )}
           </div>
         </section>
 
@@ -133,9 +152,21 @@ export default async function HomePage() {
           </div>
 
           <div className="fixture-stack">
-            {featuredMatches.map((match) => (
-              <FixtureStrip key={match.id} match={match} showSport />
-            ))}
+            {featuredMatches.length > 0 ? (
+              featuredMatches.map((match) => <FixtureStrip key={match.id} match={match} showSport />)
+            ) : (
+              <EmptyState
+                compact
+                eyebrow="Fixture Queue"
+                title="No fixtures in the queue"
+                description="Add matches from the control room and this broadcast rail will populate automatically."
+                action={
+                  <Link href="/admin/matches" className="button button-ghost">
+                    Open match control
+                  </Link>
+                }
+              />
+            )}
           </div>
         </section>
 
@@ -151,14 +182,23 @@ export default async function HomePage() {
           </div>
 
           <div className="news-grid">
-            {announcements.map((announcement, index) => (
-              <NewsBulletin
-                key={announcement.id}
-                announcement={announcement}
-                compact={index > 0}
-                pinnedHero={index === 0 && announcement.pinned}
+            {announcements.length > 0 ? (
+              announcements.map((announcement, index) => (
+                <NewsBulletin
+                  key={announcement.id}
+                  announcement={announcement}
+                  compact={index > 0}
+                  pinnedHero={index === 0 && announcement.pinned}
+                />
+              ))
+            ) : (
+              <EmptyState
+                compact
+                eyebrow="News Desk"
+                title="Bulletins will land here"
+                description="Published announcements and pinned headlines from organizers will appear on this feed."
               />
-            ))}
+            )}
           </div>
         </section>
       </MotionIn>

@@ -1,0 +1,344 @@
+﻿.admin-stage {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.admin-action-bar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.15rem 1.2rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-border);
+  background: rgba(8, 12, 20, 0.86);
+  backdrop-filter: blur(18px);
+}
+
+.admin-action-bar h1 {
+  margin: 0;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2.7rem;
+  font-weight: 400;
+}
+
+.admin-bar-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--surface-border);
+  color: var(--text);
+}
+
+.admin-shell,
+.admin-two-speed,
+.split-stage,
+.match-ops-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.admin-shell {
+  grid-template-columns: minmax(16rem, 18rem) minmax(0, 1fr);
+  align-items: flex-start;
+}
+
+.admin-sidebar {
+  position: sticky;
+  top: 7.75rem;
+  padding: 1.1rem;
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, rgba(10, 14, 23, 0.98), rgba(7, 11, 18, 0.94));
+}
+
+.admin-side-top {
+  margin-bottom: 1rem;
+}
+
+.admin-sport-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-bottom: 1rem;
+}
+
+.admin-sport-pill {
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.admin-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.admin-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+}
+
+.admin-link strong {
+  color: var(--text);
+}
+
+.admin-link span {
+  font-size: 0.84rem;
+}
+
+.admin-link-active {
+  border-color: rgba(245, 158, 11, 0.3);
+  background: rgba(245, 158, 11, 0.12);
+}
+
+.admin-content {
+  min-width: 0;
+}
+
+.operations-hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.35rem;
+  position: relative;
+}
+
+.operations-hero h1 {
+  font-size: clamp(2.8rem, 5vw, 4.3rem);
+}
+
+.operations-hero-side {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.7rem;
+}
+
+.attention-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.attention-tile {
+  display: block;
+  padding: 1.1rem;
+  border-radius: var(--radius-lg);
+}
+
+.admin-two-speed {
+  grid-template-columns: minmax(0, 1.35fr) minmax(20rem, 0.9fr);
+}
+
+.quick-tile-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.quick-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.split-stage {
+  grid-template-columns: minmax(22rem, 0.8fr) minmax(0, 1.2fr);
+}
+
+.control-panel-dense {
+  padding: 1.05rem;
+}
+
+.form-cluster {
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.form-cluster-head {
+  margin-bottom: 0.8rem;
+}
+
+.form-cluster-head h3 {
+  margin: 0;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+.field span {
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  border: 1px solid var(--surface-border);
+  background: rgba(6, 10, 16, 0.92);
+  color: var(--text);
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field-wide {
+  grid-column: 1 / -1;
+}
+
+.selection-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 0.95rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.selection-pill input {
+  accent-color: var(--gold);
+}
+
+.archive-stack {
+  gap: 0.75rem;
+}
+
+.archived-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--muted);
+}
+
+.match-ops-card {
+  padding: 1.15rem;
+  border-radius: var(--radius-lg);
+  border-left: 4px solid transparent;
+}
+
+.match-ops-live {
+  border-left-color: var(--cyan);
+}
+
+.match-ops-completed {
+  border-left-color: var(--green);
+}
+
+.match-ops-scheduled {
+  border-left-color: var(--gold);
+}
+
+.match-ops-grid {
+  grid-template-columns: minmax(0, 1.05fr) minmax(20rem, 0.95fr);
+}
+
+.result-bay {
+  position: sticky;
+  top: 8rem;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.result-bay-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  padding: 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(34, 211, 238, 0.18);
+  background: rgba(34, 211, 238, 0.07);
+}
+
+.action-notice {
+  padding: 0.9rem 1rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.action-success {
+  border-color: rgba(34, 197, 94, 0.25);
+  background: rgba(34, 197, 94, 0.1);
+  color: #d0ffd7;
+}
+
+.action-error {
+  border-color: rgba(251, 113, 133, 0.25);
+  background: rgba(251, 113, 133, 0.1);
+  color: #ffd5db;
+}
+
+.action-info {
+  color: #e2e8f0;
+}
+
+.auth-shell {
+  display: flex;
+  justify-content: center;
+  padding: 4rem 0;
+}
+
+.backstage-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(18rem, 0.9fr);
+  gap: 1.2rem;
+  width: min(70rem, 100%);
+  padding: 1.35rem;
+}
+
+.backstage-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.mobile-dock {
+  display: none;
+}
+

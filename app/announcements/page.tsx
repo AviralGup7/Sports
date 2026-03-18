@@ -1,4 +1,5 @@
 import { BroadcastHero } from "@/components/broadcast-hero";
+import { EmptyState } from "@/components/empty-state";
 import { MotionIn } from "@/components/motion-in";
 import { NewsBulletin } from "@/components/news-bulletin";
 import { getAnnouncementsPageData } from "@/lib/data";
@@ -55,9 +56,15 @@ export default async function AnnouncementsPage() {
           </div>
         </div>
         <div className="news-feed">
-          {feedItems.map((announcement) => (
-            <NewsBulletin key={announcement.id} announcement={announcement} />
-          ))}
+          {feedItems.length > 0 ? (
+            feedItems.map((announcement) => <NewsBulletin key={announcement.id} announcement={announcement} />)
+          ) : (
+            <EmptyState
+              eyebrow="Newsroom Feed"
+              title="No regular feed items yet"
+              description="Pinned headlines can still run above, but standard bulletin entries have not been published yet."
+            />
+          )}
         </div>
       </MotionIn>
     </div>

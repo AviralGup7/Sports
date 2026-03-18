@@ -42,7 +42,12 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
         {adminNav.map((item) => {
           const active = item.href === "/admin" ? pathname === item.href : pathname.startsWith(item.href);
           return (
-            <Link key={item.href} href={item.href} className={active ? "admin-link admin-link-active" : "admin-link"}>
+            <Link
+              key={item.href}
+              href={item.href}
+              className={active ? "admin-link admin-link-active" : "admin-link"}
+              aria-current={active ? "page" : undefined}
+            >
               <strong>{item.label}</strong>
               <span>{item.meta}</span>
             </Link>
