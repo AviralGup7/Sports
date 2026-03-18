@@ -6,11 +6,11 @@ import { usePathname } from "next/navigation";
 import { Profile } from "@/lib/types";
 
 const adminNav = [
-  { href: "/admin", label: "Dashboard" },
-  { href: "/admin/teams", label: "Teams" },
-  { href: "/admin/matches", label: "Matches" },
-  { href: "/admin/announcements", label: "Announcements" },
-  { href: "/admin/settings", label: "Settings" }
+  { href: "/admin", label: "Dashboard", meta: "Operations overview" },
+  { href: "/admin/teams", label: "Teams", meta: "Registry and seeds" },
+  { href: "/admin/matches", label: "Matches", meta: "Fixtures and results" },
+  { href: "/admin/announcements", label: "Notices", meta: "Public and admin feed" },
+  { href: "/admin/settings", label: "Settings", meta: "Readiness and exports" }
 ];
 
 type AdminSidebarProps = {
@@ -23,9 +23,19 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
   return (
     <aside className="admin-sidebar">
       <div className="admin-side-top">
-        <p className="eyebrow">Organizer zone</p>
-        <h2>Admin Workspace</h2>
-        <p className="muted">{profile.name} · {profile.role.replace("_", " ")}</p>
+        <p className="eyebrow">Organizer lane</p>
+        <h2>Control Stack</h2>
+        <p className="muted">
+          {profile.name} | {profile.role.replace("_", " ")}
+        </p>
+      </div>
+
+      <div className="admin-sport-pills">
+        {profile.sportIds.map((sportId) => (
+          <span key={sportId} className="admin-sport-pill">
+            {sportId}
+          </span>
+        ))}
       </div>
 
       <nav className="admin-nav" aria-label="Admin">
@@ -33,7 +43,8 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
           const active = item.href === "/admin" ? pathname === item.href : pathname.startsWith(item.href);
           return (
             <Link key={item.href} href={item.href} className={active ? "admin-link admin-link-active" : "admin-link"}>
-              {item.label}
+              <strong>{item.label}</strong>
+              <span>{item.meta}</span>
             </Link>
           );
         })}

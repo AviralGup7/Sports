@@ -1,8 +1,11 @@
+import { CSSProperties } from "react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
 import { BracketBoard } from "@/components/bracket-board";
-import { MatchCard } from "@/components/match-card";
+import { BroadcastHero } from "@/components/broadcast-hero";
+import { FixtureStrip } from "@/components/fixture-strip";
+import { MotionIn } from "@/components/motion-in";
 import { getSportPageData } from "@/lib/data";
 import { sportOrder } from "@/lib/mock-data";
 import { SportSlug } from "@/lib/types";
@@ -24,65 +27,72 @@ export default async function SportPage({ params }: SportPageProps) {
     notFound();
   }
 
+  const liveCount = data.matches.filter((match) => match.status === "live").length;
+
   return (
     <div className="stack-xl">
-      <section className="hero sport-hero">
-        <div className="hero-copy">
-          <p className="eyebrow">Sport detail</p>
-          <h1>{data.sport.name}</h1>
-          <p className="hero-text">{data.sport.rulesSummary}</p>
-        </div>
-        <div className="hero-panel">
-          <p className="eyebrow">Format snapshot</p>
-          <div className="hero-kicker">{data.sport.format}</div>
-          <p>Bracket flow uses stored `next_match_id` and `next_slot` links.</p>
-        </div>
-      </section>
+      <MotionIn>
+        <BroadcastHero
+          eyebrow="Sport Hub"
+          kicker={data.sport.format}
+          title={data.sport.name}
+          description={data.sport.rulesSummary}
+          accent={data.sport.color}
+          aside={
+            <div className="score-spotlight">
+              <p className="eyebrow">Stage Status</p>
+              <h2>{liveCount > 0 ? "Live Round" : "Bracket Map"}</h2>
+              <strong>{data.teams.length} squads active</strong>
+              <p>{liveCount > 0 ? `${liveCount} fixture boards are active right now.` : "Use the bracket and fixture rail below to track progression."}</p>
+            </div>
+          }
+        />
+      </MotionIn>
 
-      <section className="stack-lg">
+      <MotionIn className="section-shell" delay={0.08}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Teams</p>
-            <h2>Registered sides</h2>
-          </div>
-        </div>
-        <div className="roster-grid">
-          {data.teams.map((team) => (
-            <article key={team.id} className="roster-card">
-              <p className="eyebrow">{team.association}</p>
-              <h3>{team.name}</h3>
-              <p className="muted">Seed {team.seed}</p>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="stack-lg">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Bracket</p>
+            <p className="eyebrow">Bracket View</p>
             <h2>Progression overview</h2>
           </div>
         </div>
         <BracketBoard rounds={data.bracket} />
-      </section>
+      </MotionIn>
 
-      <section className="stack-lg">
+      <MotionIn className="section-shell" delay={0.12}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Fixtures</p>
-            <h2>Round flow</h2>
+            <p className="eyebrow">Registered Sides</p>
+            <h2>Association roster</h2>
+          </div>
+        </div>
+        <div className="team-chip-grid">
+          {data.teams.map((team) => (
+            <article key={team.id} className="team-chip-card" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
+              <strong>{team.name}</strong>
+              <span>{team.association}</span>
+              <small>Seed {team.seed}</small>
+            </article>
+          ))}
+        </div>
+      </MotionIn>
+
+      <MotionIn className="section-shell" delay={0.16}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Fixture Rail</p>
+            <h2>Every round on one board</h2>
           </div>
           <Link href="/schedule" className="inline-link">
             Return to schedule
           </Link>
         </div>
-        <div className="card-grid">
+        <div className="fixture-stack">
           {data.matches.map((match) => (
-            <MatchCard key={match.id} match={match} />
+            <FixtureStrip key={match.id} match={match} />
           ))}
         </div>
-      </section>
+      </MotionIn>
     </div>
   );
 }

@@ -1,5 +1,7 @@
 import Link from "next/link";
 
+import { ControlPanel } from "@/components/control-panel";
+import { MotionIn } from "@/components/motion-in";
 import { requireAdminProfile } from "@/lib/auth";
 import { getAdminSettingsData } from "@/lib/data";
 
@@ -9,44 +11,60 @@ export default async function AdminSettingsPage() {
 
   return (
     <div className="stack-xl">
-      <section className="banner">
-        <p className="eyebrow">Admin settings</p>
-        <h1>Readiness And Export</h1>
-        <p>Check environment readiness, apply SQL, and export core tournament data for backup.</p>
-      </section>
-
-      <section className="detail-grid">
-        <article className="detail-card">
-          <p className="eyebrow">Environment</p>
-          <h2>{data.envReady ? "Connected" : "Missing env"}</h2>
-          <p>Supabase URL and publishable key are {data.envReady ? "configured in the project environment." : "not configured yet."}</p>
-        </article>
-        <article className="detail-card">
-          <p className="eyebrow">SQL source</p>
-          <h2>Checked in</h2>
-          <p>Apply `supabase/schema.sql` and `supabase/seed.sql` in the Supabase SQL editor before going live.</p>
-        </article>
-        <article className="detail-card">
-          <p className="eyebrow">Export timestamp</p>
-          <h2>{data.exportedAt.slice(0, 10)}</h2>
-          <p>Use the export links below for offline backups during the event.</p>
-        </article>
-      </section>
-
-      <section className="editor-card">
-        <div className="section-heading">
+      <MotionIn>
+        <section className="operations-hero">
           <div>
-            <p className="eyebrow">Backup export</p>
-            <h2>JSON downloads</h2>
+            <p className="eyebrow">Settings And Readiness</p>
+            <h1>Event backup desk</h1>
+            <p className="hero-text">Check environment health, verify SQL prep, and keep offline JSON exports ready during the tournament.</p>
           </div>
-        </div>
-        <div className="chip-row">
-          <Link href="/admin/settings/export/teams" className="chip chip-active">Teams JSON</Link>
-          <Link href="/admin/settings/export/matches" className="chip chip-active">Matches JSON</Link>
-          <Link href="/admin/settings/export/results" className="chip chip-active">Results JSON</Link>
-          <Link href="/admin/settings/export/announcements" className="chip chip-active">Announcements JSON</Link>
-        </div>
-      </section>
+          <div className="operations-hero-side">
+            <span className="operations-chip">{data.envReady ? "Environment ready" : "Env missing"}</span>
+            <span className="operations-chip">{data.exportedAt.slice(0, 10)}</span>
+          </div>
+        </section>
+      </MotionIn>
+
+      <MotionIn className="attention-grid" delay={0.08}>
+        <article className="attention-tile tone-success">
+          <p>Environment</p>
+          <strong>{data.envReady ? "Connected" : "Missing env"}</strong>
+          <span>Supabase URL and publishable key are {data.envReady ? "configured." : "not configured yet."}</span>
+        </article>
+        <article className="attention-tile tone-neutral">
+          <p>SQL source</p>
+          <strong>Checked in</strong>
+          <span>Run `supabase/schema.sql` then `supabase/seed.sql` before production use.</span>
+        </article>
+        <article className="attention-tile tone-live">
+          <p>Export stamp</p>
+          <strong>{data.exportedAt.slice(0, 10)}</strong>
+          <span>Use the export links below for offline backups during the event.</span>
+        </article>
+      </MotionIn>
+
+      <MotionIn delay={0.12}>
+        <ControlPanel eyebrow="Backup Export" title="JSON downloads" description="Keep an offline mirror of core tournament data during every event day.">
+          <div className="quick-tile-grid">
+            <Link href="/admin/settings/export/teams" className="quick-tile">
+              <strong>Teams JSON</strong>
+              <span>Registry, seeds, and status.</span>
+            </Link>
+            <Link href="/admin/settings/export/matches" className="quick-tile">
+              <strong>Matches JSON</strong>
+              <span>Fixtures, timings, and status board.</span>
+            </Link>
+            <Link href="/admin/settings/export/results" className="quick-tile">
+              <strong>Results JSON</strong>
+              <span>Winner locks, notes, and timestamps.</span>
+            </Link>
+            <Link href="/admin/settings/export/announcements" className="quick-tile">
+              <strong>Announcements JSON</strong>
+              <span>Public and admin feed backup.</span>
+            </Link>
+          </div>
+        </ControlPanel>
+      </MotionIn>
     </div>
   );
 }

@@ -1,3 +1,5 @@
+import { ReactNode } from "react";
+import { AdminActionBar } from "@/components/admin-action-bar";
 import { AdminSidebar } from "@/components/admin-sidebar";
 import { requireAdminProfile } from "@/lib/auth";
 
@@ -9,21 +11,26 @@ export const revalidate = 0;
 export default async function AdminProtectedLayout({
   children
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   const { profile } = await requireAdminProfile();
 
   return (
-    <div className="admin-shell">
-      <div className="stack-lg">
+    <div className="admin-stage">
+      <AdminActionBar
+        profile={profile}
+        onSignOut={
+          <form action={signOutAdminAction}>
+            <button type="submit" className="button button-ghost">
+              Sign out
+            </button>
+          </form>
+        }
+      />
+      <div className="admin-shell">
         <AdminSidebar profile={profile} />
-        <form action={signOutAdminAction}>
-          <button type="submit" className="button button-ghost full-width">
-            Sign out
-          </button>
-        </form>
+        <div className="admin-content">{children}</div>
       </div>
-      <div className="admin-content">{children}</div>
     </div>
   );
 }

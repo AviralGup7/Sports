@@ -1,7 +1,9 @@
 import Link from "next/link";
 
-import { MatchCard } from "@/components/match-card";
-import { getSchedulePageData, getSportBySlugFromCollection } from "@/lib/data";
+import { BroadcastHero } from "@/components/broadcast-hero";
+import { FixtureStrip } from "@/components/fixture-strip";
+import { MotionIn } from "@/components/motion-in";
+import { formatDateLabel, getSchedulePageData, getSportBySlugFromCollection } from "@/lib/data";
 import { sportOrder } from "@/lib/mock-data";
 import { SportSlug } from "@/lib/types";
 
@@ -15,32 +17,49 @@ type SchedulePageProps = {
 export default async function SchedulePage({ searchParams }: SchedulePageProps) {
   const params = (await searchParams) ?? {};
   const selectedSport = sportOrder.includes(params.sport as SportSlug) ? (params.sport as SportSlug) : undefined;
-  const { days, selectedDay, sports, fixtures } = await getSchedulePageData(params.day, selectedSport);
+  const { days, selectedDay, sports, fixtures, scheduleGroups } = await getSchedulePageData(params.day, selectedSport);
+  const selectedSportRecord = getSportBySlugFromCollection(sports, selectedSport);
 
   return (
     <div className="stack-xl">
-      <section className="banner">
-        <p className="eyebrow">Public schedule</p>
-        <h1>Match Schedule</h1>
-        <p>Filter by day or sport. This view reads tournament fixtures from the shared repository layer.</p>
-      </section>
+      <MotionIn>
+        <BroadcastHero
+          eyebrow="Fixture Board"
+          kicker={formatDateLabel(selectedDay)}
+          title={selectedSportRecord ? `${selectedSportRecord.name} Schedule` : "Match Schedule"}
+          description="Scan the day like a broadcast rundown. Filters stay sticky, timelines stay grouped, and every row jumps straight into the live board."
+          compact
+          aside={
+            <div className="hero-aside-list">
+              <div>
+                <span className="aside-label">Visible fixtures</span>
+                <strong>{fixtures.length}</strong>
+              </div>
+              <div>
+                <span className="aside-label">Day locked</span>
+                <strong>{formatDateLabel(selectedDay)}</strong>
+              </div>
+            </div>
+          }
+        />
+      </MotionIn>
 
-      <section className="filter-strip">
-        <div className="stack-sm">
+      <MotionIn className="filter-rail" delay={0.08}>
+        <div className="filter-block">
           <p className="eyebrow">Day</p>
           <div className="chip-row">
             {days.map((day) => {
               const href = selectedSport ? `/schedule?day=${day}&sport=${selectedSport}` : `/schedule?day=${day}`;
               return (
                 <Link key={day} href={href} className={day === selectedDay ? "chip chip-active" : "chip"}>
-                  {day}
+                  {formatDateLabel(day)}
                 </Link>
               );
             })}
           </div>
         </div>
 
-        <div className="stack-sm">
+        <div className="filter-block">
           <p className="eyebrow">Sport</p>
           <div className="chip-row">
             <Link href={`/schedule?day=${selectedDay}`} className={!selectedSport ? "chip chip-active" : "chip"}>
@@ -57,52 +76,23 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
             ))}
           </div>
         </div>
-      </section>
+      </MotionIn>
 
-      {selectedSport ? (
-        <section className="stack-lg">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Filtered fixtures</p>
-              <h2>{getSportBySlugFromCollection(sports, selectedSport)?.name}</h2>
+      <MotionIn className="stack-lg" delay={0.12}>
+        {scheduleGroups.map((group) => (
+          <section key={group.time} className="timeline-group">
+            <div className="timeline-marker">
+              <p className="eyebrow">Time Slot</p>
+              <h2>{group.label}</h2>
             </div>
-          </div>
-          <div className="card-grid">
-            {fixtures.map((match) => (
-              <MatchCard key={match.id} match={match} />
-            ))}
-          </div>
-        </section>
-      ) : (
-        <div className="stack-xl">
-          {sports.map((sport) => {
-            const sportFixtures = fixtures.filter((match) => match.sportId === sport.id);
-            if (sportFixtures.length === 0) {
-              return null;
-            }
-
-            return (
-              <section key={sport.id} className="stack-lg">
-                <div className="section-heading">
-                  <div>
-                    <p className="eyebrow">{sport.format}</p>
-                    <h2>{sport.name}</h2>
-                  </div>
-                  <Link href={`/sports/${sport.id}`} className="inline-link">
-                    Open sport page
-                  </Link>
-                </div>
-
-                <div className="card-grid">
-                  {sportFixtures.map((match) => (
-                    <MatchCard key={match.id} match={match} />
-                  ))}
-                </div>
-              </section>
-            );
-          })}
-        </div>
-      )}
+            <div className="timeline-stack">
+              {group.matches.map((match) => (
+                <FixtureStrip key={match.id} match={match} showSport={!selectedSport} />
+              ))}
+            </div>
+          </section>
+        ))}
+      </MotionIn>
     </div>
   );
 }

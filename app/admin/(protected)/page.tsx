@@ -1,7 +1,10 @@
 import Link from "next/link";
 
 import { ActionNotice } from "@/components/action-notice";
-import { MatchCard } from "@/components/match-card";
+import { ControlPanel } from "@/components/control-panel";
+import { FixtureStrip } from "@/components/fixture-strip";
+import { MotionIn } from "@/components/motion-in";
+import { NewsBulletin } from "@/components/news-bulletin";
 import { requireAdminProfile } from "@/lib/auth";
 import { getAdminDashboardData } from "@/lib/data";
 
@@ -20,81 +23,86 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
 
   return (
     <div className="stack-xl">
-      <section className="banner">
-        <p className="eyebrow">Admin dashboard</p>
-        <h1>Operations Snapshot</h1>
-        <p>Today’s workbench for fixtures, result entry, and tournament messaging.</p>
-      </section>
+      <MotionIn>
+        <section className="operations-hero">
+          <div>
+            <p className="eyebrow">Operations Snapshot</p>
+            <h1>Control room focus</h1>
+            <p className="hero-text">Urgent match work first, setup work second. Keep scores moving, brackets correct, and the public board clean.</p>
+          </div>
+          <div className="operations-hero-side">
+            <span className="operations-chip">Pending {data.pendingResults.length}</span>
+            <span className="operations-chip">Visible matches {data.stats.matches}</span>
+          </div>
+        </section>
+      </MotionIn>
 
       <ActionNotice message={params.message} tone={tone} />
 
-      <section className="stats-grid">
-        <article className="stat-card">
-          <p>Your access</p>
-          <strong>{profile.role === "super_admin" ? "All" : profile.sportIds.length}</strong>
-          <span>{profile.role === "super_admin" ? "All sports" : `${profile.sportIds.join(", ")}`}</span>
-        </article>
-        <article className="stat-card">
-          <p>Matches</p>
-          <strong>{data.stats.matches}</strong>
-          <span>{data.stats.completedMatches} completed</span>
-        </article>
-        <article className="stat-card">
-          <p>Pending results</p>
-          <strong>{data.pendingResults.length}</strong>
-          <span>Awaiting admin action</span>
-        </article>
-        <article className="stat-card">
-          <p>Announcements</p>
-          <strong>{data.announcements.length}</strong>
-          <span>Visible in admin feed</span>
-        </article>
-      </section>
+      <MotionIn className="attention-grid" delay={0.08}>
+        {data.attentionItems.map((item) => (
+          <Link key={item.id} href={item.href} className={`attention-tile tone-${item.tone}`}>
+            <p>{item.label}</p>
+            <strong>{item.value}</strong>
+            <span>{item.detail}</span>
+          </Link>
+        ))}
+      </MotionIn>
 
-      <section className="stack-lg">
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Today’s fixtures</p>
-            <h2>Live operations</h2>
+      <MotionIn className="admin-two-speed" delay={0.12}>
+        <ControlPanel
+          eyebrow="Urgent Work"
+          title="Today's fixture deck"
+          description="Jump into the boards most likely to need a score save or status change."
+          actions={
+            <Link href="/admin/matches" className="inline-link">
+              Open match control
+            </Link>
+          }
+        >
+          <div className="fixture-stack">
+            {data.todaysMatches.map((match) => (
+              <FixtureStrip key={match.id} match={match} showSport admin />
+            ))}
           </div>
-          <Link href="/admin/matches" className="inline-link">
-            Manage matches
-          </Link>
-        </div>
+        </ControlPanel>
 
-        <div className="card-grid">
-          {data.todaysMatches.map((match) => (
-            <MatchCard key={match.id} match={match} showSport />
-          ))}
-        </div>
-      </section>
+        <div className="stack-lg">
+          <ControlPanel
+            eyebrow="Setup"
+            title="Quick links"
+            description="Jump to the areas most organizers touch throughout the day."
+            dense
+          >
+            <div className="quick-tile-grid">
+              <Link href="/admin/teams" className="quick-tile">
+                <strong>Teams</strong>
+                <span>Create, edit, archive, and reseed squads.</span>
+              </Link>
+              <Link href="/admin/matches" className="quick-tile">
+                <strong>Matches</strong>
+                <span>Fixture setup, live status, and winner progression.</span>
+              </Link>
+              <Link href="/admin/announcements" className="quick-tile">
+                <strong>Notices</strong>
+                <span>Publish and pin public or organizer updates.</span>
+              </Link>
+              <Link href="/admin/settings" className="quick-tile">
+                <strong>Settings</strong>
+                <span>Exports, environment checks, and event backup prep.</span>
+              </Link>
+            </div>
+          </ControlPanel>
 
-      <section className="detail-grid">
-        <article className="detail-card">
-          <p className="eyebrow">Quick links</p>
-          <h2>Teams</h2>
-          <p>Create, edit, and archive teams with sport assignments and seeds.</p>
-          <Link href="/admin/teams" className="inline-link">
-            Open team registry
-          </Link>
-        </article>
-        <article className="detail-card">
-          <p className="eyebrow">Quick links</p>
-          <h2>Fixtures</h2>
-          <p>Update match details, save results, and auto-advance winners to the next slot.</p>
-          <Link href="/admin/matches" className="inline-link">
-            Open fixture control
-          </Link>
-        </article>
-        <article className="detail-card">
-          <p className="eyebrow">Quick links</p>
-          <h2>Announcements</h2>
-          <p>Publish or unpublish notices and pin important updates to the public board.</p>
-          <Link href="/admin/announcements" className="inline-link">
-            Open notices
-          </Link>
-        </article>
-      </section>
+          <ControlPanel eyebrow="Feed Monitor" title="Recent notices" dense>
+            <div className="news-feed news-feed-tight">
+              {data.announcements.map((announcement) => (
+                <NewsBulletin key={announcement.id} announcement={announcement} compact showAdminMeta />
+              ))}
+            </div>
+          </ControlPanel>
+        </div>
+      </MotionIn>
     </div>
   );
 }

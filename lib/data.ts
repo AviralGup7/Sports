@@ -14,6 +14,7 @@ import {
 import { hasSupabaseEnv } from "@/lib/supabase/env";
 import {
   AdminAnnouncementsData,
+  AdminAttentionItem,
   AdminDashboardData,
   AdminMatchesData,
   AdminSettingsData,
@@ -21,19 +22,24 @@ import {
   Announcement,
   BracketRound,
   ChampionEntry,
+  ChampionSpotlight,
+  GlobalChromeData,
+  HighlightMatch,
   HomePageData,
   Match,
   MatchResult,
   MatchStatus,
   MatchPageData,
   Profile,
+  ScheduleGroup,
   SchedulePageData,
   Sport,
   SportPageData,
   SportSlug,
   Team,
   Tournament,
-  TournamentStats
+  TournamentStats,
+  TickerItem
 } from "@/lib/types";
 
 type SportRow = { id: SportSlug; name: string; color: string; rules_summary: string; format: string };
@@ -142,7 +148,16 @@ async function loadSnapshot(): Promise<RepositorySnapshot> {
 
   try {
     const supabase = await createSupabaseServerClient();
-    const [preferredTournamentRes, fallbackTournamentRes, sportsRes, teamsRes, teamSportsRes, matchesRes, resultsRes, announcementsRes] = await Promise.all([
+    const [
+      preferredTournamentRes,
+      fallbackTournamentRes,
+      sportsRes,
+      teamsRes,
+      teamSportsRes,
+      matchesRes,
+      resultsRes,
+      announcementsRes
+    ] = await Promise.all([
       supabase
         .from("tournaments")
         .select("id, name, start_date, end_date, venue")
@@ -303,6 +318,166 @@ function buildChampionEntries(snapshot: RepositorySnapshot): ChampionEntry[] {
   });
 }
 
+function buildChampionSpotlights(snapshot: RepositorySnapshot): ChampionSpotlight[] {
+  return buildChampionEntries(snapshot).map(({ sport, winner }) => ({
+    sport,
+    winner,
+    statusLabel: winner ? "Champion Locked" : "Final Pending",
+    note: winner
+      ? `${winner.name} closed out the ${sport.name.toLowerCase()} title run.`
+      : `Waiting on the final result to crown the ${sport.name.toLowerCase()} champion.`
+  }));
+}
+
+function getSportMap(snapshot: RepositorySnapshot) {
+  return new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+}
+
+function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | null {
+  const sportsById = getSportMap(snapshot);
+  const match =
+    snapshot.matches.find((item) => item.status === "live") ??
+    snapshot.matches.find((item) => item.status === "scheduled") ??
+    snapshot.matches[0];
+
+  if (!match) {
+    return null;
+  }
+
+  const sport = sportsById.get(match.sportId);
+  if (!sport) {
+    return null;
+  }
+
+  const headline =
+    match.status === "live"
+      ? `${match.teamA?.name ?? "TBD"} are on the floor now`
+      : match.status === "completed"
+        ? `${match.result?.winner?.name ?? "Result saved"} closed this fixture`
+        : `${match.round} is next on the arena board`;
+
+  const summary =
+    match.result?.scoreSummary ??
+    `${formatDateLabel(match.day)} at ${match.startTime} from ${match.venue}`;
+
+  return {
+    match,
+    sport,
+    label: match.status === "live" ? "Now Playing" : match.status === "completed" ? "Latest Final" : "Featured Fixture",
+    headline,
+    summary
+  };
+}
+
+function buildTickerItems(snapshot: RepositorySnapshot): TickerItem[] {
+  const ticker: TickerItem[] = [];
+  const liveMatches = snapshot.matches.filter((match) => match.status === "live").slice(0, 2);
+  const publicAnnouncements = getPublicAnnouncements(snapshot);
+
+  ticker.push({
+    id: "window",
+    label: "Tournament Window",
+    message: `${formatDateLabel(snapshot.tournament.startDate)} to ${formatDateLabel(snapshot.tournament.endDate)} at ${snapshot.tournament.venue}`,
+    href: "/schedule",
+    tone: "info"
+  });
+
+  for (const match of liveMatches) {
+    ticker.push({
+      id: `live-${match.id}`,
+      label: "Live",
+      message: `${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"} in ${match.sportId}`,
+      href: `/matches/${match.id}`,
+      tone: "live"
+    });
+  }
+
+  for (const announcement of publicAnnouncements.filter((item) => item.pinned).slice(0, 3)) {
+    ticker.push({
+      id: `notice-${announcement.id}`,
+      label: announcement.pinned ? "Pinned" : "Update",
+      message: announcement.title,
+      href: "/announcements",
+      tone: "alert"
+    });
+  }
+
+  return ticker;
+}
+
+function buildScheduleGroups(fixtures: Match[]): ScheduleGroup[] {
+  const grouped = new Map<string, Match[]>();
+
+  for (const fixture of fixtures) {
+    const bucket = grouped.get(fixture.startTime) ?? [];
+    bucket.push(fixture);
+    grouped.set(fixture.startTime, bucket);
+  }
+
+  return Array.from(grouped.entries())
+    .sort(([timeA], [timeB]) => timeA.localeCompare(timeB))
+    .map(([time, matches]) => ({
+      time,
+      label: formatTimeLabel(time),
+      matches
+    }));
+}
+
+function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: Match[]): AdminAttentionItem[] {
+  const liveMatches = visibleMatches.filter((match) => match.status === "live");
+  const pendingResults = visibleMatches.filter((match) => match.status !== "completed");
+  const publicPinned = getPublicAnnouncements(snapshot).filter((announcement) => announcement.pinned);
+  const completedMatches = visibleMatches.filter((match) => match.status === "completed");
+
+  return [
+    {
+      id: "pending-results",
+      label: "Pending Results",
+      value: String(pendingResults.length),
+      detail: "Fixtures still waiting for a final lock and winner progression.",
+      href: "/admin/matches",
+      tone: pendingResults.length > 0 ? "alert" : "success"
+    },
+    {
+      id: "live-matches",
+      label: "Live Boards",
+      value: String(liveMatches.length),
+      detail: liveMatches.length > 0 ? "Fixtures actively running right now." : "No fixtures are currently live.",
+      href: "/admin/matches",
+      tone: liveMatches.length > 0 ? "live" : "neutral"
+    },
+    {
+      id: "pinned-notices",
+      label: "Pinned Notices",
+      value: String(publicPinned.length),
+      detail: "Public headline notices riding the ticker and announcement feed.",
+      href: "/admin/announcements",
+      tone: "neutral"
+    },
+    {
+      id: "completed",
+      label: "Completed",
+      value: String(completedMatches.length),
+      detail: "Results already locked into the archive and progression chain.",
+      href: "/admin/matches",
+      tone: "success"
+    }
+  ];
+}
+
+function getSportStageLabel(matches: Match[]) {
+  if (matches.some((match) => match.status === "live")) {
+    return "Live Round";
+  }
+
+  const finalMatch = matches.find((match) => match.round.toLowerCase() === "final");
+  if (finalMatch?.status === "completed") {
+    return "Champion Decided";
+  }
+
+  return matches[0]?.round ?? "Bracket Open";
+}
+
 export function buildBracketRounds(matches: Match[]): BracketRound[] {
   const grouped = new Map<string, Match[]>();
 
@@ -318,18 +493,31 @@ export function buildBracketRounds(matches: Match[]): BracketRound[] {
   }));
 }
 
+export async function getGlobalChromeData(): Promise<GlobalChromeData> {
+  const snapshot = await loadSnapshot();
+
+  return {
+    tournament: snapshot.tournament,
+    sports: snapshot.sports,
+    tickerItems: buildTickerItems(snapshot)
+  };
+}
+
 export async function getHomePageData(): Promise<HomePageData> {
   const snapshot = await loadSnapshot();
   const stats = getTournamentStatsFromSnapshot(snapshot);
-  const featuredMatches = snapshot.matches.filter((match) => match.status !== "completed").slice(0, 4);
+  const highlightMatch = buildHighlightMatch(snapshot);
+  const featuredMatches = snapshot.matches.filter((match) => match.status !== "completed").slice(0, 5);
 
   return {
     tournament: snapshot.tournament,
     sports: snapshot.sports,
     stats,
+    highlightMatch,
     featuredMatches,
-    announcements: getPublicAnnouncements(snapshot).slice(0, 3),
-    champions: buildChampionEntries(snapshot)
+    announcements: getPublicAnnouncements(snapshot).slice(0, 4),
+    champions: buildChampionEntries(snapshot),
+    championSpotlights: buildChampionSpotlights(snapshot)
   };
 }
 
@@ -346,7 +534,8 @@ export async function getSchedulePageData(day?: string, sportId?: SportSlug): Pr
     selectedDay,
     selectedSport: sportId,
     sports: snapshot.sports,
-    fixtures
+    fixtures,
+    scheduleGroups: buildScheduleGroups(fixtures)
   };
 }
 
@@ -362,7 +551,10 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
   const matches = snapshot.matches.filter((match) => match.sportId === sportId);
 
   return {
-    sport,
+    sport: {
+      ...sport,
+      format: `${sport.format} | ${getSportStageLabel(matches)}`
+    },
     teams,
     matches,
     bracket: buildBracketRounds(matches)
@@ -398,7 +590,9 @@ export async function getAdminDashboardData(profile: Profile): Promise<AdminDash
   const snapshot = await loadSnapshot();
   const allowedSports = profile.role === "super_admin" ? snapshot.sports.map((sport) => sport.id) : profile.sportIds;
   const visibleMatches = snapshot.matches.filter((match) => allowedSports.includes(match.sportId));
-  const todaysMatches = visibleMatches.filter((match) => match.day === snapshot.tournament.startDate || match.day === visibleMatches[0]?.day).slice(0, 6);
+  const liveMatch = visibleMatches.find((match) => match.status === "live");
+  const anchorDay = liveMatch?.day ?? visibleMatches.find((match) => match.status === "scheduled")?.day ?? visibleMatches[0]?.day;
+  const todaysMatches = visibleMatches.filter((match) => match.day === anchorDay).slice(0, 6);
   const pendingResults = visibleMatches.filter((match) => match.status !== "completed").slice(0, 6);
 
   return {
@@ -406,16 +600,21 @@ export async function getAdminDashboardData(profile: Profile): Promise<AdminDash
     stats: getTournamentStatsFromSnapshot(snapshot),
     todaysMatches,
     pendingResults,
-    announcements: snapshot.announcements.slice(0, 5)
+    announcements: snapshot.announcements.slice(0, 5),
+    attentionItems: buildAdminAttentionItems(snapshot, visibleMatches)
   };
 }
 
 export async function getAdminTeamsData(profile: Profile): Promise<AdminTeamsData> {
   const snapshot = await loadSnapshot();
-  const sports = profile.role === "super_admin" ? snapshot.sports : snapshot.sports.filter((sport) => profile.sportIds.includes(sport.id));
-  const teams = profile.role === "super_admin"
-    ? snapshot.teams
-    : snapshot.teams.filter((team) => team.sportIds.some((sportId) => profile.sportIds.includes(sportId)));
+  const sports =
+    profile.role === "super_admin"
+      ? snapshot.sports
+      : snapshot.sports.filter((sport) => profile.sportIds.includes(sport.id));
+  const teams =
+    profile.role === "super_admin"
+      ? snapshot.teams
+      : snapshot.teams.filter((team) => team.sportIds.some((sportId) => profile.sportIds.includes(sportId)));
 
   return {
     profile,
@@ -426,10 +625,14 @@ export async function getAdminTeamsData(profile: Profile): Promise<AdminTeamsDat
 
 export async function getAdminMatchesData(profile: Profile): Promise<AdminMatchesData> {
   const snapshot = await loadSnapshot();
-  const sports = profile.role === "super_admin" ? snapshot.sports : snapshot.sports.filter((sport) => profile.sportIds.includes(sport.id));
-  const matches = profile.role === "super_admin"
-    ? snapshot.matches
-    : snapshot.matches.filter((match) => profile.sportIds.includes(match.sportId));
+  const sports =
+    profile.role === "super_admin"
+      ? snapshot.sports
+      : snapshot.sports.filter((sport) => profile.sportIds.includes(sport.id));
+  const matches =
+    profile.role === "super_admin"
+      ? snapshot.matches
+      : snapshot.matches.filter((match) => profile.sportIds.includes(match.sportId));
 
   return {
     profile,
@@ -445,11 +648,12 @@ export async function getAdminAnnouncementsData(profile: Profile): Promise<Admin
 
   return {
     profile,
-    announcements: profile.role === "super_admin"
-      ? snapshot.announcements
-      : snapshot.announcements.filter(
-          (announcement) => announcement.visibility === "public" || profile.sportIds.length > 0
-        )
+    announcements:
+      profile.role === "super_admin"
+        ? snapshot.announcements
+        : snapshot.announcements.filter(
+            (announcement) => announcement.visibility === "public" || profile.sportIds.length > 0
+          )
   };
 }
 
@@ -467,6 +671,16 @@ export function formatDateLabel(dateString: string) {
     month: "short",
     day: "numeric"
   }).format(new Date(dateString));
+}
+
+export function formatTimeLabel(timeString: string) {
+  const [hours, minutes] = timeString.split(":");
+  const date = new Date("2026-01-01T00:00:00");
+  date.setHours(Number(hours), Number(minutes));
+  return new Intl.DateTimeFormat("en-IN", {
+    hour: "numeric",
+    minute: "2-digit"
+  }).format(date);
 }
 
 export function formatDateTime(dateString: string, timeString: string) {
@@ -495,4 +709,8 @@ export function getStatusTone(status: MatchStatus) {
 
 export function getSportBySlugFromCollection(sports: Sport[], sportId?: SportSlug) {
   return sports.find((sport) => sport.id === sportId);
+}
+
+export function getAdminSeedProfile() {
+  return profilesSeed[0];
 }

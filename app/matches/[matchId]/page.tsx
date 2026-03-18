@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { MatchCard } from "@/components/match-card";
+import { BroadcastHero } from "@/components/broadcast-hero";
+import { FixtureStrip } from "@/components/fixture-strip";
+import { MotionIn } from "@/components/motion-in";
+import { StageBadge } from "@/components/stage-badge";
 import { formatDateTime, getMatchPageData } from "@/lib/data";
 
 type MatchPageProps = {
@@ -20,67 +23,62 @@ export default async function MatchPage({ params }: MatchPageProps) {
 
   return (
     <div className="stack-xl">
-      <section className="hero">
-        <div className="hero-copy">
-          <p className="eyebrow">
-            {data.sport.name} · {data.match.round}
-          </p>
-          <h1>{data.match.teamA?.name ?? "TBD"} vs {data.match.teamB?.name ?? "TBD"}</h1>
-          <p className="hero-text">
-            {formatDateTime(data.match.day, data.match.startTime)} at {data.match.venue}
-          </p>
-        </div>
+      <MotionIn>
+        <BroadcastHero
+          eyebrow={`${data.sport.name} | ${data.match.round}`}
+          kicker={formatDateTime(data.match.day, data.match.startTime)}
+          title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
+          description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Awaiting scoreboard update"}`}
+          aside={
+            <div className="score-spotlight score-spotlight-tight">
+              <p className="eyebrow">Result Status</p>
+              <StageBadge status={data.match.status} label={data.match.status} />
+              <h2>{data.match.result?.winner?.name ?? "No winner yet"}</h2>
+              <strong>{data.match.result?.scoreSummary ?? "Score line pending"}</strong>
+              <p>{data.match.result?.note ?? "Control room notes will land here once organizers update the result."}</p>
+            </div>
+          }
+        />
+      </MotionIn>
 
-        <div className="hero-panel">
-          <p className="eyebrow">Result status</p>
-          <div className="hero-kicker">{data.match.status}</div>
-          {data.match.result?.scoreSummary ? (
-            <p>{data.match.result.scoreSummary}</p>
-          ) : (
-            <p>Score entry will appear here once the result is saved.</p>
-          )}
-          {data.match.result?.winner ? <p className="muted">Winner: {data.match.result.winner.name}</p> : null}
-        </div>
-      </section>
-
-      <section className="detail-grid">
+      <MotionIn className="detail-grid" delay={0.08}>
         <article className="detail-card">
-          <p className="eyebrow">Match note</p>
-          <h2>Summary</h2>
-          <p>{data.match.result?.note ?? "No note has been added yet for this fixture."}</p>
+          <p className="eyebrow">Venue</p>
+          <h2>{data.match.venue}</h2>
+          <p>{formatDateTime(data.match.day, data.match.startTime)}</p>
         </article>
         <article className="detail-card">
           <p className="eyebrow">Progression</p>
-          <h2>Next slot</h2>
+          <h2>{data.match.nextMatchId ?? "Standalone fixture"}</h2>
           <p>
             {data.match.nextMatchId
-              ? `Winner advances to ${data.match.nextMatchId} in slot ${data.match.nextSlot}.`
-              : "This fixture does not advance into another bracket slot."}
+              ? `Winner advances into ${data.match.nextSlot} of ${data.match.nextMatchId}.`
+              : "No next-slot link is configured for this board."}
           </p>
         </article>
         <article className="detail-card">
-          <p className="eyebrow">Admin handoff</p>
-          <h2>Result entry</h2>
-          <p>Organizers can update this fixture from the admin matches page.</p>
+          <p className="eyebrow">Organizer Access</p>
+          <h2>Backstage update</h2>
+          <p>Officials can save scores, notes, and winner progression from the admin control room.</p>
           <Link href="/admin/matches" className="inline-link">
-            Go to admin matches
+            Open control room
           </Link>
         </article>
-      </section>
+      </MotionIn>
 
-      <section className="stack-lg">
+      <MotionIn className="section-shell" delay={0.12}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Same sport</p>
-            <h2>Related fixtures</h2>
+            <p className="eyebrow">Same Sport</p>
+            <h2>More from this bracket</h2>
           </div>
         </div>
-        <div className="card-grid">
+        <div className="fixture-stack">
           {data.relatedMatches.map((relatedMatch) => (
-            <MatchCard key={relatedMatch.id} match={relatedMatch} />
+            <FixtureStrip key={relatedMatch.id} match={relatedMatch} />
           ))}
         </div>
-      </section>
+      </MotionIn>
     </div>
   );
 }

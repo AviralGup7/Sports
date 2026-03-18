@@ -1,7 +1,9 @@
-﻿import type { Metadata } from "next";
+import type { Metadata } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
+import { ReactNode } from "react";
 
 import { SiteHeader } from "@/components/site-header";
+import { getGlobalChromeData } from "@/lib/data";
 
 import "./globals.css";
 
@@ -22,21 +24,28 @@ const monoFont = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Tournament Portal",
-  description: "Responsive college tournament portal with public and admin areas."
+  title: "IASL Arena Portal",
+  description: "Broadcast-style college tournament portal with public spectacle and organizer control room."
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
+  const chrome = await getGlobalChromeData();
+
   return (
     <html lang="en">
       <body className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
-        <div className="bg-orb bg-orb-one" />
-        <div className="bg-orb bg-orb-two" />
-        <SiteHeader />
+        <div className="broadcast-backdrop">
+          <div className="bg-grid" />
+          <div className="bg-beam bg-beam-one" />
+          <div className="bg-beam bg-beam-two" />
+          <div className="bg-glow bg-glow-gold" />
+          <div className="bg-glow bg-glow-cyan" />
+        </div>
+        <SiteHeader chrome={chrome} />
         <main className="page-shell">{children}</main>
       </body>
     </html>
