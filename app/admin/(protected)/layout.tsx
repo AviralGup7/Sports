@@ -3,6 +3,9 @@ import { requireAdminProfile } from "@/lib/auth";
 
 import { signOutAdminAction } from "../actions";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminProtectedLayout({
   children
 }: Readonly<{
