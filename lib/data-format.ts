@@ -39,6 +39,10 @@ export function getStatusTone(status: MatchStatus) {
     return "live";
   }
 
+  if (status === "postponed" || status === "cancelled") {
+    return "alert";
+  }
+
   return "scheduled";
 }
 

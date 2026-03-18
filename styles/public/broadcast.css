@@ -893,3 +893,201 @@
   flex-wrap: wrap;
   gap: 0.75rem;
 }
+
+.stage-summary-rail,
+.standings-grid,
+.bracket-tree,
+.bracket-tree-column-stack,
+.bracket-edge-strip {
+  display: flex;
+}
+
+.stage-summary-rail {
+  gap: 0.9rem;
+  overflow-x: auto;
+  padding-bottom: 0.4rem;
+}
+
+.stage-summary-card,
+.standings-card,
+.bracket-tree-node,
+.integrity-warning,
+.integrity-item {
+  border-radius: var(--radius-lg);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.stage-summary-card {
+  min-width: 14rem;
+  padding: 1rem;
+}
+
+.stage-summary-card strong {
+  display: block;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2.1rem;
+  font-weight: 400;
+}
+
+.stage-summary-card span {
+  color: var(--muted);
+}
+
+.sport-center-rail {
+  top: 6.9rem;
+}
+
+.standings-grid {
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.standings-card {
+  flex: 1 1 22rem;
+  padding: 1rem;
+}
+
+.standings-head h3 {
+  margin: 0;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2rem;
+  font-weight: 400;
+}
+
+.standings-table-shell {
+  overflow-x: auto;
+}
+
+.standings-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.standings-table th,
+.standings-table td {
+  padding: 0.75rem 0.6rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+}
+
+.standings-table th {
+  color: var(--muted);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.standings-qualified {
+  background: rgba(34, 197, 94, 0.08);
+}
+
+.bracket-tree-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.bracket-tree {
+  gap: 1rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.bracket-tree-column {
+  min-width: 18rem;
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.bracket-tree-column-head strong {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.bracket-tree-column-stack {
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-top: 1rem;
+}
+
+.bracket-tree-node {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.95rem;
+  text-decoration: none;
+}
+
+.bracket-tree-node-highlight {
+  box-shadow: 0 0 0 1px rgba(245, 158, 11, 0.2), 0 16px 40px rgba(245, 158, 11, 0.08);
+}
+
+.bracket-node-topline,
+.bracket-node-team,
+.bracket-node-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+}
+
+.bracket-node-team strong,
+.bracket-node-team span {
+  font-size: 0.98rem;
+}
+
+.bracket-node-meta {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.bracket-edge-strip {
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.progress-path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.progress-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.85rem;
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.progress-link span {
+  color: var(--muted);
+}
+
+.state-live {
+  border-color: rgba(34, 211, 238, 0.28);
+}
+
+.state-completed {
+  border-color: rgba(34, 197, 94, 0.24);
+}
+
+.state-postponed,
+.state-bye {
+  border-color: rgba(245, 158, 11, 0.24);
+}
+
+@media (max-width: 720px) {
+  .stage-summary-card,
+  .bracket-tree-column {
+    min-width: 15rem;
+  }
+
+  .standings-card {
+    flex-basis: 100%;
+  }
+}

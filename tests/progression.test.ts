@@ -1,23 +1,42 @@
 import { describe, expect, it } from "vitest";
 
-import { matchesSeed, teamsSeed } from "../lib/mock-data";
-import { applyWinnerAdvancement } from "../lib/progression";
+import { competitionGroupsSeed, competitionStagesSeed, matchesSeed, resultsSeed, teamsSeed } from "../lib/mock-data";
+import { applyWinnerAdvancement, buildProgressionEdges, buildStandingsRows } from "../lib/progression";
 
-describe("applyWinnerAdvancement", () => {
-  it("places the winner into the configured team_a slot", () => {
+describe("progression engine", () => {
+  it("places winner and loser into the configured follow-up slots", () => {
     const winner = teamsSeed.find((team) => team.id === "andhra-samithi") ?? null;
-    const updatedMatches = applyWinnerAdvancement(matchesSeed, "cricket-qf-1", winner);
-    const nextMatch = updatedMatches.find((match) => match.id === "cricket-sf-1");
+    const loser = teamsSeed.find((team) => team.id === "madhyansh") ?? null;
+    const updatedMatches = applyWinnerAdvancement(matchesSeed, "cricket-sf-1", winner, loser);
+    const finalMatch = updatedMatches.find((match) => match.id === "cricket-final");
+    const thirdPlace = updatedMatches.find((match) => match.id === "cricket-third");
 
-    expect(nextMatch?.teamAId).toBe("andhra-samithi");
+    expect(finalMatch?.teamAId).toBe("andhra-samithi");
+    expect(thirdPlace?.teamAId).toBe("madhyansh");
   });
 
-  it("leaves matches unchanged when no progression target exists", () => {
-    const winner = teamsSeed.find((team) => team.id === "pilani-tamil-mandram") ?? null;
-    const updatedMatches = applyWinnerAdvancement(matchesSeed, "athletics-final", winner);
-    const finalMatch = updatedMatches.find((match) => match.id === "athletics-final");
+  it("builds ordered group standings with qualification markers", () => {
+    const cricketTeams = teamsSeed.filter((team) => team.sportIds.includes("cricket"));
+    const cricketMatches = matchesSeed
+      .filter((match) => match.sportId === "cricket")
+      .map((match) => ({
+        ...match,
+        result: resultsSeed.find((result) => result.matchId === match.id) ?? null
+      }));
+    const cards = buildStandingsRows(cricketTeams, cricketMatches, competitionGroupsSeed, "cricket", competitionStagesSeed);
+    const groupA = cards.find((card) => card.group.id === "cricket-group-a");
 
-    expect(finalMatch?.teamAId).toBe("pilani-tamil-mandram");
-    expect(finalMatch?.teamBId).toBe("utkal-samaj");
+    expect(groupA?.rows[0].teamId).toBe("andhra-samithi");
+    expect(groupA?.rows[0].qualified).toBe(true);
+    expect(groupA?.rows[1].teamId).toBe("gurjari");
+    expect(groupA?.rows[1].qualified).toBe(true);
+  });
+
+  it("builds winner and loser progression edges for bracket trees", () => {
+    const cricketMatches = matchesSeed.filter((match) => match.sportId === "cricket");
+    const edges = buildProgressionEdges(cricketMatches);
+
+    expect(edges.some((edge) => edge.sourceMatchId === "cricket-sf-1" && edge.kind === "winner" && edge.targetMatchId === "cricket-final")).toBe(true);
+    expect(edges.some((edge) => edge.sourceMatchId === "cricket-sf-1" && edge.kind === "loser" && edge.targetMatchId === "cricket-third")).toBe(true);
   });
 });

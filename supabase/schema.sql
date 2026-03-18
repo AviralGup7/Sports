@@ -1,4 +1,4 @@
-create extension if not exists "pgcrypto";
+﻿create extension if not exists "pgcrypto";
 
 create table if not exists public.profiles (
   id uuid primary key references auth.users(id) on delete cascade,
@@ -37,6 +37,24 @@ create table if not exists public.tournaments (
   venue text not null
 );
 
+create table if not exists public.competition_stages (
+  id text primary key,
+  sport_id text not null references public.sports(id) on delete cascade,
+  type text not null check (type in ('group', 'knockout', 'placement')),
+  label text not null,
+  order_index integer not null default 1,
+  advances_count integer not null default 0,
+  is_active boolean not null default true
+);
+
+create table if not exists public.competition_groups (
+  id text primary key,
+  stage_id text not null references public.competition_stages(id) on delete cascade,
+  sport_id text not null references public.sports(id) on delete cascade,
+  code text not null,
+  order_index integer not null default 1
+);
+
 create table if not exists public.matches (
   id text primary key,
   tournament_id text not null references public.tournaments(id) on delete cascade,
@@ -47,10 +65,38 @@ create table if not exists public.matches (
   venue text not null,
   team_a_id text references public.teams(id) on delete set null,
   team_b_id text references public.teams(id) on delete set null,
-  status text not null check (status in ('scheduled', 'live', 'completed')),
+  status text not null,
   next_match_id text references public.matches(id) on delete set null,
-  next_slot text check (next_slot in ('team_a', 'team_b'))
+  next_slot text,
+  stage_id text references public.competition_stages(id) on delete set null,
+  group_id text references public.competition_groups(id) on delete set null,
+  round_index integer not null default 1,
+  match_number integer not null default 1,
+  winner_to_match_id text references public.matches(id) on delete set null,
+  winner_to_slot text,
+  loser_to_match_id text references public.matches(id) on delete set null,
+  loser_to_slot text,
+  is_bye boolean not null default false
 );
+
+alter table public.matches drop constraint if exists matches_status_check;
+alter table public.matches add constraint matches_status_check check (status in ('scheduled', 'live', 'completed', 'postponed', 'cancelled'));
+alter table public.matches drop constraint if exists matches_next_slot_check;
+alter table public.matches add constraint matches_next_slot_check check (next_slot in ('team_a', 'team_b') or next_slot is null);
+alter table public.matches drop constraint if exists matches_winner_to_slot_check;
+alter table public.matches add constraint matches_winner_to_slot_check check (winner_to_slot in ('team_a', 'team_b') or winner_to_slot is null);
+alter table public.matches drop constraint if exists matches_loser_to_slot_check;
+alter table public.matches add constraint matches_loser_to_slot_check check (loser_to_slot in ('team_a', 'team_b') or loser_to_slot is null);
+
+alter table public.matches add column if not exists stage_id text references public.competition_stages(id) on delete set null;
+alter table public.matches add column if not exists group_id text references public.competition_groups(id) on delete set null;
+alter table public.matches add column if not exists round_index integer not null default 1;
+alter table public.matches add column if not exists match_number integer not null default 1;
+alter table public.matches add column if not exists winner_to_match_id text references public.matches(id) on delete set null;
+alter table public.matches add column if not exists winner_to_slot text;
+alter table public.matches add column if not exists loser_to_match_id text references public.matches(id) on delete set null;
+alter table public.matches add column if not exists loser_to_slot text;
+alter table public.matches add column if not exists is_bye boolean not null default false;
 
 create table if not exists public.match_results (
   match_id text primary key references public.matches(id) on delete cascade,
@@ -58,8 +104,17 @@ create table if not exists public.match_results (
   score_summary text,
   note text,
   updated_by uuid references public.profiles(id) on delete set null,
-  updated_at timestamptz not null default timezone('utc', now())
+  updated_at timestamptz not null default timezone('utc', now()),
+  team_a_score integer,
+  team_b_score integer,
+  decision_type text not null default 'normal'
 );
+
+alter table public.match_results add column if not exists team_a_score integer;
+alter table public.match_results add column if not exists team_b_score integer;
+alter table public.match_results add column if not exists decision_type text not null default 'normal';
+alter table public.match_results drop constraint if exists match_results_decision_type_check;
+alter table public.match_results add constraint match_results_decision_type_check check (decision_type in ('normal', 'walkover', 'penalties', 'retired'));
 
 create table if not exists public.announcements (
   id text primary key,
@@ -116,6 +171,8 @@ alter table public.sports enable row level security;
 alter table public.teams enable row level security;
 alter table public.team_sports enable row level security;
 alter table public.tournaments enable row level security;
+alter table public.competition_stages enable row level security;
+alter table public.competition_groups enable row level security;
 alter table public.matches enable row level security;
 alter table public.match_results enable row level security;
 alter table public.announcements enable row level security;
@@ -131,6 +188,10 @@ drop policy if exists "team_sports public read" on public.team_sports;
 drop policy if exists "team_sports admin write" on public.team_sports;
 drop policy if exists "tournaments public read" on public.tournaments;
 drop policy if exists "tournaments super admin write" on public.tournaments;
+drop policy if exists "stages public read" on public.competition_stages;
+drop policy if exists "stages admin write" on public.competition_stages;
+drop policy if exists "groups public read" on public.competition_groups;
+drop policy if exists "groups admin write" on public.competition_groups;
 drop policy if exists "matches public read" on public.matches;
 drop policy if exists "matches admin write" on public.matches;
 drop policy if exists "match_results public read" on public.match_results;
@@ -174,6 +235,20 @@ for select using (true);
 create policy "tournaments super admin write" on public.tournaments
 for all using (public.current_app_role() = 'super_admin')
 with check (public.current_app_role() = 'super_admin');
+
+create policy "stages public read" on public.competition_stages
+for select using (true);
+
+create policy "stages admin write" on public.competition_stages
+for all using (public.can_manage_sport(sport_id))
+with check (public.can_manage_sport(sport_id));
+
+create policy "groups public read" on public.competition_groups
+for select using (true);
+
+create policy "groups admin write" on public.competition_groups
+for all using (public.can_manage_sport(sport_id))
+with check (public.can_manage_sport(sport_id));
 
 create policy "matches public read" on public.matches
 for select using (true);

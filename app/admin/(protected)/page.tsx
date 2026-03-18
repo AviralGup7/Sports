@@ -1,4 +1,4 @@
-import Link from "next/link";
+﻿import Link from "next/link";
 
 import { ActionNotice } from "@/components/action-notice";
 import { ControlPanel } from "@/components/control-panel";
@@ -6,6 +6,7 @@ import { EmptyState } from "@/components/empty-state";
 import { FixtureStrip } from "@/components/fixture-strip";
 import { MotionIn } from "@/components/motion-in";
 import { NewsBulletin } from "@/components/news-bulletin";
+import { StageSummaryRail } from "@/components/stage-summary-rail";
 import { requireAdminProfile } from "@/lib/auth";
 import { getAdminDashboardData } from "@/lib/data";
 
@@ -29,7 +30,7 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
           <div>
             <p className="eyebrow">Operations Snapshot</p>
             <h1>Control room focus</h1>
-            <p className="hero-text">Urgent match work first, setup work second. Keep scores moving, brackets correct, and the public board clean.</p>
+            <p className="hero-text">Urgent match work first, setup work second. Keep scores moving, winner trees clean, and the public board current.</p>
           </div>
           <div className="operations-hero-side">
             <span className="operations-chip">Pending {data.pendingResults.length}</span>
@@ -50,14 +51,24 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
         ))}
       </MotionIn>
 
+      <MotionIn delay={0.1}>
+        <ControlPanel
+          eyebrow="Stage Watch"
+          title="Current stage progress"
+          description="See which lanes are live, which trees are nearly resolved, and where group tables still need results."
+        >
+          <StageSummaryRail summaries={data.stageSummaries} />
+        </ControlPanel>
+      </MotionIn>
+
       <MotionIn className="admin-two-speed" delay={0.12}>
         <ControlPanel
           eyebrow="Urgent Work"
           title="Today's fixture deck"
           description="Jump into the boards most likely to need a score save or status change."
           actions={
-            <Link href="/admin/matches" className="inline-link">
-              Open match control
+            <Link href="/admin/matches?mode=live" className="inline-link">
+              Open live desk
             </Link>
           }
         >
@@ -68,10 +79,10 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
               <EmptyState
                 compact
                 eyebrow="Urgent Work"
-                title="No fixtures on today’s deck"
+                title="No fixtures on today's deck"
                 description="Seed matches or adjust day filters in the match control area to populate this queue."
                 action={
-                  <Link href="/admin/matches" className="button button-ghost">
+                  <Link href="/admin/matches?mode=live" className="button button-ghost">
                     Open match control
                   </Link>
                 }
@@ -92,17 +103,17 @@ export default async function AdminDashboardPage({ searchParams }: AdminDashboar
                 <strong>Teams</strong>
                 <span>Create, edit, archive, and reseed squads.</span>
               </Link>
-              <Link href="/admin/matches" className="quick-tile">
-                <strong>Matches</strong>
-                <span>Fixture setup, live status, and winner progression.</span>
+              <Link href="/admin/matches?mode=builder" className="quick-tile">
+                <strong>Builder</strong>
+                <span>Structure generation, standings, and stage setup.</span>
+              </Link>
+              <Link href="/admin/matches?mode=tree" className="quick-tile">
+                <strong>Winner Tree</strong>
+                <span>Bracket routing, integrity review, and progression watch.</span>
               </Link>
               <Link href="/admin/announcements" className="quick-tile">
                 <strong>Notices</strong>
                 <span>Publish and pin public or organizer updates.</span>
-              </Link>
-              <Link href="/admin/settings" className="quick-tile">
-                <strong>Settings</strong>
-                <span>Exports, environment checks, and event backup prep.</span>
               </Link>
             </div>
           </ControlPanel>

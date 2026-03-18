@@ -25,7 +25,8 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
           <div className="fixture-copy">
             <p className="eyebrow">
               {showSport ? `${match.sportId} | ` : ""}
-              {match.round}
+              {match.stage?.label ?? match.round}
+              {match.group ? ` | ${match.group.code}` : ""}
             </p>
             <h3>
               {match.teamA?.name ?? "TBD"}
@@ -38,8 +39,9 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
 
         <div className="fixture-meta-row">
           <span>{match.venue}</span>
+          <span>{match.round}</span>
           {match.result?.scoreSummary ? <span>{match.result.scoreSummary}</span> : <span>Awaiting score line</span>}
-          {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : <span>No winner locked</span>}
+          {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : match.isBye ? <span>Bye slot</span> : <span>No winner locked</span>}
         </div>
 
         {match.result?.note ? <p className="fixture-note">{match.result.note}</p> : null}

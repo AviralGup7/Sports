@@ -7,7 +7,15 @@ type StageBadgeProps = {
 };
 
 export function StageBadge({ status, label, tone }: StageBadgeProps) {
-  const badgeTone = tone ?? (status === "live" ? "live" : status === "completed" ? "success" : "neutral");
+  const badgeTone =
+    tone ??
+    (status === "live"
+      ? "live"
+      : status === "completed"
+        ? "success"
+        : status === "postponed" || status === "cancelled"
+          ? "alert"
+          : "neutral");
   const text = label ?? status ?? "neutral";
 
   return <span className={`stage-badge tone-${badgeTone}`}>{text}</span>;

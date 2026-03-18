@@ -8,12 +8,12 @@ import { MetricTile } from "@/components/metric-tile";
 import { MotionIn } from "@/components/motion-in";
 import { NewsBulletin } from "@/components/news-bulletin";
 import { PodiumCard } from "@/components/podium-card";
+import { StageSummaryRail } from "@/components/stage-summary-rail";
 import { getHomePageData } from "@/lib/data";
 
 export default async function HomePage() {
-  const { tournament, sports, stats, highlightMatch, featuredMatches, announcements, championSpotlights } =
+  const { tournament, sports, stats, highlightMatch, featuredMatches, announcements, championSpotlights, stageSummaries } =
     await getHomePageData();
-  const liveMatches = featuredMatches.filter((match) => match.status === "live").length;
 
   return (
     <div className="stack-hero">
@@ -22,7 +22,7 @@ export default async function HomePage() {
           eyebrow="Arena Broadcast"
           kicker={`${tournament.startDate} to ${tournament.endDate} | ${tournament.venue}`}
           title={tournament.name}
-          description="One high-voltage board for viewers, squads, and organizers. Track live fixtures, title races, and the latest calls from the control room."
+          description="A stage-aware tournament board for viewers, squads, and organizers. Follow live match centers, winner trees, standings swings, and control-room calls."
           actions={
             <>
               <Link href="/schedule" className="button">
@@ -39,7 +39,7 @@ export default async function HomePage() {
                 <p className="eyebrow">{highlightMatch.label}</p>
                 <div className="score-sport-line">
                   <span>{highlightMatch.sport.name}</span>
-                  <span>{highlightMatch.match.round}</span>
+                  <span>{highlightMatch.match.stage?.label ?? highlightMatch.match.round}</span>
                 </div>
                 <h2>
                   {highlightMatch.match.teamA?.name ?? "TBD"}
@@ -49,7 +49,7 @@ export default async function HomePage() {
                 <p>{highlightMatch.headline}</p>
                 <strong>{highlightMatch.summary}</strong>
                 <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
-                  Open match board
+                  Open match center
                 </Link>
               </div>
             ) : (
@@ -68,16 +68,37 @@ export default async function HomePage() {
         <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" />
         <MetricTile
           label="Live Now"
-          value={liveMatches}
-          detail={liveMatches > 0 ? "Fixtures currently running" : "Waiting for the next whistle"}
+          value={stats.liveMatches}
+          detail={stats.liveMatches > 0 ? "Boards currently active" : "Waiting for the next whistle"}
           accent="#22d3ee"
-          pulse={liveMatches > 0}
+          pulse={stats.liveMatches > 0}
         />
         <MetricTile
           label="Results Locked"
           value={stats.completedMatches}
           detail={`${stats.matches} total fixtures in the tournament map`}
           accent="#fb7185"
+        />
+      </MotionIn>
+
+      <MotionIn className="section-shell" delay={0.1}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Stage Progress</p>
+            <h2>Today in tournament</h2>
+          </div>
+        </div>
+        <StageSummaryRail
+          summaries={stageSummaries
+            .filter((item) => item.activeStage)
+            .map((item) => ({
+              stage: item.activeStage!,
+              totalMatches: item.totalMatches,
+              completedMatches: item.completedMatches,
+              liveMatches: item.liveMatches,
+              pendingMatches: item.totalMatches - item.completedMatches - item.liveMatches,
+              groups: []
+            }))}
         />
       </MotionIn>
 
@@ -119,16 +140,19 @@ export default async function HomePage() {
 
           <div className="poster-grid">
             {sports.length > 0 ? (
-              sports.map((sport) => (
-                <article key={sport.id} className="sport-poster" style={{ "--sport-accent": sport.color } as CSSProperties}>
-                  <p className="eyebrow">{sport.format}</p>
-                  <h3>{sport.name}</h3>
-                  <p>{sport.rulesSummary}</p>
-                  <Link href={`/sports/${sport.id}`} className="inline-link">
-                    Enter {sport.name.toLowerCase()}
-                  </Link>
-                </article>
-              ))
+              sports.map((sport) => {
+                const stage = stageSummaries.find((item) => item.sport.id === sport.id)?.activeStage;
+                return (
+                  <article key={sport.id} className="sport-poster" style={{ "--sport-accent": sport.color } as CSSProperties}>
+                    <p className="eyebrow">{stage?.label ?? sport.format}</p>
+                    <h3>{sport.name}</h3>
+                    <p>{sport.rulesSummary}</p>
+                    <Link href={`/sports/${sport.id}`} className="inline-link">
+                      Enter {sport.name.toLowerCase()}
+                    </Link>
+                  </article>
+                );
+              })
             ) : (
               <EmptyState
                 compact
@@ -143,7 +167,7 @@ export default async function HomePage() {
         <section className="section-shell">
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Featured Fixtures</p>
+              <p className="eyebrow">Today In Tournament</p>
               <h2>Broadcast queue</h2>
             </div>
             <Link href="/schedule" className="inline-link">
@@ -161,7 +185,7 @@ export default async function HomePage() {
                 title="No fixtures in the queue"
                 description="Add matches from the control room and this broadcast rail will populate automatically."
                 action={
-                  <Link href="/admin/matches" className="button button-ghost">
+                  <Link href="/admin/matches?mode=live" className="button button-ghost">
                     Open match control
                   </Link>
                 }
