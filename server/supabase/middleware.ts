@@ -30,6 +30,12 @@ export async function updateSession(request: NextRequest) {
   const {
     data: { user }
   } = await supabase.auth.getUser();
+  let hasOrganizerProfile = false;
+
+  if (user) {
+    const { data: profile } = await supabase.from("profiles").select("id").eq("id", user.id).maybeSingle<{ id: string }>();
+    hasOrganizerProfile = Boolean(profile);
+  }
 
   const pathname = request.nextUrl.pathname;
   const isAdminRoute = pathname.startsWith("/admin");
@@ -42,10 +48,25 @@ export async function updateSession(request: NextRequest) {
     return NextResponse.redirect(url);
   }
 
-  if (isAdminLoginRoute && user) {
+  if (isAdminRoute && !isAdminLoginRoute && user && !hasOrganizerProfile) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/admin/login";
+    url.searchParams.set("status", "error");
+    url.searchParams.set("message", "This signed-in account is not linked to organizer access.");
+    return NextResponse.redirect(url);
+  }
+
+  if (isAdminLoginRoute && user && hasOrganizerProfile) {
     const url = request.nextUrl.clone();
     url.pathname = "/admin";
     url.searchParams.delete("message");
+    return NextResponse.redirect(url);
+  }
+
+  if (isAdminLoginRoute && user && !hasOrganizerProfile && !request.nextUrl.searchParams.has("message")) {
+    const url = request.nextUrl.clone();
+    url.searchParams.set("status", "error");
+    url.searchParams.set("message", "This signed-in account is not linked to organizer access.");
     return NextResponse.redirect(url);
   }
 

@@ -2,6 +2,7 @@ import { CSSProperties } from "react";
 import Link from "next/link";
 
 import type { HomePageData } from "@/server/data/public/types";
+import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { FixtureStrip, MetricTile, NewsBulletin, PodiumCard, StageSummaryRail } from "@/shared/ui";
@@ -19,9 +20,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
       <MotionIn>
         <BroadcastHero
           eyebrow="Cyber Arena Broadcast"
-          kicker={`${tournament.startDate} to ${tournament.endDate} | ${tournament.venue}`}
+          kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
           title={tournament.name}
-          description="A premium tournament experience built like a live broadcast package. Track spotlight fixtures, title pressure, animated winner trees, and headline calls across the arena."
+          description="Track the live spotlight, title race, featured fixtures, and organizer bulletins from one cleaner broadcast board."
           tone={highlightMatch?.urgency === "live" ? "cyan" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
           intensity="cinematic"
           actions={
@@ -81,7 +82,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
 
       <MotionIn className="metric-grid" delay={0.08}>
         <MetricTile label="Sports" value={stats.sports} detail="Color-coded tournament lanes" accent="#f59e0b" href="/schedule" />
-        <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" href="/admin/teams" />
+        <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" href="/schedule" />
         <MetricTile
           label="Live Now"
           value={stats.liveMatches}

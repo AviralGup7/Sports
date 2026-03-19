@@ -9,9 +9,10 @@ export function ActionNotice({ message, tone = "info" }: ActionNoticeProps) {
   }
 
   const statusRole = tone === "error" ? "alert" : "status";
+  const liveMode = tone === "error" ? "assertive" : "polite";
 
   return (
-    <div className={`action-notice action-${tone}`} role={statusRole} aria-live="polite">
+    <div className={`action-notice action-${tone}`} role={statusRole} aria-live={liveMode}>
       {message}
     </div>
   );

@@ -3,4 +3,5 @@
 @import "../styles/shared/index.css";
 @import "../styles/features/public/index.css";
 @import "../styles/features/admin/index.css";
+@import "../styles/responsive.css";
 

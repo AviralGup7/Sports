@@ -1,7 +1,7 @@
 import type { AdminTeamsData } from "@/server/data/admin/types";
 import { ActionNotice, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { FormCluster } from "@/shared/ui";
+import { FormCluster, SubmitButton } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 import { archiveTeamAction, upsertTeamAction } from "@/app/admin/actions";
 
@@ -65,9 +65,9 @@ export function TeamsScreen({ data, message, tone }: TeamsScreenProps) {
             </FormCluster>
 
             <div className="form-actions">
-              <button type="submit" className="button">
+              <SubmitButton className="button" pendingLabel="Saving team...">
                 Save team
-              </button>
+              </SubmitButton>
             </div>
           </form>
         </ControlPanel>
@@ -101,16 +101,16 @@ export function TeamsScreen({ data, message, tone }: TeamsScreenProps) {
                     ))}
                   </div>
                   <div className="form-actions">
-                    <button type="submit" className="button">
+                    <SubmitButton className="button" pendingLabel="Updating team...">
                       Update team
-                    </button>
+                    </SubmitButton>
                   </div>
                 </form>
                 <form action={archiveTeamAction}>
                   <input type="hidden" name="id" value={team.id} />
-                  <button type="submit" className="button button-danger">
+                  <SubmitButton className="button button-danger" pendingLabel="Archiving...">
                     Archive team
-                  </button>
+                  </SubmitButton>
                 </form>
               </ControlPanel>
             ))

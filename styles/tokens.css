@@ -33,7 +33,11 @@
   --mobile-shell-width: min(100% - 0.9rem, 42rem);
   --mobile-header-gap: 0.7rem;
   --mobile-bottom-clearance: calc(6.6rem + env(safe-area-inset-bottom, 0px));
+  --page-bottom-breathing-room: 6rem;
   --touch-target-min: 3rem;
+  --sticky-top-offset: 1rem;
+  --ticker-stack-offset: 7.5rem;
+  --admin-sticky-offset: 7.75rem;
   --z-backdrop: -1;
   --z-header: 50;
   --z-overlay: 60;

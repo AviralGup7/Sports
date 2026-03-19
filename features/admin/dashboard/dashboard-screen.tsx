@@ -63,7 +63,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.1}>
-        <ControlPanel eyebrow="Today" title="Today’s boards" description="Fixtures that matter most for the current operations cycle.">
+        <ControlPanel eyebrow="Today" title="Today's boards" description="Fixtures that matter most for the current operations cycle.">
           <div className="fixture-stack">
             {data.todaysMatches.length > 0 ? (
               data.todaysMatches.map((match) => <FixtureStrip key={match.id} match={match} admin />)

@@ -9,6 +9,15 @@ export function formatDateLabel(dateString: string) {
   }).format(new Date(dateString));
 }
 
+export function formatDateRangeLabel(startDate: string, endDate: string) {
+  const format = new Intl.DateTimeFormat("en-IN", {
+    month: "short",
+    day: "numeric"
+  });
+
+  return `${format.format(new Date(startDate))} - ${format.format(new Date(endDate))}`;
+}
+
 export function formatTimeLabel(timeString: string) {
   const [hours, minutes] = timeString.split(":");
   const date = new Date("2026-01-01T00:00:00");
@@ -29,6 +38,17 @@ export function formatDateTime(dateString: string, timeString: string) {
     hour: "numeric",
     minute: "2-digit"
   }).format(date);
+}
+
+export function formatStatusLabel(status: string) {
+  if (!status) {
+    return "";
+  }
+
+  return status
+    .split("-")
+    .map((segment) => segment.charAt(0).toUpperCase() + segment.slice(1))
+    .join(" ");
 }
 
 export function getStatusTone(status: MatchStatus) {

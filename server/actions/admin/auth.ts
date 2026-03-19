@@ -19,6 +19,27 @@ export async function performAdminLogin(formData: FormData) {
     redirectWithMessage("/admin/login", "error", error.message);
   }
 
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirectWithMessage("/admin/login", "error", "The session could not be established. Please try again.");
+  }
+
+  const userId = user?.id;
+
+  if (!userId) {
+    redirectWithMessage("/admin/login", "error", "The session could not be established. Please try again.");
+  }
+
+  const { data: profile } = await supabase.from("profiles").select("id").eq("id", userId).maybeSingle<{ id: string }>();
+
+  if (!profile) {
+    await supabase.auth.signOut();
+    redirectWithMessage("/admin/login", "error", "This account is authenticated but is not linked to organizer access.");
+  }
+
   revalidatePath("/admin");
   redirect("/admin");
 }

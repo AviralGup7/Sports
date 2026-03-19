@@ -17,6 +17,12 @@ type SportCenterScreenProps = {
 export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterScreenProps) {
   const liveCount = data.matches.filter((match) => match.status === "live").length;
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
+  const tabs = [
+    { id: "overview", label: "Overview" },
+    { id: "standings", label: "Standings" },
+    { id: "bracket", label: "Winner Tree" },
+    { id: "fixtures", label: "Fixtures" }
+  ];
 
   return (
     <div className="stack-xl">
@@ -50,9 +56,9 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <div className="filter-block">
           <p className="eyebrow">View</p>
           <div className="chip-row">
-            {["overview", "standings", "bracket", "fixtures"].map((tab) => (
-              <Link key={tab} href={tabHref(tab)} className={selectedTab === tab ? "chip chip-active" : "chip"}>
-                {tab}
+            {tabs.map((tab) => (
+              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "chip chip-active" : "chip"}>
+                {tab.label}
               </Link>
             ))}
           </div>

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
+import { formatDateRangeLabel } from "@/server/data/formatters";
 
 import { LiveTicker } from "./live-ticker";
 
@@ -29,10 +30,7 @@ const mobileNav = [
 export function SiteHeader({ chrome }: SiteHeaderProps) {
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
-  const rangeLabel = new Intl.DateTimeFormat("en-IN", {
-    month: "short",
-    day: "numeric"
-  }).formatRange(new Date(chrome.tournament.startDate), new Date(chrome.tournament.endDate));
+  const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
 
   return (
     <>

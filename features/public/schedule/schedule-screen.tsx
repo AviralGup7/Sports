@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { SportSlug } from "@/domain/sports/types";
 import type { SchedulePageData } from "@/server/data/public/types";
-import { formatDateLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
+import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { FixtureStrip, StageTimeline } from "@/shared/ui";
@@ -15,6 +15,7 @@ type ScheduleScreenProps = {
 
 export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
   const selectedSportRecord = getSportBySlugFromCollection(data.sports, selectedSport);
+  const hasActiveFilters = Boolean(data.selectedSport || data.selectedStage || data.selectedGroup || data.selectedStatus);
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -122,11 +123,22 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </Link>
             {["scheduled", "live", "completed", "postponed"].map((status) => (
               <Link key={status} href={buildHref({ status })} className={data.selectedStatus === status ? "chip chip-active" : "chip"}>
-                {status}
+                {formatStatusLabel(status)}
               </Link>
             ))}
           </div>
         </div>
+
+        {hasActiveFilters ? (
+          <div className="filter-block filter-block-compact">
+            <p className="eyebrow">Reset</p>
+            <div className="chip-row">
+              <Link href={buildHref({ sport: undefined, stage: undefined, group: undefined, status: undefined })} className="chip">
+                Clear filters
+              </Link>
+            </div>
+          </div>
+        ) : null}
       </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.12}>

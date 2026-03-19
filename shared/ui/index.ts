@@ -11,4 +11,5 @@ export * from "@/shared/ui/stage-badge";
 export * from "@/shared/ui/stage-summary-rail";
 export * from "@/shared/ui/stage-timeline";
 export * from "@/shared/ui/standings-table";
+export * from "@/shared/ui/submit-button";
 

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { CSSProperties } from "react";
 
@@ -16,8 +17,7 @@ type MetricTileProps = {
 
 export function MetricTile({ label, value, detail, accent, pulse = false, href }: MetricTileProps) {
   const reduceMotion = useReducedMotion();
-
-  return (
+  const tile = (
     <motion.article
       className={`metric-tile${pulse ? " metric-tile-pulse" : ""}`}
       style={accent ? ({ "--tile-accent": accent } as CSSProperties) : undefined}
@@ -34,6 +34,16 @@ export function MetricTile({ label, value, detail, accent, pulse = false, href }
       <span>{detail}</span>
       {href ? <span className="metric-link-hint" aria-hidden="true">Open lane</span> : null}
     </motion.article>
+  );
+
+  if (!href) {
+    return tile;
+  }
+
+  return (
+    <Link href={href} className="metric-link-shell">
+      {tile}
+    </Link>
   );
 }
 

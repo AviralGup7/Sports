@@ -2,7 +2,7 @@ import { upsertAnnouncementAction } from "@/app/admin/actions";
 import type { AdminAnnouncementsData } from "@/server/data/admin/types";
 import { ActionNotice, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { FormCluster, NewsBulletin } from "@/shared/ui";
+import { FormCluster, NewsBulletin, SubmitButton } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
 type AdminAnnouncementsScreenProps = {
@@ -68,9 +68,9 @@ export function AdminAnnouncementsScreen({ data, message, tone }: AdminAnnouncem
             </div>
 
             <div className="form-actions">
-              <button type="submit" className="button">
+              <SubmitButton className="button" pendingLabel="Saving announcement...">
                 Save announcement
-              </button>
+              </SubmitButton>
             </div>
           </form>
         </ControlPanel>
@@ -110,9 +110,9 @@ export function AdminAnnouncementsScreen({ data, message, tone }: AdminAnnouncem
                     </label>
                   </div>
                   <div className="form-actions">
-                    <button type="submit" className="button button-ghost">
+                    <SubmitButton className="button button-ghost" pendingLabel="Updating announcement...">
                       Update announcement
-                    </button>
+                    </SubmitButton>
                   </div>
                 </form>
               </ControlPanel>

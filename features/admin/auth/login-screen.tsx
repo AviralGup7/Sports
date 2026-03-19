@@ -1,5 +1,6 @@
 import { loginAdminAction } from "@/app/admin/actions";
 import { ActionNotice } from "@/shared/feedback";
+import { SubmitButton } from "@/shared/ui";
 
 type LoginScreenProps = {
   envReady: boolean;
@@ -33,9 +34,10 @@ export function LoginScreen({ envReady, message, tone }: LoginScreenProps) {
             <span>Password</span>
             <input name="password" type="password" required placeholder="********" autoComplete="current-password" />
           </label>
-          <button type="submit" className="button" disabled={!envReady}>
+          <p className="field-hint">Use an organizer account that already has a linked profile in the control room.</p>
+          <SubmitButton className="button" disabled={!envReady} pendingLabel="Checking credentials...">
             Sign in to control room
-          </button>
+          </SubmitButton>
         </form>
       </section>
     </div>

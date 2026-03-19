@@ -152,7 +152,7 @@
 
   .page-shell {
     padding-top: 1.25rem;
-    padding-bottom: calc(var(--mobile-bottom-clearance) + 1.2rem);
+    padding-bottom: calc(var(--mobile-bottom-clearance) + 1rem);
   }
 
   .broadcast-hero,
@@ -370,7 +370,7 @@
   }
 
   .page-shell {
-    padding-bottom: calc(var(--mobile-bottom-clearance) + 1.4rem);
+    padding-bottom: calc(var(--mobile-bottom-clearance) + 1rem);
   }
 
   .admin-nav {

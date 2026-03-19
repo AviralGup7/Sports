@@ -1880,3 +1880,12 @@ html[data-ui-profile="android-mobile"] .bracket-tree-node {
     padding: 0.65rem 0.75rem;
   }
 }
+
+html[data-mobile="true"] .filter-rail,
+html[data-mobile="true"] .timeline-marker,
+html[data-mobile="true"] .sport-center-rail,
+html[data-mobile="true"] .bracket-focus-panel,
+html[data-mobile="true"] .site-header {
+  position: static !important;
+  top: auto !important;
+}

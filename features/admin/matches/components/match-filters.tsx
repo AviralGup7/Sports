@@ -2,6 +2,7 @@ import Link from "next/link";
 
 import type { CompetitionStage } from "@/domain/matches/types";
 import type { Sport } from "@/domain/sports/types";
+import { formatDateLabel, formatStatusLabel } from "@/server/data/formatters";
 
 type AdminMatchFiltersProps = {
   sports: Sport[];
@@ -24,6 +25,8 @@ export function AdminMatchFilters({
   selectedDay,
   mode
 }: AdminMatchFiltersProps) {
+  const hasActiveFilters = Boolean(selectedSport || selectedStage || selectedStatus || selectedDay);
+
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
     const merged = {
@@ -92,7 +95,7 @@ export function AdminMatchFilters({
               href={buildHref({ statusFilter: status })}
               className={selectedStatus === status ? "chip chip-active" : "chip"}
             >
-              {status}
+              {formatStatusLabel(status)}
             </Link>
           ))}
         </div>
@@ -109,11 +112,22 @@ export function AdminMatchFilters({
               href={buildHref({ day })}
               className={selectedDay === day ? "chip chip-active" : "chip"}
             >
-              {day}
+              {formatDateLabel(day)}
             </Link>
           ))}
         </div>
       </div>
+
+      {hasActiveFilters ? (
+        <div className="filter-block filter-block-compact">
+          <p className="eyebrow">Reset</p>
+          <div className="chip-row">
+            <Link href={buildHref({ sport: undefined, stage: undefined, statusFilter: undefined, day: undefined })} className="chip">
+              Clear filters
+            </Link>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }
