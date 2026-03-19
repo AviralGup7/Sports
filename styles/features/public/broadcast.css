@@ -807,9 +807,9 @@
 }
 
 .filter-rail {
-  position: sticky;
-  top: 7.75rem;
-  z-index: 20;
+  position: static;
+  top: auto;
+  z-index: auto;
   display: grid;
   gap: 1rem;
   padding: 1.1rem 1.2rem;
@@ -833,8 +833,8 @@
 }
 
 .timeline-marker {
-  position: sticky;
-  top: 13.3rem;
+  position: static;
+  top: auto;
   padding: 1.05rem;
   border-radius: var(--radius-lg);
   border: 1px solid rgba(255, 255, 255, 0.08);
