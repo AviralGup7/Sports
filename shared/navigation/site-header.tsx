@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 
+import { BrandMark } from "./brand-mark";
 import { LiveTicker } from "./live-ticker";
 
 type SiteHeaderProps = {
@@ -36,8 +37,8 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
     <>
       <header className={isAdmin ? "site-header site-header-admin" : "site-header"}>
         <div className="site-header-bar">
-          <Link href="/" className="brand" aria-label="Go to tournament home">
-            <span className="brand-mark">IASL</span>
+          <Link href="/" className="brand" aria-label="Go to tournament home" prefetch>
+            <BrandMark />
             <span className="brand-copy">
               <strong>{chrome.tournament.name}</strong>
               <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Cyber arena broadcast`}</span>
@@ -63,6 +64,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
               <Link
                 key={item.href}
                 href={item.href}
+                prefetch
                 className={active ? "nav-link nav-link-active" : "nav-link"}
                 aria-current={active ? "page" : undefined}
               >
@@ -88,6 +90,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
               <Link
                 key={item.label}
                 href={item.href}
+                prefetch={!item.href.startsWith("/#")}
                 className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}
                 aria-current={active ? "page" : undefined}
               >

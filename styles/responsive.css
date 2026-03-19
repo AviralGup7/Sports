@@ -307,7 +307,8 @@
   }
 
   .brand-copy span,
-  .nav-links {
+  .nav-links,
+  .brand-mark-word {
     display: none;
   }
 
@@ -400,10 +401,20 @@
   }
 
   .brand-mark {
+    gap: 0.4rem;
+    min-width: 2.7rem;
+    min-height: 2.7rem;
+  }
+
+  .brand-mark-svg {
     width: 2.7rem;
     height: 2.7rem;
+    padding: 0.38rem;
     border-radius: 0.85rem;
-    font-size: 1.25rem;
+  }
+
+  .brand-mark-word {
+    font-size: 0.95rem;
   }
 
   .header-chip,
