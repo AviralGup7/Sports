@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 
 import type { Profile } from "@/domain/admin/types";
 import type { SportSlug } from "@/domain/sports/types";
+import { getSafeSupabaseUser } from "@/server/supabase/auth-user";
 import { hasSupabaseEnv } from "@/server/supabase/env";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
@@ -22,9 +23,7 @@ export async function getAdminProfile() {
   }
 
   const supabase = await createSupabaseServerClient();
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { user } = await getSafeSupabaseUser(supabase.auth);
 
   if (!user) {
     return null;

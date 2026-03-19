@@ -1,6 +1,7 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
+import { getSafeSupabaseUser } from "@/server/supabase/auth-user";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
 import { redirectWithMessage } from "./shared";
@@ -19,9 +20,7 @@ export async function performAdminLogin(formData: FormData) {
     redirectWithMessage("/admin/login", "error", error.message);
   }
 
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { user } = await getSafeSupabaseUser(supabase.auth);
 
   if (!user) {
     redirectWithMessage("/admin/login", "error", "The session could not be established. Please try again.");

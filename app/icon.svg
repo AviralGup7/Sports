@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <defs>
+    <linearGradient id="iasl-core" x1="0%" x2="100%" y1="0%" y2="100%">
+      <stop offset="0%" stop-color="#8ff7ff" />
+      <stop offset="55%" stop-color="#47cbff" />
+      <stop offset="100%" stop-color="#ff5e7e" />
+    </linearGradient>
+    <radialGradient id="iasl-bg" cx="24%" cy="20%" r="90%">
+      <stop offset="0%" stop-color="#11263c" />
+      <stop offset="100%" stop-color="#050811" />
+    </radialGradient>
+  </defs>
+  <rect width="128" height="128" rx="28" fill="url(#iasl-bg)" />
+  <rect x="2" y="2" width="124" height="124" rx="26" fill="none" stroke="rgba(143,247,255,0.3)" />
+  <circle cx="64" cy="64" r="42" fill="none" stroke="#8ff7ff" stroke-width="6" opacity="0.9" />
+  <path d="M41 85 L64 35 L87 85" fill="none" stroke="url(#iasl-core)" stroke-linecap="round" stroke-linejoin="round" stroke-width="9" />
+  <path d="M49 73 H79" fill="none" stroke="url(#iasl-core)" stroke-linecap="round" stroke-width="8" />
+  <circle cx="64" cy="64" r="8" fill="url(#iasl-core)" stroke="rgba(255,255,255,0.35)" stroke-width="2" />
+</svg>

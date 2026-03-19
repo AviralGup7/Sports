@@ -28,7 +28,7 @@ const toneColors: Record<NonNullable<ArenaContentsProps["tone"]>, THREE.ColorRep
 export function ArenaContents({ variant, tone = "cyan" }: ArenaContentsProps) {
   const capability = useUICapability();
   const preset = getScenePreset(variant);
-  const { sheet, values, sequenceLength } = useTheatreRig(variant);
+  const { values, sequenceLength } = useTheatreRig(variant);
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const energyFieldRef = useRef<THREE.Mesh | null>(null);
   const beamGroupRef = useRef<THREE.Group | null>(null);
@@ -86,11 +86,10 @@ export function ArenaContents({ variant, tone = "cyan" }: ArenaContentsProps) {
   useFrame((state) => {
     const elapsed = state.clock.getElapsedTime();
     const playhead = sequenceLength > 0 ? ((Math.sin(elapsed * 0.18) + 1) * 0.5) * sequenceLength : 0;
-    sheet.sequence.position = playhead;
 
     if (cameraRef.current) {
-      cameraRef.current.position.x = Math.sin(elapsed * 0.18) * values.cameraDrift;
-      cameraRef.current.position.y = values.cameraElevation + Math.cos(elapsed * 0.22) * 0.08;
+      cameraRef.current.position.x = Math.sin(elapsed * 0.18 + playhead * 0.08) * values.cameraDrift;
+      cameraRef.current.position.y = values.cameraElevation + Math.cos(elapsed * 0.22 + playhead * 0.05) * 0.08;
       cameraRef.current.position.z = values.cameraDistance;
       cameraRef.current.lookAt(0, 0, 0);
     }

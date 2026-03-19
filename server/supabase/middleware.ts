@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { getSafeSupabaseUser } from "@/server/supabase/auth-user";
 import { hasSupabaseEnv, supabasePublishableKey, supabaseUrl } from "@/server/supabase/env";
 
 export async function updateSession(request: NextRequest) {
@@ -27,9 +28,15 @@ export async function updateSession(request: NextRequest) {
     }
   });
 
-  const {
-    data: { user }
-  } = await supabase.auth.getUser();
+  const { user, invalidSession } = await getSafeSupabaseUser(supabase.auth);
+
+  if (invalidSession) {
+    request.cookies.getAll().forEach(({ name }) => {
+      if (name.startsWith("sb-")) {
+        response.cookies.delete(name);
+      }
+    });
+  }
   let hasOrganizerProfile = false;
 
   if (user) {

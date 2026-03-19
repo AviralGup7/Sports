@@ -60,11 +60,12 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
         <nav className="nav-links" aria-label="Primary">
           {desktopNav.map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            const href = item.href === "/admin" && !isAdmin ? "/admin/login" : item.href;
             return (
               <Link
-                key={item.href}
-                href={item.href}
-                prefetch
+                key={href}
+                href={href}
+                prefetch={item.href !== "/admin"}
                 className={active ? "nav-link nav-link-active" : "nav-link"}
                 aria-current={active ? "page" : undefined}
               >
@@ -86,11 +87,12 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
                 : item.href.startsWith("/#")
                   ? pathname === "/"
                   : pathname.startsWith(item.href.replace("/#", "/"));
+            const href = item.href === "/admin" && !isAdmin ? "/admin/login" : item.href;
             return (
               <Link
                 key={item.label}
-                href={item.href}
-                prefetch={!item.href.startsWith("/#")}
+                href={href}
+                prefetch={!item.href.startsWith("/#") && item.href !== "/admin"}
                 className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}
                 aria-current={active ? "page" : undefined}
               >
