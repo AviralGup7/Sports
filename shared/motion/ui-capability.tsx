@@ -57,10 +57,10 @@ function readCapability(reducedMotion: boolean): UICapability {
 
   const profile: UIMobileProfile = isAndroid && isMobile ? "android-mobile" : isMobile ? "mobile" : "desktop";
   const effects: UIEffectsLevel = reducedMotion ? "safe" : profile === "desktop" ? "full" : "enhanced";
-  const heroMode: UIHeroMode = reducedMotion ? "reduced" : profile === "desktop" ? "full" : "css-fallback";
+  const heroMode: UIHeroMode = reducedMotion ? "reduced" : "css-fallback";
   const tickerMode: UITickerMode = reducedMotion ? "static" : profile === "desktop" ? "looping" : "stepped";
   const bracketMode: UIBracketMode = reducedMotion ? "minimal" : profile === "desktop" ? "animated" : "highlighted";
-  const sceneMode: SceneMode = reducedMotion ? "reduced" : profile === "desktop" ? "r3f" : isAndroid ? "canvas-fallback" : "r3f";
+  const sceneMode: SceneMode = reducedMotion ? "reduced" : "css-fallback";
   const sceneQuality: SceneQuality = reducedMotion
     ? "low"
     : profile === "desktop"
@@ -70,13 +70,7 @@ function readCapability(reducedMotion: boolean): UICapability {
       : isAndroid
         ? "low"
         : "medium";
-  const postFxQuality: PostFxQuality = reducedMotion
-    ? "off"
-    : profile === "desktop"
-      ? "full"
-      : isAndroid
-        ? "light"
-        : "medium";
+  const postFxQuality: PostFxQuality = reducedMotion ? "off" : "light";
   const scrollMode: ScrollMode = "native";
 
   return {

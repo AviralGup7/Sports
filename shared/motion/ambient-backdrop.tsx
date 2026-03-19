@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { CyberArenaScene } from "@/shared/motion/cyber-arena-scene";
 import { useUICapability } from "@/shared/motion/ui-capability";
 
-const scenicRouteMatchers = [/^\/$/, /^\/sports\/[^/]+$/];
+const scenicRouteMatchers = [/^\/sports\/[^/]+$/];
 
 function shouldRenderScene(pathname: string) {
   return scenicRouteMatchers.some((pattern) => pattern.test(pathname));
@@ -23,7 +23,7 @@ export function AmbientBackdrop() {
     return null;
   }
 
-  if (capability.reducedMotion || capability.effects === "safe") {
+  if (capability.reducedMotion || capability.effects === "safe" || capability.isMobile) {
     return null;
   }
 
