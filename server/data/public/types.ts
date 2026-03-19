@@ -172,6 +172,8 @@ export type MatchPageData = {
   relatedMatches: Match[];
   lineage: MatchLineageCard[];
   bracketNeighbors: Match[];
+  winnerTargetMatch: Match | null;
+  loserTargetMatch: Match | null;
 };
 
 export type PublicDataSeedProfile = {

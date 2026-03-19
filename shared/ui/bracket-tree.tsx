@@ -36,10 +36,17 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
   const [paths, setPaths] = useState<PathShape[]>([]);
 
   const allNodes = useMemo(() => bracket.columns.flatMap((column) => column.nodes), [bracket.columns]);
+  const nodesByMatchId = useMemo(() => new Map(allNodes.map((node) => [node.match.id, node])), [allNodes]);
   const selectedPath = bracket.highlightPaths.find((path) => path.matchId === selectedMatchId) ?? null;
   const selectedNode = allNodes.find((node) => node.match.id === selectedMatchId) ?? null;
   const linkedNodeIds = useMemo(() => new Set(selectedPath?.linkedMatchIds ?? []), [selectedPath]);
   const activeEdgeKeys = useMemo(() => new Set(selectedPath?.edgeKeys ?? []), [selectedPath]);
+  const winnerRouteLabel =
+    (selectedNode?.match.winnerToMatchId ? nodesByMatchId.get(selectedNode.match.winnerToMatchId)?.match.round : null) ??
+    (selectedNode?.match.winnerToMatchId ?? "Standalone");
+  const loserRouteLabel =
+    (selectedNode?.match.loserToMatchId ? nodesByMatchId.get(selectedNode.match.loserToMatchId)?.match.round : null) ??
+    (selectedNode?.match.loserToMatchId ?? "None");
 
   useLayoutEffect(() => {
     if (capability.bracketMode === "minimal") {
@@ -199,11 +206,11 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
           <div className="bracket-focus-route-grid">
             <div>
               <span>Winner route</span>
-              <strong>{selectedNode.match.winnerToMatchId ?? "Standalone"}</strong>
+              <strong>{winnerRouteLabel}</strong>
             </div>
             <div>
               <span>Loser route</span>
-              <strong>{selectedNode.match.loserToMatchId ?? "None"}</strong>
+              <strong>{loserRouteLabel}</strong>
             </div>
           </div>
           <div className="bracket-focus-actions">

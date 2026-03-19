@@ -9,10 +9,6 @@ type StageTimelineProps = {
 };
 
 export function StageTimeline({ stages, selectedStageId, hrefBuilder }: StageTimelineProps) {
-  if (stages.length === 0) {
-    return null;
-  }
-
   return (
     <div className="stage-timeline">
       <Link href={hrefBuilder(undefined)} className={!selectedStageId ? "chip chip-active" : "chip"}>

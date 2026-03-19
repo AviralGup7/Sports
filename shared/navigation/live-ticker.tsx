@@ -16,7 +16,7 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
   const capability = useUICapability();
   const trackRef = useRef<HTMLDivElement | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
-  const rail = useMemo(() => [...items, ...items], [items]);
+  const loopingRail = useMemo(() => items, [items]);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -35,7 +35,7 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
     return () => {
       tweenRef.current?.kill();
     };
-  }, [capability.tickerMode, items.length, rail]);
+  }, [capability.tickerMode, items.length, loopingRail]);
 
   if (items.length === 0) {
     return null;
@@ -63,13 +63,20 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
         ) : (
           <div
             ref={trackRef}
-            className="ticker-track"
+            className="ticker-track ticker-track-looping"
             onMouseEnter={() => tweenRef.current?.pause()}
             onMouseLeave={() => tweenRef.current?.resume()}
           >
-            {rail.map((item, index) => (
-              <TickerChip key={`${item.id}-${index}`} item={item} />
-            ))}
+            <div className="ticker-track-segment">
+              {loopingRail.map((item) => (
+                <TickerChip key={item.id} item={item} />
+              ))}
+            </div>
+            <div className="ticker-track-segment" aria-hidden="true">
+              {loopingRail.map((item) => (
+                <TickerChip key={`${item.id}-clone`} item={item} decorative />
+              ))}
+            </div>
           </div>
         )}
       </div>
@@ -77,7 +84,7 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
   );
 }
 
-function TickerChip({ item }: { item: TickerItem }) {
+function TickerChip({ item, decorative = false }: { item: TickerItem; decorative?: boolean }) {
   const content = (
     <span className={`ticker-item ticker-${item.tone}`}>
       <strong>{item.label}</strong>
@@ -85,7 +92,7 @@ function TickerChip({ item }: { item: TickerItem }) {
     </span>
   );
 
-  if (!item.href) {
+  if (decorative || !item.href) {
     return content;
   }
 

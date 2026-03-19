@@ -12,6 +12,15 @@ type MatchCenterScreenProps = {
 };
 
 export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
+  const primaryTargetMatch = data.winnerTargetMatch ?? data.loserTargetMatch;
+  const progressionSummary = data.winnerTargetMatch && data.loserTargetMatch
+    ? `Winner advances into ${data.match.winnerToSlot} of ${data.winnerTargetMatch.round}; loser routes into ${data.match.loserToSlot} of ${data.loserTargetMatch.round}.`
+    : data.winnerTargetMatch
+      ? `Winner advances into ${data.match.winnerToSlot} of ${data.winnerTargetMatch.round}.`
+      : data.loserTargetMatch
+        ? `Loser routes into ${data.match.loserToSlot} of ${data.loserTargetMatch.round}.`
+        : "No linked progression is configured for this board.";
+
   return (
     <div className="stack-xl">
       <MotionIn>
@@ -50,14 +59,8 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
         </article>
         <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Feeds Into</p>
-          <h2>{data.match.winnerToMatchId ?? data.match.loserToMatchId ?? "Standalone fixture"}</h2>
-          <p>
-            {data.match.winnerToMatchId
-              ? `Winner advances into ${data.match.winnerToSlot} of ${data.match.winnerToMatchId}.`
-              : data.match.loserToMatchId
-                ? `Loser routes into ${data.match.loserToSlot} of ${data.match.loserToMatchId}.`
-                : "No linked progression is configured for this board."}
-          </p>
+          <h2>{primaryTargetMatch?.round ?? "Standalone fixture"}</h2>
+          <p>{progressionSummary}</p>
         </article>
         <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Organizer Access</p>

@@ -66,7 +66,16 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             <h2>Tournament path</h2>
           </div>
         </div>
-        <StageSummaryRail summaries={data.stageSummaries} />
+        {data.stageSummaries.length > 0 ? (
+          <StageSummaryRail summaries={data.stageSummaries} />
+        ) : (
+          <EmptyState
+            compact
+            eyebrow="Stage Progress"
+            title="Stage map is still being linked"
+            description="This sport already has fixtures on the board, but the stage map has not been fully connected yet."
+          />
+        )}
       </MotionIn>
 
       {selectedTab === "overview" ? (

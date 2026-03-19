@@ -79,15 +79,65 @@ function getActiveStage(snapshot: RepositorySnapshot, sportId: SportSlug) {
   );
 }
 
+function isTitleFinalRound(round: string) {
+  const normalized = round.toLowerCase();
+  return (normalized.includes("grand final") || /\bfinal\b/.test(normalized)) && !normalized.includes("quarter") && !normalized.includes("semi") && !normalized.includes("third");
+}
+
+function inferLegacyRoundIndex(match: Match) {
+  const normalized = match.round.toLowerCase();
+
+  if (normalized.includes("quarter")) {
+    return 1;
+  }
+
+  if (normalized.includes("semi")) {
+    return 2;
+  }
+
+  if (normalized.includes("grand final") || /\bfinal\b/.test(normalized)) {
+    return 3;
+  }
+
+  if (normalized.includes("third") || normalized.includes("bronze")) {
+    return 4;
+  }
+
+  return match.roundIndex || 99;
+}
+
+function getBracketMatches(matches: Match[]) {
+  const staged = matches.filter((match) => match.stage?.type === "knockout" || match.stage?.type === "placement");
+  if (staged.length > 0) {
+    return staged;
+  }
+
+  return matches.filter((match) => {
+    const round = match.round.toLowerCase();
+    const isBracketRound =
+      round.includes("quarter") ||
+      round.includes("semi") ||
+      round.includes("final") ||
+      round.includes("third") ||
+      round.includes("bronze");
+    const hasProgression =
+      Boolean(match.winnerToMatchId) ||
+      Boolean(match.loserToMatchId) ||
+      matches.some((candidate) => candidate.winnerToMatchId === match.id || candidate.loserToMatchId === match.id);
+
+    return isBracketRound || hasProgression;
+  });
+}
+
 function buildChampionEntries(snapshot: RepositorySnapshot): ChampionEntry[] {
   return snapshot.sports.map((sport) => {
     const finalMatch = [...getMatchesForSport(snapshot, sport.id)]
-      .filter((match) => match.round.toLowerCase().includes("final"))
-      .sort((a, b) => b.roundIndex - a.roundIndex)[0];
+      .filter((match) => isTitleFinalRound(match.round))
+      .sort((a, b) => b.roundIndex - a.roundIndex || `${b.day}T${b.startTime}`.localeCompare(`${a.day}T${a.startTime}`))[0];
 
     return {
       sport,
-      winner: finalMatch?.result?.winner ?? null
+      winner: finalMatch?.status === "completed" ? finalMatch.result?.winner ?? null : null
     };
   });
 }
@@ -221,7 +271,7 @@ function buildHeroSignals(snapshot: RepositorySnapshot, stats: TournamentStats, 
     {
       id: "signal-titles",
       label: "Title Watch",
-      value: `${snapshot.matches.filter((match) => match.round.toLowerCase().includes("final")).length} finals`,
+      value: `${snapshot.matches.filter((match) => isTitleFinalRound(match.round)).length} finals`,
       detail: "Championship and placement lanes are ready for a prestige finish.",
       tone: "info",
       href: "/schedule"
@@ -295,10 +345,13 @@ function mapNodeState(match: Match): BracketTreeNode["state"] {
   return "pending";
 }
 
-function buildBracketTree(matches: Match[], stages: CompetitionStage[]): BracketTreeData | null {
-  const bracketMatches = matches
-    .filter((match) => match.stage?.type === "knockout" || match.stage?.type === "placement")
-    .sort((a, b) => a.roundIndex - b.roundIndex || a.matchNumber - b.matchNumber || `${a.day}T${a.startTime}`.localeCompare(`${b.day}T${b.startTime}`));
+function buildBracketTree(matches: Match[], _stages: CompetitionStage[]): BracketTreeData | null {
+  const bracketMatches = getBracketMatches(matches).sort(
+    (a, b) =>
+      inferLegacyRoundIndex(a) - inferLegacyRoundIndex(b) ||
+      a.matchNumber - b.matchNumber ||
+      `${a.day}T${a.startTime}`.localeCompare(`${b.day}T${b.startTime}`)
+  );
 
   if (bracketMatches.length === 0) {
     return null;
@@ -306,7 +359,7 @@ function buildBracketTree(matches: Match[], stages: CompetitionStage[]): Bracket
 
   const grouped = new Map<string, Match[]>();
   for (const match of bracketMatches) {
-    const key = `${match.stageId ?? "unknown"}-${match.roundIndex}`;
+    const key = `${match.stageId ?? "legacy"}-${inferLegacyRoundIndex(match)}`;
     const bucket = grouped.get(key) ?? [];
     bucket.push(match);
     grouped.set(key, bucket);
@@ -325,19 +378,17 @@ function buildBracketTree(matches: Match[], stages: CompetitionStage[]): Bracket
         columnId: key,
         match,
         title: `${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"}`,
-        subtitle: `${match.stage?.label ?? "Bracket"} | ${match.venue}`,
+        subtitle: `${match.stage?.label ?? "Bracket board"} | ${match.venue}`,
         state: mapNodeState(match),
         isHighlighted: match.status === "live" || Boolean(match.result?.winnerTeamId)
       }))
     };
   });
 
-  const stageIds = new Set(stages.map((stage) => stage.id));
   const edges = buildProgressionEdges(bracketMatches).filter(
     (edge) =>
       bracketMatches.some((match) => match.id === edge.sourceMatchId) &&
-      bracketMatches.some((match) => match.id === edge.targetMatchId) &&
-      stageIds.size >= 0
+      bracketMatches.some((match) => match.id === edge.targetMatchId)
   );
 
   const highlightPaths = bracketMatches.map((match) => {
@@ -597,6 +648,8 @@ export async function getMatchPageData(matchId: string): Promise<MatchPageData |
     sport,
     relatedMatches: buildRelatedMatches(snapshot, match),
     lineage: buildMatchLineage(snapshot, match),
+    winnerTargetMatch: snapshot.matches.find((item) => item.id === match.winnerToMatchId) ?? null,
+    loserTargetMatch: snapshot.matches.find((item) => item.id === match.loserToMatchId) ?? null,
     bracketNeighbors: snapshot.matches.filter(
       (item) =>
         item.sportId === match.sportId &&

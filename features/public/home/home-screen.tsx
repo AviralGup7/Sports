@@ -107,18 +107,27 @@ export function HomeScreen({ data }: HomeScreenProps) {
               <h2>Arena lanes</h2>
             </div>
           </div>
-          <StageSummaryRail
-            summaries={stageSummaries
-              .filter((item) => item.activeStage)
-              .map((item) => ({
-                stage: item.activeStage!,
-                totalMatches: item.totalMatches,
-                completedMatches: item.completedMatches,
-                liveMatches: item.liveMatches,
-                pendingMatches: item.totalMatches - item.completedMatches - item.liveMatches,
-                groups: []
-              }))}
-          />
+          {stageSummaries.some((item) => item.activeStage) ? (
+            <StageSummaryRail
+              summaries={stageSummaries
+                .filter((item) => item.activeStage)
+                .map((item) => ({
+                  stage: item.activeStage!,
+                  totalMatches: item.totalMatches,
+                  completedMatches: item.completedMatches,
+                  liveMatches: item.liveMatches,
+                  pendingMatches: item.totalMatches - item.completedMatches - item.liveMatches,
+                  groups: []
+                }))}
+            />
+          ) : (
+            <EmptyState
+              compact
+              eyebrow="Stage Progress"
+              title="Stage map is still being linked"
+              description="The current data has live fixtures, but stage lanes have not been fully mapped yet. The schedule and match centers still stay up to date."
+            />
+          )}
         </section>
 
         <section className="section-shell section-shell-radar">
