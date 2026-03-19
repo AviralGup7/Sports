@@ -2,10 +2,10 @@
 
 import { gsap } from "gsap";
 import Link from "next/link";
-import { useReducedMotion } from "framer-motion";
 import { useEffect, useMemo, useRef } from "react";
 
 import type { TickerGroup, TickerItem } from "@/server/data/public/types";
+import { useUICapability } from "@/shared/motion";
 
 type LiveTickerProps = {
   items: TickerItem[];
@@ -13,14 +13,14 @@ type LiveTickerProps = {
 };
 
 export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
-  const reduceMotion = useReducedMotion();
+  const capability = useUICapability();
   const trackRef = useRef<HTMLDivElement | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
   const rail = useMemo(() => [...items, ...items], [items]);
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || reduceMotion || items.length === 0) {
+    if (!track || capability.tickerMode !== "looping" || items.length === 0) {
       return;
     }
 
@@ -35,7 +35,7 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
     return () => {
       tweenRef.current?.kill();
     };
-  }, [items.length, rail, reduceMotion]);
+  }, [capability.tickerMode, items.length, rail]);
 
   if (items.length === 0) {
     return null;
@@ -54,8 +54,8 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
             ))}
           </div>
         ) : null}
-        {reduceMotion ? (
-          <div className="ticker-track ticker-track-static">
+        {capability.tickerMode !== "looping" ? (
+          <div className={capability.tickerMode === "stepped" ? "ticker-track ticker-track-stepped" : "ticker-track ticker-track-static"}>
             {items.map((item) => (
               <TickerChip key={item.id} item={item} />
             ))}

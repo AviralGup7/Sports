@@ -18,7 +18,7 @@ type AdminSidebarProps = {
 };
 
 export function AdminSidebar({ profile }: AdminSidebarProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
 
   return (
     <aside className="admin-sidebar">

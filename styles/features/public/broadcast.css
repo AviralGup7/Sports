@@ -1428,6 +1428,8 @@
   position: relative;
   overflow-x: auto;
   padding-bottom: 0.6rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .bracket-tree {
@@ -1468,6 +1470,7 @@
     linear-gradient(180deg, rgba(10, 15, 25, 0.9), rgba(7, 12, 20, 0.72)),
     radial-gradient(circle at top right, rgba(92, 184, 255, 0.08), transparent 24%);
   border: 1px solid rgba(114, 197, 255, 0.13);
+  scroll-snap-align: start;
 }
 
 .bracket-tree-node {
@@ -1513,6 +1516,25 @@
   background:
     linear-gradient(180deg, rgba(10, 16, 28, 0.96), rgba(7, 12, 21, 0.92)),
     radial-gradient(circle at top right, rgba(50, 230, 255, 0.08), transparent 28%);
+}
+
+html[data-bracket-mode="minimal"] .bracket-tree-svg,
+html[data-bracket-mode="highlighted"] .bracket-node-shine {
+  display: none;
+}
+
+html[data-ui-profile="android-mobile"] .broadcast-hero,
+html[data-ui-profile="android-mobile"] .news-bulletin-hero {
+  min-height: auto;
+}
+
+html[data-ui-profile="android-mobile"] .fixture-strip-glow,
+html[data-ui-profile="android-mobile"] .news-bulletin-scan {
+  display: none;
+}
+
+html[data-ui-profile="android-mobile"] .bracket-tree-node {
+  min-height: 8rem;
 }
 
 .bracket-focus-head h3,
@@ -1626,5 +1648,34 @@
   .poster-grid,
   .team-chip-grid {
     grid-template-columns: 1fr;
+  }
+
+  .bracket-tree-stage {
+    margin-inline: -0.15rem;
+    padding-inline: 0.15rem;
+  }
+
+  .bracket-tree {
+    gap: 0.8rem;
+  }
+
+  .bracket-tree-column {
+    min-width: 15.25rem;
+    padding: 0.85rem;
+  }
+
+  .bracket-tree-node {
+    min-height: 7rem;
+    padding: 0.85rem;
+  }
+
+  .bracket-focus-panel {
+    position: static;
+    top: auto;
+    padding: 1rem;
+  }
+
+  .news-bulletin-hero {
+    min-height: 15rem;
   }
 }

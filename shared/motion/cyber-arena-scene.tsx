@@ -2,7 +2,8 @@
 
 import { gsap } from "gsap";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useReducedMotion } from "framer-motion";
+
+import { useUICapability } from "@/shared/motion/ui-capability";
 
 type CyberArenaSceneProps = {
   className?: string;
@@ -35,24 +36,33 @@ export function CyberArenaScene({
   intensity = "cinematic",
   interactive = true
 }: CyberArenaSceneProps) {
-  const reduceMotion = useReducedMotion();
+  const capability = useUICapability();
   const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [mode, setMode] = useState<SceneMode>(reduceMotion ? "reduced" : "css");
+  const [mode, setMode] = useState<SceneMode>(capability.heroMode === "reduced" ? "reduced" : capability.heroMode === "full" ? "webgl" : "css");
 
   const density = useMemo(() => {
+    if (capability.effects === "safe") {
+      return 0;
+    }
+
     if (intensity === "functional") {
-      return 18;
+      return capability.profile === "desktop" ? 18 : 10;
     }
     if (intensity === "premium") {
-      return 28;
+      return capability.profile === "desktop" ? 28 : 16;
     }
-    return 42;
-  }, [intensity]);
+    return capability.profile === "desktop" ? 42 : 22;
+  }, [capability.effects, capability.profile, intensity]);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (capability.heroMode === "reduced") {
       setMode("reduced");
+      return;
+    }
+
+    if (capability.heroMode === "css-fallback") {
+      setMode("css");
       return;
     }
 
@@ -60,11 +70,11 @@ export function CyberArenaScene({
     const webgl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
 
     setMode(webgl ? "webgl" : "css");
-  }, [reduceMotion]);
+  }, [capability.heroMode]);
 
   useEffect(() => {
     const root = rootRef.current;
-    if (!root || !interactive || reduceMotion) {
+    if (!root || !interactive || capability.heroMode !== "full") {
       return;
     }
 
@@ -97,10 +107,10 @@ export function CyberArenaScene({
       root.removeEventListener("pointermove", handlePointerMove);
       root.removeEventListener("pointerleave", handlePointerLeave);
     };
-  }, [interactive, reduceMotion]);
+  }, [capability.heroMode, interactive]);
 
   useEffect(() => {
-    if (reduceMotion) {
+    if (capability.heroMode !== "full" || density === 0) {
       return;
     }
 
@@ -208,7 +218,7 @@ export function CyberArenaScene({
       window.cancelAnimationFrame(animationFrame);
       observer.disconnect();
     };
-  }, [density, reduceMotion, tone]);
+  }, [capability.heroMode, density, tone]);
 
   return (
     <div
@@ -217,8 +227,9 @@ export function CyberArenaScene({
       data-mode={mode}
       data-tone={tone}
       data-intensity={intensity}
+      data-profile={capability.profile}
     >
-      {!reduceMotion ? <canvas ref={canvasRef} className="cyber-arena-canvas" aria-hidden="true" /> : null}
+      {capability.heroMode === "full" && density > 0 ? <canvas ref={canvasRef} className="cyber-arena-canvas" aria-hidden="true" /> : null}
       <div className="cyber-arena-grid" aria-hidden="true" />
       <div className="cyber-arena-beam cyber-arena-beam-left" aria-hidden="true" />
       <div className="cyber-arena-beam cyber-arena-beam-right" aria-hidden="true" />

@@ -27,7 +27,7 @@ const mobileNav = [
 ];
 
 export function SiteHeader({ chrome }: SiteHeaderProps) {
-  const pathname = usePathname();
+  const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
   const rangeLabel = new Intl.DateTimeFormat("en-IN", {
     month: "short",

@@ -63,6 +63,7 @@
   width: min(1320px, calc(100% - 2rem));
   margin: 0 auto;
   padding: 2rem 0 6rem;
+  overflow-x: clip;
 }
 
 .stack-hero,
@@ -107,6 +108,7 @@ body {
     radial-gradient(circle at top, rgba(80, 196, 255, 0.09), transparent 28%),
     radial-gradient(circle at 80% 20%, rgba(255, 71, 110, 0.08), transparent 24%),
     linear-gradient(180deg, #04060b, #07101a 48%, #04070d);
+  overflow-x: hidden;
 }
 
 .broadcast-backdrop {
@@ -557,5 +559,80 @@ body {
   50% {
     box-shadow: 0 22px 42px rgba(0, 0, 0, 0.3), 0 0 24px rgba(50, 230, 255, 0.12);
   }
+}
+
+.ticker-track-static {
+  flex-wrap: wrap;
+  width: auto;
+}
+
+.ticker-track-stepped {
+  flex-wrap: nowrap;
+  width: max-content;
+  animation: ticker-step-pan 26s linear infinite;
+}
+
+@keyframes ticker-step-pan {
+  from {
+    transform: translateX(0);
+  }
+
+  to {
+    transform: translateX(-18%);
+  }
+}
+
+html[data-hero-mode="css-fallback"] .cyber-arena-canvas,
+html[data-hero-mode="reduced"] .cyber-arena-canvas {
+  display: none;
+}
+
+html[data-ticker-mode="static"] .ticker-track-stepped {
+  animation: none;
+}
+
+html[data-effects="safe"] .cyber-arena-beam,
+html[data-effects="safe"] .cyber-arena-scanlines,
+html[data-effects="safe"] .metric-ornament,
+html[data-effects="safe"] .site-header::before,
+html[data-effects="safe"] .hero-signal::before,
+html[data-effects="safe"] .signal-card::before {
+  display: none;
+}
+
+html[data-ui-profile="android-mobile"] .site-header,
+html[data-ui-profile="android-mobile"] .ticker-window,
+html[data-ui-profile="android-mobile"] .broadcast-hero-side,
+html[data-ui-profile="android-mobile"] .mobile-dock,
+html[data-ui-profile="android-mobile"] .section-shell,
+html[data-ui-profile="android-mobile"] .news-bulletin,
+html[data-ui-profile="android-mobile"] .fixture-strip,
+html[data-ui-profile="android-mobile"] .filter-rail,
+html[data-ui-profile="android-mobile"] .bracket-focus-panel {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+}
+
+html[data-ui-profile="android-mobile"] .site-header,
+html[data-ui-profile="android-mobile"] .ticker-window,
+html[data-ui-profile="android-mobile"] .mobile-dock,
+html[data-ui-profile="android-mobile"] .filter-rail {
+  background: rgba(8, 12, 20, 0.94);
+}
+
+html[data-ui-profile="android-mobile"] .cyber-arena-grid {
+  opacity: 0.12;
+  mask-image: none;
+}
+
+html[data-ui-profile="android-mobile"] .cyber-arena-beam,
+html[data-ui-profile="android-mobile"] .bg-beam,
+html[data-ui-profile="android-mobile"] .bg-glow {
+  opacity: 0.12;
+  filter: blur(40px);
+}
+
+html[data-ui-profile="android-mobile"] .ticker-track-stepped {
+  animation-duration: 34s;
 }
 

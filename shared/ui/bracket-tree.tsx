@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { BracketTreeData } from "@/server/data/public/types";
+import { useUICapability } from "@/shared/motion";
 
 import { BracketNode } from "./bracket-node";
 
@@ -21,6 +22,7 @@ type PathShape = {
 };
 
 export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
+  const capability = useUICapability();
   const initialSelection =
     bracket.columns.flatMap((column) => column.nodes).find((node) => node.match.status === "live")?.match.id ??
     bracket.columns.flatMap((column) => column.nodes).find((node) => node.isHighlighted)?.match.id ??
@@ -40,6 +42,11 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
   const activeEdgeKeys = useMemo(() => new Set(selectedPath?.edgeKeys ?? []), [selectedPath]);
 
   useLayoutEffect(() => {
+    if (capability.bracketMode === "minimal") {
+      setPaths([]);
+      return;
+    }
+
     const shell = shellRef.current;
     if (!shell) {
       return;
@@ -91,9 +98,13 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
       resizeObserver.disconnect();
       window.removeEventListener("resize", buildPaths);
     };
-  }, [activeEdgeKeys, bracket.edges, selectedMatchId]);
+  }, [activeEdgeKeys, bracket.edges, capability.bracketMode, selectedMatchId]);
 
   useLayoutEffect(() => {
+    if (capability.bracketMode !== "animated") {
+      return;
+    }
+
     const svg = svgRef.current;
     if (!svg) {
       return;
@@ -119,10 +130,10 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
       const length = path.getTotalLength();
       gsap.set(path, { strokeDasharray: `${length / 10} ${length / 16}` });
     });
-  }, [paths]);
+  }, [capability.bracketMode, paths]);
 
   return (
-    <div className="bracket-tree-shell bracket-tree-shell-cyber">
+    <div className={`bracket-tree-shell bracket-tree-shell-cyber${capability.isMobile ? " bracket-tree-shell-mobile" : ""}`}>
       <div className="bracket-tree-stage" ref={shellRef}>
         <svg ref={svgRef} className="bracket-tree-svg" aria-hidden="true">
           {paths.map((path) => (

@@ -15,6 +15,12 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
   return (
     <div className="stack-xl">
       <MotionIn>
+        <Link href={`/sports/${data.sport.id}`} className="inline-link">
+          Back to {data.sport.name}
+        </Link>
+      </MotionIn>
+
+      <MotionIn>
         <BroadcastHero
           eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? data.match.round}`}
           kicker={formatDateTime(data.match.day, data.match.startTime)}

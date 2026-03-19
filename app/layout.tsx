@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
-import { CyberArenaScene } from "@/shared/motion";
+import { CyberArenaScene, RuntimeCapabilityFlags } from "@/shared/motion";
 import { SiteHeader } from "@/shared/navigation";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
@@ -29,6 +29,13 @@ export const metadata: Metadata = {
   description: "Broadcast-style college tournament portal with public spectacle and organizer control room."
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#071019"
+};
+
 export default async function RootLayout({
   children
 }: Readonly<{
@@ -39,6 +46,7 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
+        <RuntimeCapabilityFlags />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
