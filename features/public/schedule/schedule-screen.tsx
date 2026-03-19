@@ -44,10 +44,12 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           eyebrow="Fixture Board"
           kicker={formatDateLabel(data.selectedDay)}
           title={selectedSportRecord ? `${selectedSportRecord.name} Schedule` : "Tournament Schedule"}
-          description="Scan the day like a stage-aware broadcast rundown. Filters now understand sport, stage, group, and board status."
+          description="Scan the arena like a premium command surface. Filters now understand sport, stage, group, and board status with stage-aware lanes and live pressure."
           compact
+          tone={selectedSportRecord ? "cyan" : "blue"}
+          intensity="premium"
           aside={
-            <div className="hero-aside-list">
+            <div className="hero-aside-list hero-aside-list-cyber">
               <div>
                 <span className="aside-label">Visible fixtures</span>
                 <strong>{data.fixtures.length}</strong>
@@ -130,10 +132,11 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
       <MotionIn className="stack-lg" delay={0.12}>
         {data.scheduleGroups.length > 0 ? (
           data.scheduleGroups.map((group) => (
-            <section key={group.time} className="timeline-group">
+            <section key={group.time} className="timeline-group timeline-group-cyber">
               <div className="timeline-marker">
                 <p className="eyebrow">Time Slot</p>
                 <h2>{group.label}</h2>
+                <span>{group.matches.length} boards</span>
               </div>
               <div className="timeline-stack">
                 {group.matches.map((match) => (

@@ -15,6 +15,7 @@ type FixtureStripProps = {
 export function FixtureStrip({ match, showSport = false, compact = false, admin = false }: FixtureStripProps) {
   return (
     <article className={compact ? "fixture-strip fixture-strip-compact" : "fixture-strip"}>
+      <div className="fixture-strip-glow" aria-hidden="true" />
       <div className="fixture-time-block">
         <span>{formatTimeLabel(match.startTime)}</span>
         <small>{formatDateLabel(match.day)}</small>
@@ -48,6 +49,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
       </div>
 
       <div className="fixture-tail">
+        <span className="fixture-tail-line">{match.status === "live" ? "Hot lane" : match.status === "completed" ? "Archived result" : "Queued board"}</span>
         <Link href={admin ? "/admin/matches" : `/matches/${match.id}`} className="fixture-link">
           {admin ? "Control match" : "Open board"}
         </Link>

@@ -20,7 +20,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
           <div>
             <p className="eyebrow">Operations Board</p>
             <h1>Control room snapshot</h1>
-            <p className="hero-text">Prioritize live boards, pending results, and tournament integrity without leaving the admin deck.</p>
+            <p className="hero-text">Prioritize live boards, pending results, and bracket integrity from a denser cyber control deck tuned for fast tournament operations.</p>
           </div>
           <div className="operations-hero-side">
             {data.attentionItems.slice(0, 2).map((item) => (

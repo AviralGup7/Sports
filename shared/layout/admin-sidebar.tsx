@@ -30,6 +30,11 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
         </p>
       </div>
 
+      <div className="admin-side-signal">
+        <span>Access profile</span>
+        <strong>{profile.role === "super_admin" ? "Global control" : "Sport scoped"}</strong>
+      </div>
+
       <div className="admin-sport-pills">
         {profile.sportIds.map((sportId) => (
           <span key={sportId} className="admin-sport-pill">

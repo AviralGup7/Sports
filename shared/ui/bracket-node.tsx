@@ -1,19 +1,25 @@
-import Link from "next/link";
+"use client";
 
-import type { BracketTreeNode } from "@/server/data/public/types";
+import type { BracketTreeNode as BracketTreeNodeModel } from "@/server/data/public/types";
 
 import { StageBadge } from "./stage-badge";
 
 type BracketNodeProps = {
-  node: BracketTreeNode;
+  node: BracketTreeNodeModel;
+  active?: boolean;
+  linked?: boolean;
+  onSelect?: (matchId: string) => void;
   admin?: boolean;
 };
 
-export function BracketNode({ node, admin = false }: BracketNodeProps) {
-  const href = admin ? `/admin/matches?sport=${node.match.sportId}&mode=live` : `/matches/${node.match.id}`;
-
+export function BracketNode({ node, active = false, linked = false, onSelect, admin = false }: BracketNodeProps) {
   return (
-    <Link href={href} className={`bracket-tree-node state-${node.state}${node.isHighlighted ? " bracket-tree-node-highlight" : ""}`}>
+    <button
+      type="button"
+      className={`bracket-tree-node state-${node.state}${node.isHighlighted ? " bracket-tree-node-highlight" : ""}${active ? " bracket-tree-node-active" : ""}${linked ? " bracket-tree-node-linked" : ""}`}
+      onClick={() => onSelect?.(node.match.id)}
+    >
+      <div className="bracket-node-shine" aria-hidden="true" />
       <div className="bracket-node-topline">
         <p className="eyebrow">{node.match.round}</p>
         <StageBadge
@@ -32,9 +38,8 @@ export function BracketNode({ node, admin = false }: BracketNodeProps) {
       </div>
       <div className="bracket-node-meta">
         <span>{node.subtitle}</span>
-        {node.match.result?.scoreSummary ? <small>{node.match.result.scoreSummary}</small> : null}
+        {node.match.result?.scoreSummary ? <small>{node.match.result.scoreSummary}</small> : <small>{admin ? "Select to control lane" : "Select for lineage view"}</small>}
       </div>
-    </Link>
+    </button>
   );
 }
-

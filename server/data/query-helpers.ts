@@ -9,6 +9,7 @@ import {
   ChampionSpotlight,
   GlobalChromeData,
   GroupStandingsCard,
+  HeroSignal,
   HighlightMatch,
   MatchPageData,
   HomePageData,
@@ -17,6 +18,7 @@ import {
   SchedulePageData,
   SportPageData,
   StageSummary,
+  TickerGroup,
   TournamentStats,
   TickerItem
 } from "@/server/data/public/types";
@@ -133,7 +135,8 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
     sport,
     label: match.status === "live" ? "Live Spotlight" : match.status === "postponed" ? "Delay Watch" : "Featured Board",
     headline,
-    summary: match.result?.scoreSummary ?? `${formatDateLabel(match.day)} at ${match.startTime} from ${match.venue}`
+    summary: match.result?.scoreSummary ?? `${formatDateLabel(match.day)} at ${match.startTime} from ${match.venue}`,
+    urgency: match.status === "live" ? "live" : match.status === "postponed" ? "watch" : "next"
   };
 }
 
@@ -170,6 +173,68 @@ function buildTickerItems(snapshot: RepositorySnapshot): TickerItem[] {
   }
 
   return ticker;
+}
+
+function buildTickerGroups(items: TickerItem[]): TickerGroup[] {
+  const grouped = new Map<string, TickerGroup>();
+
+  for (const item of items) {
+    const key = item.tone;
+    const existing = grouped.get(key);
+
+    if (existing) {
+      existing.items.push(item);
+      continue;
+    }
+
+    grouped.set(key, {
+      id: key,
+      label: key === "live" ? "Live Boards" : key === "alert" ? "Urgent Calls" : "Tournament Intel",
+      tone: item.tone,
+      items: [item]
+    });
+  }
+
+  return Array.from(grouped.values());
+}
+
+function buildHeroSignals(snapshot: RepositorySnapshot, stats: TournamentStats, highlightMatch: HighlightMatch | null): HeroSignal[] {
+  const latestHeadline = getPublicAnnouncements(snapshot).find((announcement) => announcement.pinned) ?? getPublicAnnouncements(snapshot)[0];
+
+  return [
+    {
+      id: "signal-live",
+      label: "Live Boards",
+      value: String(stats.liveMatches),
+      detail: stats.liveMatches > 0 ? "Matches currently charging through the arena." : "No live boards at this exact moment.",
+      tone: stats.liveMatches > 0 ? "live" : "neutral",
+      href: "/schedule?status=live"
+    },
+    {
+      id: "signal-spotlight",
+      label: "Spotlight",
+      value: highlightMatch?.sport.name ?? "Standby",
+      detail: highlightMatch?.headline ?? "The next headline board will take over this lane.",
+      tone: highlightMatch?.urgency === "live" ? "live" : highlightMatch?.urgency === "watch" ? "alert" : "info",
+      href: highlightMatch ? `/matches/${highlightMatch.match.id}` : "/schedule"
+    },
+    {
+      id: "signal-titles",
+      label: "Title Watch",
+      value: `${snapshot.matches.filter((match) => match.round.toLowerCase().includes("final")).length} finals`,
+      detail: "Championship and placement lanes are ready for a prestige finish.",
+      tone: "info",
+      href: "/schedule"
+    },
+    {
+      id: "signal-news",
+      label: "Headline Feed",
+      value: latestHeadline ? "Pinned" : "Quiet",
+      detail: latestHeadline?.title ?? "No fresh notices are pinned to the arena feed yet.",
+      tone: latestHeadline ? "alert" : "neutral",
+      href: "/announcements"
+    }
+  ];
 }
 
 function buildScheduleGroups(fixtures: Match[]): ScheduleGroup[] {
@@ -219,7 +284,11 @@ function mapNodeState(match: Match): BracketTreeNode["state"] {
     return "completed";
   }
 
-  if (match.status === "postponed" || match.status === "cancelled") {
+  if (match.status === "cancelled") {
+    return "cancelled";
+  }
+
+  if (match.status === "postponed") {
     return "postponed";
   }
 
@@ -271,9 +340,25 @@ function buildBracketTree(matches: Match[], stages: CompetitionStage[]): Bracket
       stageIds.size >= 0
   );
 
+  const highlightPaths = bracketMatches.map((match) => {
+    const linkedEdges = edges.filter((edge) => edge.sourceMatchId === match.id || edge.targetMatchId === match.id);
+    const linkedMatchIds = Array.from(
+      new Set(
+        linkedEdges.flatMap((edge) => [edge.sourceMatchId, edge.targetMatchId]).filter((id) => id !== match.id)
+      )
+    );
+
+    return {
+      matchId: match.id,
+      edgeKeys: linkedEdges.map((edge) => `${edge.sourceMatchId}-${edge.kind}-${edge.targetMatchId}`),
+      linkedMatchIds
+    };
+  });
+
   return {
     columns,
-    edges
+    edges,
+    highlightPaths
   };
 }
 
@@ -388,11 +473,13 @@ function buildAthleticsCards(snapshot: RepositorySnapshot): AthleticsResultCard[
 
 export async function getGlobalChromeData(): Promise<GlobalChromeData> {
   const snapshot = await loadSnapshot();
+  const tickerItems = buildTickerItems(snapshot);
 
   return {
     tournament: snapshot.tournament,
     sports: snapshot.sports,
-    tickerItems: buildTickerItems(snapshot)
+    tickerItems,
+    tickerGroups: buildTickerGroups(tickerItems)
   };
 }
 
@@ -407,6 +494,7 @@ export async function getHomePageData(): Promise<HomePageData> {
     sports: snapshot.sports,
     stats,
     highlightMatch,
+    heroSignals: buildHeroSignals(snapshot, stats, highlightMatch),
     featuredMatches,
     announcements: getPublicAnnouncements(snapshot).slice(0, 4),
     champions: buildChampionEntries(snapshot),

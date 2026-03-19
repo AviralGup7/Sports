@@ -20,6 +20,8 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
           kicker={formatDateTime(data.match.day, data.match.startTime)}
           title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
           description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Awaiting scoreboard update"}`}
+          tone={data.match.status === "live" ? "cyan" : data.match.status === "postponed" ? "crimson" : "blue"}
+          intensity="premium"
           aside={
             <div className="score-spotlight score-spotlight-tight">
               <p className="eyebrow">Match Center</p>
@@ -33,14 +35,14 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
       </MotionIn>
 
       <MotionIn className="detail-grid" delay={0.08}>
-        <article className="detail-card">
+        <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Stage Path</p>
           <h2>{data.match.group ? `${data.match.group.code}` : data.match.round}</h2>
           <p>
             {data.match.stage?.label ?? "Standalone board"} | {formatDateTime(data.match.day, data.match.startTime)}
           </p>
         </article>
-        <article className="detail-card">
+        <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Feeds Into</p>
           <h2>{data.match.winnerToMatchId ?? data.match.loserToMatchId ?? "Standalone fixture"}</h2>
           <p>
@@ -51,7 +53,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
                 : "No linked progression is configured for this board."}
           </p>
         </article>
-        <article className="detail-card">
+        <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Organizer Access</p>
           <h2>Backstage update</h2>
           <p>Officials can save scores, notes, postponements, and winner progression from the admin control room.</p>

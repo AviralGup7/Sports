@@ -27,8 +27,10 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           title={data.sport.name}
           description={data.sport.rulesSummary}
           accent={data.sport.color}
+          tone={data.sport.id === "athletics" ? "crimson" : "cyan"}
+          intensity="premium"
           aside={
-            <div className="score-spotlight">
+            <div className="score-spotlight score-spotlight-tight">
               <p className="eyebrow">Stage Status</p>
               <h2>{liveCount > 0 ? "Live Round" : data.stageSummaries[0]?.stage.label ?? "Structure Ready"}</h2>
               <strong>{data.teams.length} squads active</strong>
@@ -134,7 +136,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "bracket" ? (
-        <MotionIn className="section-shell" delay={0.12}>
+        <MotionIn className="section-shell section-shell-bracket" delay={0.12}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Winner Tree</p>

@@ -12,16 +12,18 @@ type HomeScreenProps = {
 };
 
 export function HomeScreen({ data }: HomeScreenProps) {
-  const { tournament, sports, stats, highlightMatch, featuredMatches, announcements, championSpotlights, stageSummaries } = data;
+  const { tournament, sports, stats, highlightMatch, heroSignals, featuredMatches, announcements, championSpotlights, stageSummaries } = data;
 
   return (
     <div className="stack-hero">
       <MotionIn>
         <BroadcastHero
-          eyebrow="Arena Broadcast"
+          eyebrow="Cyber Arena Broadcast"
           kicker={`${tournament.startDate} to ${tournament.endDate} | ${tournament.venue}`}
           title={tournament.name}
-          description="A stage-aware tournament board for viewers, squads, and organizers. Follow live match centers, winner trees, standings swings, and control-room calls."
+          description="A premium tournament experience built like a live broadcast package. Track spotlight fixtures, title pressure, animated winner trees, and headline calls across the arena."
+          tone={highlightMatch?.urgency === "live" ? "cyan" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
+          intensity="cinematic"
           actions={
             <>
               <Link href="/schedule" className="button">
@@ -32,10 +34,20 @@ export function HomeScreen({ data }: HomeScreenProps) {
               </Link>
             </>
           }
+          signals={heroSignals.map((signal) => (
+            <Link key={signal.id} href={signal.href ?? "/"} className={`hero-signal hero-signal-${signal.tone}`}>
+              <span>{signal.label}</span>
+              <strong>{signal.value}</strong>
+              <small>{signal.detail}</small>
+            </Link>
+          ))}
           aside={
             highlightMatch ? (
-              <div className="score-spotlight">
-                <p className="eyebrow">{highlightMatch.label}</p>
+              <div className={`score-spotlight score-spotlight-${highlightMatch.urgency}`}>
+                <div className="spotlight-status-line">
+                  <p className="eyebrow">{highlightMatch.label}</p>
+                  <span className="spotlight-chip">{highlightMatch.urgency === "live" ? "Now Charging" : highlightMatch.urgency === "watch" ? "Delay Watch" : "Next Up"}</span>
+                </div>
                 <div className="score-sport-line">
                   <span>{highlightMatch.sport.name}</span>
                   <span>{highlightMatch.match.stage?.label ?? highlightMatch.match.round}</span>
@@ -47,9 +59,14 @@ export function HomeScreen({ data }: HomeScreenProps) {
                 </h2>
                 <p>{highlightMatch.headline}</p>
                 <strong>{highlightMatch.summary}</strong>
-                <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
-                  Open match center
-                </Link>
+                <div className="spotlight-actions">
+                  <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
+                    Open match center
+                  </Link>
+                  <Link href={`/sports/${highlightMatch.sport.id}?tab=bracket`} className="inline-link">
+                    Open winner tree
+                  </Link>
+                </div>
               </div>
             ) : (
               <div className="score-spotlight">
@@ -63,46 +80,68 @@ export function HomeScreen({ data }: HomeScreenProps) {
       </MotionIn>
 
       <MotionIn className="metric-grid" delay={0.08}>
-        <MetricTile label="Sports" value={stats.sports} detail="Color-coded tournament lanes" accent="#f59e0b" />
-        <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" />
+        <MetricTile label="Sports" value={stats.sports} detail="Color-coded tournament lanes" accent="#f59e0b" href="/schedule" />
+        <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" href="/admin/teams" />
         <MetricTile
           label="Live Now"
           value={stats.liveMatches}
           detail={stats.liveMatches > 0 ? "Boards currently active" : "Waiting for the next whistle"}
           accent="#22d3ee"
           pulse={stats.liveMatches > 0}
+          href="/schedule?status=live"
         />
         <MetricTile
           label="Results Locked"
           value={stats.completedMatches}
           detail={`${stats.matches} total fixtures in the tournament map`}
           accent="#fb7185"
+          href="/schedule?status=completed"
         />
       </MotionIn>
 
-      <MotionIn className="section-shell" delay={0.1}>
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Stage Progress</p>
-            <h2>Today in tournament</h2>
+      <MotionIn className="home-showcase-grid" delay={0.1}>
+        <section className="section-shell section-shell-holo">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Stage Progress</p>
+              <h2>Arena lanes</h2>
+            </div>
           </div>
-        </div>
-        <StageSummaryRail
-          summaries={stageSummaries
-            .filter((item) => item.activeStage)
-            .map((item) => ({
-              stage: item.activeStage!,
-              totalMatches: item.totalMatches,
-              completedMatches: item.completedMatches,
-              liveMatches: item.liveMatches,
-              pendingMatches: item.totalMatches - item.completedMatches - item.liveMatches,
-              groups: []
-            }))}
-        />
+          <StageSummaryRail
+            summaries={stageSummaries
+              .filter((item) => item.activeStage)
+              .map((item) => ({
+                stage: item.activeStage!,
+                totalMatches: item.totalMatches,
+                completedMatches: item.completedMatches,
+                liveMatches: item.liveMatches,
+                pendingMatches: item.totalMatches - item.completedMatches - item.liveMatches,
+                groups: []
+              }))}
+          />
+        </section>
+
+        <section className="section-shell section-shell-radar">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Headlines</p>
+              <h2>Signal stack</h2>
+            </div>
+          </div>
+          <div className="signal-stack">
+            {heroSignals.map((signal) => (
+              <Link key={`${signal.id}-stack`} href={signal.href ?? "/"} className={`signal-card signal-card-${signal.tone}`}>
+                <span>{signal.label}</span>
+                <strong>{signal.value}</strong>
+                <small>{signal.detail}</small>
+              </Link>
+            ))}
+          </div>
+        </section>
       </MotionIn>
 
       <MotionIn className="stack-xl" delay={0.12}>
-        <section className="section-shell">
+        <section className="section-shell section-shell-podium">
           <div className="section-heading">
             <div>
               <p className="eyebrow">Title Race</p>
@@ -127,7 +166,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
           </div>
         </section>
 
-        <section className="section-shell" id="sports-spotlight">
+        <section className="section-shell section-shell-posters" id="sports-spotlight">
           <div className="section-heading">
             <div>
               <p className="eyebrow">Sport Posters</p>
@@ -144,6 +183,10 @@ export function HomeScreen({ data }: HomeScreenProps) {
                     <p className="eyebrow">{stage?.label ?? sport.format}</p>
                     <h3>{sport.name}</h3>
                     <p>{sport.rulesSummary}</p>
+                    <div className="sport-poster-meta">
+                      <span>{stage ? "Active stage live" : "Structure ready"}</span>
+                      <span>{sport.format}</span>
+                    </div>
                     <Link href={`/sports/${sport.id}`} className="inline-link">
                       Enter {sport.name.toLowerCase()}
                     </Link>
@@ -161,7 +204,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
           </div>
         </section>
 
-        <section className="section-shell">
+        <section className="section-shell section-shell-broadcast">
           <div className="section-heading">
             <div>
               <p className="eyebrow">Today In Tournament</p>
@@ -191,7 +234,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
           </div>
         </section>
 
-        <section className="section-shell">
+        <section className="section-shell section-shell-newsdesk">
           <div className="section-heading">
             <div>
               <p className="eyebrow">News Desk</p>

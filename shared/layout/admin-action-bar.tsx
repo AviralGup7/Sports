@@ -20,6 +20,7 @@ export function AdminActionBar({ profile, onSignOut }: AdminActionBarProps) {
       <div>
         <p className="eyebrow">Control room</p>
         <h1>Organizer Deck</h1>
+        <p className="muted">High-priority tournament operations, result locks, and structure control.</p>
       </div>
       <div className="admin-bar-meta">
         <span className="admin-bar-chip">{currentDate}</span>

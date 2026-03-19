@@ -29,12 +29,29 @@ export type TickerItem = {
   tone: TickerItemTone;
 };
 
+export type TickerGroup = {
+  id: string;
+  label: string;
+  tone: TickerItemTone;
+  items: TickerItem[];
+};
+
 export type HighlightMatch = {
   match: Match;
   sport: Sport;
   label: string;
   headline: string;
   summary: string;
+  urgency: "live" | "watch" | "next";
+};
+
+export type HeroSignal = {
+  id: string;
+  label: string;
+  value: string;
+  detail: string;
+  tone: "live" | "alert" | "info" | "neutral";
+  href?: string;
 };
 
 export type ChampionSpotlight = {
@@ -65,7 +82,7 @@ export type BracketTreeNode = {
   match: Match;
   title: string;
   subtitle: string;
-  state: "live" | "completed" | "pending" | "bye" | "postponed";
+  state: "live" | "completed" | "pending" | "bye" | "postponed" | "cancelled";
   isHighlighted: boolean;
 };
 
@@ -79,6 +96,11 @@ export type BracketTreeColumn = {
 export type BracketTreeData = {
   columns: BracketTreeColumn[];
   edges: MatchProgressionEdge[];
+  highlightPaths: Array<{
+    matchId: string;
+    edgeKeys: string[];
+    linkedMatchIds: string[];
+  }>;
 };
 
 export type GroupStandingsCard = {
@@ -95,6 +117,7 @@ export type GlobalChromeData = {
   tournament: Tournament;
   sports: Sport[];
   tickerItems: TickerItem[];
+  tickerGroups: TickerGroup[];
 };
 
 export type HomePageData = {
@@ -102,6 +125,7 @@ export type HomePageData = {
   sports: Sport[];
   stats: TournamentStats;
   highlightMatch: HighlightMatch | null;
+  heroSignals: HeroSignal[];
   featuredMatches: Match[];
   announcements: Announcement[];
   champions: ChampionEntry[];

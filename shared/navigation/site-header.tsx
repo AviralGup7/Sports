@@ -42,13 +42,14 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             <span className="brand-mark">IASL</span>
             <span className="brand-copy">
               <strong>{chrome.tournament.name}</strong>
-              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Arena broadcast mode`}</span>
+              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Cyber arena broadcast`}</span>
             </span>
           </Link>
 
           <div className="header-status">
             <span className="header-chip">{rangeLabel}</span>
             <span className="header-chip">{chrome.sports.length} sports</span>
+            {!isAdmin ? <span className="header-chip header-chip-live">Signal locked</span> : null}
             {!isAdmin ? (
               <Link href="/schedule" className="header-cta">
                 Open fixture board
@@ -74,7 +75,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
         </nav>
       </header>
 
-      {!isAdmin ? <LiveTicker items={chrome.tickerItems} /> : null}
+      {!isAdmin ? <LiveTicker items={chrome.tickerItems} groups={chrome.tickerGroups} /> : null}
 
       {!isAdmin ? (
         <nav className="mobile-dock" aria-label="Bottom navigation">

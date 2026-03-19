@@ -18,10 +18,12 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
         <BroadcastHero
           eyebrow="Bulletin Desk"
           title="Announcements"
-          description="Pinned headlines ride the top of the board, while the rest of the newsroom feed stacks below in reverse chronological order."
+          description="Pinned headlines ride the top of the cyber arena board, while the rest of the newsroom feed stacks below in a premium editorial sequence."
           compact
+          tone="crimson"
+          intensity="premium"
           aside={
-            <div className="hero-aside-list">
+            <div className="hero-aside-list hero-aside-list-cyber">
               <div>
                 <span className="aside-label">Pinned</span>
                 <strong>{pinnedItems.length}</strong>
