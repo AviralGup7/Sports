@@ -1,0 +1,90 @@
+{
+  "sequenceLengths": {
+    "site-backdrop-ambient": 8,
+    "home-hero-intro": 6,
+    "sport-masthead-reveal": 5,
+    "schedule-command-flow": 4,
+    "newsroom-glide": 4,
+    "bracket-showcase-trace": 5
+  },
+  "variants": {
+    "site-backdrop": {
+      "camera": {
+        "distance": 7.8,
+        "elevation": 0.12,
+        "drift": 0.18
+      },
+      "fx": {
+        "beamPulse": 0.72,
+        "distortion": 0.16,
+        "vignette": 0.3,
+        "sparkleBias": 0.58
+      }
+    },
+    "home-hero": {
+      "camera": {
+        "distance": 6.2,
+        "elevation": 0.16,
+        "drift": 0.28
+      },
+      "fx": {
+        "beamPulse": 1,
+        "distortion": 0.24,
+        "vignette": 0.18,
+        "sparkleBias": 1
+      }
+    },
+    "sport-masthead": {
+      "camera": {
+        "distance": 6.7,
+        "elevation": 0.15,
+        "drift": 0.24
+      },
+      "fx": {
+        "beamPulse": 0.86,
+        "distortion": 0.2,
+        "vignette": 0.22,
+        "sparkleBias": 0.82
+      }
+    },
+    "schedule-command": {
+      "camera": {
+        "distance": 7.2,
+        "elevation": 0.1,
+        "drift": 0.14
+      },
+      "fx": {
+        "beamPulse": 0.66,
+        "distortion": 0.14,
+        "vignette": 0.24,
+        "sparkleBias": 0.62
+      }
+    },
+    "newsroom-story": {
+      "camera": {
+        "distance": 7,
+        "elevation": 0.11,
+        "drift": 0.19
+      },
+      "fx": {
+        "beamPulse": 0.74,
+        "distortion": 0.18,
+        "vignette": 0.22,
+        "sparkleBias": 0.66
+      }
+    },
+    "bracket-showcase": {
+      "camera": {
+        "distance": 6.6,
+        "elevation": 0.14,
+        "drift": 0.22
+      },
+      "fx": {
+        "beamPulse": 0.92,
+        "distortion": 0.2,
+        "vignette": 0.2,
+        "sparkleBias": 0.86
+      }
+    }
+  }
+}

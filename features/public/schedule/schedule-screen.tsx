@@ -6,7 +6,7 @@ import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { DayNoteBanner, FixtureStrip, StageTimeline } from "@/shared/ui";
-import { MotionIn } from "@/shared/motion";
+import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type ScheduleScreenProps = {
   data: SchedulePageData;
@@ -41,27 +41,30 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
   return (
     <div className="stack-xl">
       <MotionIn>
-        <BroadcastHero
-          eyebrow="Fixture Board"
-          kicker={formatDateLabel(data.selectedDay)}
-          title={selectedSportRecord ? `${selectedSportRecord.name} Schedule` : "Tournament Schedule"}
-          description="Scan the arena like a premium command surface. Filters now understand sport, stage, group, and board status with stage-aware lanes and live pressure."
-          compact
-          tone={selectedSportRecord ? "cyan" : "blue"}
-          intensity="premium"
-          aside={
-            <div className="hero-aside-list hero-aside-list-cyber">
-              <div>
-                <span className="aside-label">Visible fixtures</span>
-                <strong>{data.fixtures.length}</strong>
+        <ScrollStorySection variant="hero">
+          <BroadcastHero
+            eyebrow="Fixture Board"
+            kicker={formatDateLabel(data.selectedDay)}
+            title={selectedSportRecord ? `${selectedSportRecord.name} Schedule` : "Tournament Schedule"}
+            description="Scan the arena like a premium command surface. Filters now understand sport, stage, group, and board status with stage-aware lanes and live pressure."
+            compact
+            tone={selectedSportRecord ? "cyan" : "blue"}
+            intensity="premium"
+            variant="schedule-command"
+            aside={
+              <div className="hero-aside-list hero-aside-list-cyber">
+                <div>
+                  <span className="aside-label">Visible fixtures</span>
+                  <strong>{data.fixtures.length}</strong>
+                </div>
+                <div>
+                  <span className="aside-label">Active stage filter</span>
+                  <strong>{data.selectedStage ? data.stages.find((stage) => stage.id === data.selectedStage)?.label ?? "Stage" : "All"}</strong>
+                </div>
               </div>
-              <div>
-                <span className="aside-label">Active stage filter</span>
-                <strong>{data.selectedStage ? data.stages.find((stage) => stage.id === data.selectedStage)?.label ?? "Stage" : "All"}</strong>
-              </div>
-            </div>
-          }
-        />
+            }
+          />
+        </ScrollStorySection>
       </MotionIn>
 
       <MotionIn delay={0.06}>

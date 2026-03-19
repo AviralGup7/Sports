@@ -1,6 +1,6 @@
 import { CSSProperties, ReactNode } from "react";
 
-import { CyberArenaScene } from "@/shared/motion";
+import { CyberArenaScene, type HeroSceneVariant } from "@/shared/motion";
 
 type BroadcastHeroProps = {
   eyebrow: string;
@@ -14,6 +14,7 @@ type BroadcastHeroProps = {
   tone?: "cyan" | "blue" | "amber" | "crimson";
   intensity?: "cinematic" | "premium" | "functional";
   signals?: ReactNode;
+  variant?: HeroSceneVariant;
 };
 
 export function BroadcastHero({
@@ -27,11 +28,12 @@ export function BroadcastHero({
   compact = false,
   tone = "cyan",
   intensity = "premium",
-  signals
+  signals,
+  variant = "home-hero"
 }: BroadcastHeroProps) {
   return (
-    <section className={compact ? "broadcast-hero broadcast-hero-compact" : "broadcast-hero"}>
-      <CyberArenaScene className="broadcast-hero-scene" tone={tone} intensity={intensity} />
+    <section className={compact ? "broadcast-hero broadcast-hero-compact" : "broadcast-hero"} data-variant={variant}>
+      <CyberArenaScene className="broadcast-hero-scene" tone={tone} intensity={intensity} variant={variant} />
       <div className="broadcast-hero-shine" aria-hidden="true" />
       <div className="broadcast-hero-main">
         <p className="eyebrow">{eyebrow}</p>

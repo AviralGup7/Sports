@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useReducedMotion } from "framer-motion";
+import type { PostFxQuality, SceneMode, SceneQuality, ScrollMode } from "@/shared/motion/scene-config";
 
 export type UIMobileProfile = "desktop" | "mobile" | "android-mobile";
 export type UIEffectsLevel = "safe" | "enhanced" | "full";
@@ -19,6 +20,10 @@ export type UICapability = {
   heroMode: UIHeroMode;
   tickerMode: UITickerMode;
   bracketMode: UIBracketMode;
+  sceneMode: SceneMode;
+  sceneQuality: SceneQuality;
+  postFxQuality: PostFxQuality;
+  scrollMode: ScrollMode;
 };
 
 function getServerSafeCapability(reducedMotion: boolean): UICapability {
@@ -31,7 +36,11 @@ function getServerSafeCapability(reducedMotion: boolean): UICapability {
     effects: reducedMotion ? "safe" : "enhanced",
     heroMode: reducedMotion ? "reduced" : "css-fallback",
     tickerMode: "static",
-    bracketMode: reducedMotion ? "minimal" : "highlighted"
+    bracketMode: reducedMotion ? "minimal" : "highlighted",
+    sceneMode: reducedMotion ? "reduced" : "css-fallback",
+    sceneQuality: "medium",
+    postFxQuality: reducedMotion ? "off" : "light",
+    scrollMode: "native"
   };
 }
 
@@ -51,6 +60,24 @@ function readCapability(reducedMotion: boolean): UICapability {
   const heroMode: UIHeroMode = reducedMotion ? "reduced" : profile === "desktop" ? "full" : "css-fallback";
   const tickerMode: UITickerMode = reducedMotion ? "static" : profile === "desktop" ? "looping" : "stepped";
   const bracketMode: UIBracketMode = reducedMotion ? "minimal" : profile === "desktop" ? "animated" : "highlighted";
+  const sceneMode: SceneMode = reducedMotion ? "reduced" : profile === "desktop" ? "r3f" : isAndroid ? "canvas-fallback" : "r3f";
+  const sceneQuality: SceneQuality = reducedMotion
+    ? "low"
+    : profile === "desktop"
+      ? window.devicePixelRatio > 1.5
+        ? "ultra"
+        : "high"
+      : isAndroid
+        ? "low"
+        : "medium";
+  const postFxQuality: PostFxQuality = reducedMotion
+    ? "off"
+    : profile === "desktop"
+      ? "full"
+      : isAndroid
+        ? "light"
+        : "medium";
+  const scrollMode: ScrollMode = reducedMotion ? "native" : "lenis";
 
   return {
     isAndroid,
@@ -61,7 +88,11 @@ function readCapability(reducedMotion: boolean): UICapability {
     effects,
     heroMode,
     tickerMode,
-    bracketMode
+    bracketMode,
+    sceneMode,
+    sceneQuality,
+    postFxQuality,
+    scrollMode
   };
 }
 

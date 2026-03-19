@@ -6,7 +6,7 @@ import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { BracketPreviewCard, DayNoteBanner, FixtureStrip, MetricTile, NewsBulletin, PodiumCard, SportProgressCard, StageSummaryRail } from "@/shared/ui";
-import { MotionIn } from "@/shared/motion";
+import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type HomeScreenProps = {
   data: HomePageData;
@@ -18,66 +18,69 @@ export function HomeScreen({ data }: HomeScreenProps) {
   return (
     <div className="stack-hero">
       <MotionIn>
-        <BroadcastHero
-          eyebrow="Cyber Arena Broadcast"
-          kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
-          title={tournament.name}
-          description="Track the live spotlight, title race, featured fixtures, and organizer bulletins from one cleaner broadcast board."
-          tone={highlightMatch?.urgency === "live" ? "cyan" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
-          intensity="cinematic"
-          actions={
-            <>
-              <Link href="/schedule" className="button">
-                Enter live schedule
+        <ScrollStorySection variant="hero">
+          <BroadcastHero
+            eyebrow="Cyber Arena Broadcast"
+            kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
+            title={tournament.name}
+            description="Track the live spotlight, title race, featured fixtures, and organizer bulletins from one cleaner broadcast board."
+            tone={highlightMatch?.urgency === "live" ? "cyan" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
+            intensity="cinematic"
+            variant="home-hero"
+            actions={
+              <>
+                <Link href="/schedule" className="button">
+                  Enter live schedule
+                </Link>
+                <Link href="/announcements" className="button button-ghost">
+                  Open bulletin feed
+                </Link>
+              </>
+            }
+            signals={heroSignals.map((signal) => (
+              <Link key={signal.id} href={signal.href ?? "/"} className={`hero-signal hero-signal-${signal.tone}`}>
+                <span>{signal.label}</span>
+                <strong>{signal.value}</strong>
+                <small>{signal.detail}</small>
               </Link>
-              <Link href="/announcements" className="button button-ghost">
-                Open bulletin feed
-              </Link>
-            </>
-          }
-          signals={heroSignals.map((signal) => (
-            <Link key={signal.id} href={signal.href ?? "/"} className={`hero-signal hero-signal-${signal.tone}`}>
-              <span>{signal.label}</span>
-              <strong>{signal.value}</strong>
-              <small>{signal.detail}</small>
-            </Link>
-          ))}
-          aside={
-            highlightMatch ? (
-              <div className={`score-spotlight score-spotlight-${highlightMatch.urgency}`}>
-                <div className="spotlight-status-line">
-                  <p className="eyebrow">{highlightMatch.label}</p>
-                  <span className="spotlight-chip">{highlightMatch.urgency === "live" ? "Now Charging" : highlightMatch.urgency === "watch" ? "Delay Watch" : "Next Up"}</span>
+            ))}
+            aside={
+              highlightMatch ? (
+                <div className={`score-spotlight score-spotlight-${highlightMatch.urgency}`}>
+                  <div className="spotlight-status-line">
+                    <p className="eyebrow">{highlightMatch.label}</p>
+                    <span className="spotlight-chip">{highlightMatch.urgency === "live" ? "Now Charging" : highlightMatch.urgency === "watch" ? "Delay Watch" : "Next Up"}</span>
+                  </div>
+                  <div className="score-sport-line">
+                    <span>{highlightMatch.sport.name}</span>
+                    <span>{highlightMatch.match.stage?.label ?? highlightMatch.match.round}</span>
+                  </div>
+                  <h2>
+                    {highlightMatch.match.teamA?.name ?? "TBD"}
+                    <span>VS</span>
+                    {highlightMatch.match.teamB?.name ?? "TBD"}
+                  </h2>
+                  <p>{highlightMatch.headline}</p>
+                  <strong>{highlightMatch.summary}</strong>
+                  <div className="spotlight-actions">
+                    <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
+                      Open match center
+                    </Link>
+                    <Link href={`/sports/${highlightMatch.sport.id}?tab=bracket`} className="inline-link">
+                      Open winner tree
+                    </Link>
+                  </div>
                 </div>
-                <div className="score-sport-line">
-                  <span>{highlightMatch.sport.name}</span>
-                  <span>{highlightMatch.match.stage?.label ?? highlightMatch.match.round}</span>
+              ) : (
+                <div className="score-spotlight">
+                  <p className="eyebrow">Live desk</p>
+                  <h2>No featured board yet</h2>
+                  <p>Once fixtures are seeded, the top live or next-up match will take over this scoreboard panel.</p>
                 </div>
-                <h2>
-                  {highlightMatch.match.teamA?.name ?? "TBD"}
-                  <span>VS</span>
-                  {highlightMatch.match.teamB?.name ?? "TBD"}
-                </h2>
-                <p>{highlightMatch.headline}</p>
-                <strong>{highlightMatch.summary}</strong>
-                <div className="spotlight-actions">
-                  <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
-                    Open match center
-                  </Link>
-                  <Link href={`/sports/${highlightMatch.sport.id}?tab=bracket`} className="inline-link">
-                    Open winner tree
-                  </Link>
-                </div>
-              </div>
-            ) : (
-              <div className="score-spotlight">
-                <p className="eyebrow">Live desk</p>
-                <h2>No featured board yet</h2>
-                <p>Once fixtures are seeded, the top live or next-up match will take over this scoreboard panel.</p>
-              </div>
-            )
-          }
-        />
+              )
+            }
+          />
+        </ScrollStorySection>
       </MotionIn>
 
       <MotionIn delay={0.05}>
@@ -169,6 +172,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
       </MotionIn>
 
       <MotionIn className="stack-xl" delay={0.12}>
+        <ScrollStorySection variant="bracket">
         <section className="section-shell section-shell-bracket-preview">
           <div className="section-heading">
             <div>
@@ -184,7 +188,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
             )}
           </div>
         </section>
+        </ScrollStorySection>
 
+        <ScrollStorySection variant="section">
         <section className="section-shell section-shell-podium">
           <div className="section-heading">
             <div>
@@ -209,7 +215,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
             )}
           </div>
         </section>
+        </ScrollStorySection>
 
+        <ScrollStorySection variant="section">
         <section className="section-shell section-shell-posters" id="sports-spotlight">
           <div className="section-heading">
             <div>
@@ -247,7 +255,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
             )}
           </div>
         </section>
+        </ScrollStorySection>
 
+        <ScrollStorySection variant="section">
         <section className="section-shell section-shell-broadcast">
           <div className="section-heading">
             <div>
@@ -277,7 +287,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
             )}
           </div>
         </section>
+        </ScrollStorySection>
 
+        <ScrollStorySection variant="news">
         <section className="section-shell section-shell-newsdesk">
           <div className="section-heading">
             <div>
@@ -304,6 +316,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
             )}
           </div>
         </section>
+        </ScrollStorySection>
       </MotionIn>
     </div>
   );

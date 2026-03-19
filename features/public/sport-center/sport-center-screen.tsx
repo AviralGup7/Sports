@@ -6,7 +6,7 @@ import type { SportPageData } from "@/server/data/public/types";
 import { AthleticsEventBoard, BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { MotionIn } from "@/shared/motion";
+import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type SportCenterScreenProps = {
   sportSlug: SportSlug;
@@ -27,29 +27,32 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
   return (
     <div className="stack-xl">
       <MotionIn>
-        <BroadcastHero
-          eyebrow="Sport Center"
-          kicker={data.sport.format}
-          title={data.sport.name}
-          description={data.sport.rulesSummary}
-          accent={data.sport.color}
-          tone={data.sport.id === "athletics" ? "crimson" : "cyan"}
-          intensity="premium"
-          aside={
-            <div className="score-spotlight score-spotlight-tight">
-              <p className="eyebrow">Stage Status</p>
-              <h2>{liveCount > 0 ? "Live Round" : data.stageSummaries[0]?.stage.label ?? "Structure Ready"}</h2>
-              <strong>{data.teams.length} squads active</strong>
-              <p>
-                {data.sport.id === "athletics"
-                  ? "Athletics stays on event-result cards rather than a bracket tree."
-                  : liveCount > 0
-                    ? `${liveCount} boards are active right now.`
-                    : "Use the tabs below to move between overview, standings, bracket, and fixtures."}
-              </p>
-            </div>
-          }
-        />
+        <ScrollStorySection variant="hero">
+          <BroadcastHero
+            eyebrow="Sport Center"
+            kicker={data.sport.format}
+            title={data.sport.name}
+            description={data.sport.rulesSummary}
+            accent={data.sport.color}
+            tone={data.sport.id === "athletics" ? "crimson" : "cyan"}
+            intensity="premium"
+            variant="sport-masthead"
+            aside={
+              <div className="score-spotlight score-spotlight-tight">
+                <p className="eyebrow">Stage Status</p>
+                <h2>{liveCount > 0 ? "Live Round" : data.stageSummaries[0]?.stage.label ?? "Structure Ready"}</h2>
+                <strong>{data.teams.length} squads active</strong>
+                <p>
+                  {data.sport.id === "athletics"
+                    ? "Athletics stays on event-result cards rather than a bracket tree."
+                    : liveCount > 0
+                      ? `${liveCount} boards are active right now.`
+                      : "Use the tabs below to move between overview, standings, bracket, and fixtures."}
+                </p>
+              </div>
+            }
+          />
+        </ScrollStorySection>
       </MotionIn>
 
       <MotionIn className="filter-rail sport-center-rail" delay={0.06}>

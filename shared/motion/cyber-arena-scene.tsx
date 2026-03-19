@@ -1,18 +1,30 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { gsap } from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import { getScenePreset, type HeroSceneVariant } from "@/shared/motion/scene-config";
 import { useUICapability } from "@/shared/motion/ui-capability";
+
+gsap.registerPlugin(ScrollTrigger);
+
+const ArenaR3FScene = dynamic(
+  () => import("@/shared/motion/arena-r3f-scene").then((module) => module.ArenaR3FScene),
+  {
+    ssr: false,
+    loading: () => null
+  }
+);
 
 type CyberArenaSceneProps = {
   className?: string;
   tone?: "cyan" | "blue" | "amber" | "crimson";
   intensity?: "cinematic" | "premium" | "functional";
   interactive?: boolean;
+  variant?: HeroSceneVariant;
 };
-
-type SceneMode = "webgl" | "css" | "reduced";
 
 type Particle = {
   x: number;
@@ -30,16 +42,17 @@ const toneMap: Record<NonNullable<CyberArenaSceneProps["tone"]>, [number, number
   crimson: [251, 113, 133]
 };
 
-export function CyberArenaScene({
-  className,
-  tone = "cyan",
-  intensity = "cinematic",
-  interactive = true
-}: CyberArenaSceneProps) {
+function CanvasFallbackScene({
+  rootRef,
+  tone,
+  intensity
+}: {
+  rootRef: React.RefObject<HTMLDivElement | null>;
+  tone: NonNullable<CyberArenaSceneProps["tone"]>;
+  intensity: NonNullable<CyberArenaSceneProps["intensity"]>;
+}) {
   const capability = useUICapability();
-  const rootRef = useRef<HTMLDivElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [mode, setMode] = useState<SceneMode>(capability.heroMode === "reduced" ? "reduced" : capability.heroMode === "full" ? "webgl" : "css");
 
   const density = useMemo(() => {
     if (capability.effects === "safe") {
@@ -49,68 +62,16 @@ export function CyberArenaScene({
     if (intensity === "functional") {
       return capability.profile === "desktop" ? 18 : 10;
     }
+
     if (intensity === "premium") {
       return capability.profile === "desktop" ? 28 : 16;
     }
+
     return capability.profile === "desktop" ? 42 : 22;
   }, [capability.effects, capability.profile, intensity]);
 
   useEffect(() => {
-    if (capability.heroMode === "reduced") {
-      setMode("reduced");
-      return;
-    }
-
-    if (capability.heroMode === "css-fallback") {
-      setMode("css");
-      return;
-    }
-
-    const canvas = document.createElement("canvas");
-    const webgl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
-
-    setMode(webgl ? "webgl" : "css");
-  }, [capability.heroMode]);
-
-  useEffect(() => {
-    const root = rootRef.current;
-    if (!root || !interactive || capability.heroMode !== "full") {
-      return;
-    }
-
-    const handlePointerMove = (event: PointerEvent) => {
-      const bounds = root.getBoundingClientRect();
-      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
-      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
-
-      gsap.to(root, {
-        duration: 0.65,
-        ease: "power3.out",
-        "--scene-pointer-x": `${x}%`,
-        "--scene-pointer-y": `${y}%`
-      });
-    };
-
-    const handlePointerLeave = () => {
-      gsap.to(root, {
-        duration: 0.9,
-        ease: "power3.out",
-        "--scene-pointer-x": "50%",
-        "--scene-pointer-y": "50%"
-      });
-    };
-
-    root.addEventListener("pointermove", handlePointerMove);
-    root.addEventListener("pointerleave", handlePointerLeave);
-
-    return () => {
-      root.removeEventListener("pointermove", handlePointerMove);
-      root.removeEventListener("pointerleave", handlePointerLeave);
-    };
-  }, [capability.heroMode, interactive]);
-
-  useEffect(() => {
-    if (capability.heroMode !== "full" || density === 0) {
+    if (density === 0) {
       return;
     }
 
@@ -192,25 +153,6 @@ export function CyberArenaScene({
         }
       });
 
-      for (let ring = 0; ring < 3; ring += 1) {
-        context.beginPath();
-        context.strokeStyle = `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${0.08 + ring * 0.05})`;
-        context.lineWidth = 1.2;
-        context.arc(width * 0.78, height * 0.44, 90 + ring * 42 + pulse * 8, 0, Math.PI * 2);
-        context.stroke();
-      }
-
-      const beamWidth = width * 0.55;
-      const beamX = ((time / 22) % (width + beamWidth)) - beamWidth;
-      const beamGradient = context.createLinearGradient(beamX, 0, beamX + beamWidth, 0);
-      beamGradient.addColorStop(0, "rgba(255,255,255,0)");
-      beamGradient.addColorStop(0.45, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.04)`);
-      beamGradient.addColorStop(0.5, `rgba(255,255,255,0.14)`);
-      beamGradient.addColorStop(0.56, `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, 0.08)`);
-      beamGradient.addColorStop(1, "rgba(255,255,255,0)");
-      context.fillStyle = beamGradient;
-      context.fillRect(beamX, 0, beamWidth, height);
-
       animationFrame = window.requestAnimationFrame(draw);
     };
 
@@ -223,18 +165,116 @@ export function CyberArenaScene({
       window.cancelAnimationFrame(animationFrame);
       observer.disconnect();
     };
-  }, [capability.heroMode, density, tone]);
+  }, [density, rootRef, tone]);
+
+  return <canvas ref={canvasRef} className="cyber-arena-canvas" aria-hidden="true" />;
+}
+
+export function CyberArenaScene({
+  className,
+  tone = "cyan",
+  intensity = "cinematic",
+  interactive = true,
+  variant = "site-backdrop"
+}: CyberArenaSceneProps) {
+  const capability = useUICapability();
+  const preset = getScenePreset(variant);
+  const rootRef = useRef<HTMLDivElement | null>(null);
+  const [isWebGLReady, setIsWebGLReady] = useState(false);
+
+  useEffect(() => {
+    if (capability.sceneMode !== "r3f") {
+      setIsWebGLReady(false);
+      return;
+    }
+
+    const canvas = document.createElement("canvas");
+    const webgl = canvas.getContext("webgl2") || canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    setIsWebGLReady(Boolean(webgl));
+  }, [capability.sceneMode]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || !interactive || capability.sceneMode !== "r3f") {
+      return;
+    }
+
+    const handlePointerMove = (event: PointerEvent) => {
+      const bounds = root.getBoundingClientRect();
+      const x = ((event.clientX - bounds.left) / bounds.width) * 100;
+      const y = ((event.clientY - bounds.top) / bounds.height) * 100;
+
+      gsap.to(root, {
+        duration: 0.65,
+        ease: "power3.out",
+        "--scene-pointer-x": `${x}%`,
+        "--scene-pointer-y": `${y}%`
+      });
+    };
+
+    const handlePointerLeave = () => {
+      gsap.to(root, {
+        duration: 0.9,
+        ease: "power3.out",
+        "--scene-pointer-x": "50%",
+        "--scene-pointer-y": "50%"
+      });
+    };
+
+    root.addEventListener("pointermove", handlePointerMove);
+    root.addEventListener("pointerleave", handlePointerLeave);
+
+    return () => {
+      root.removeEventListener("pointermove", handlePointerMove);
+      root.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, [capability.sceneMode, interactive]);
+
+  useEffect(() => {
+    const root = rootRef.current;
+    if (!root || capability.reducedMotion) {
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      gsap.to(root, {
+        yPercent: preset.variant === "home-hero" ? -6 : preset.variant === "sport-masthead" ? -4 : -2,
+        ease: "none",
+        scrollTrigger: {
+          trigger: root,
+          start: "top bottom",
+          end: "bottom top",
+          scrub: true
+        }
+      });
+    }, root);
+
+    return () => {
+      ctx.revert();
+    };
+  }, [capability.reducedMotion, preset.variant]);
+
+  const dataMode =
+    capability.sceneMode === "reduced"
+      ? "reduced"
+      : capability.sceneMode === "r3f" && isWebGLReady
+        ? "r3f"
+        : capability.sceneMode === "canvas-fallback"
+          ? "canvas"
+          : "css";
 
   return (
     <div
       ref={rootRef}
       className={className ? `cyber-arena-scene ${className}` : "cyber-arena-scene"}
-      data-mode={mode}
+      data-mode={dataMode}
+      data-variant={variant}
       data-tone={tone}
       data-intensity={intensity}
       data-profile={capability.profile}
     >
-      {capability.heroMode === "full" && density > 0 ? <canvas ref={canvasRef} className="cyber-arena-canvas" aria-hidden="true" /> : null}
+      {dataMode === "r3f" ? <ArenaR3FScene className="cyber-arena-r3f" variant={variant} tone={tone} /> : null}
+      {dataMode === "canvas" ? <CanvasFallbackScene rootRef={rootRef} tone={tone} intensity={intensity} /> : null}
       <div className="cyber-arena-grid" aria-hidden="true" />
       <div className="cyber-arena-beam cyber-arena-beam-left" aria-hidden="true" />
       <div className="cyber-arena-beam cyber-arena-beam-right" aria-hidden="true" />

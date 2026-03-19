@@ -15,6 +15,10 @@ export function RuntimeCapabilityFlags() {
     root.dataset.heroMode = capability.heroMode;
     root.dataset.tickerMode = capability.tickerMode;
     root.dataset.bracketMode = capability.bracketMode;
+    root.dataset.sceneMode = capability.sceneMode;
+    root.dataset.sceneQuality = capability.sceneQuality;
+    root.dataset.postFx = capability.postFxQuality;
+    root.dataset.scrollMode = capability.scrollMode;
     root.dataset.mobile = capability.isMobile ? "true" : "false";
     root.dataset.android = capability.isAndroid ? "true" : "false";
   }, [capability]);

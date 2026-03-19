@@ -5,7 +5,7 @@ import { formatDateTime } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { FixtureStrip, ProgressPathCard, StageBadge } from "@/shared/ui";
-import { MotionIn } from "@/shared/motion";
+import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type MatchCenterScreenProps = {
   data: MatchPageData;
@@ -30,23 +30,26 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
       </MotionIn>
 
       <MotionIn>
-        <BroadcastHero
-          eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? data.match.round}`}
-          kicker={formatDateTime(data.match.day, data.match.startTime)}
-          title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
-          description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Awaiting scoreboard update"}`}
-          tone={data.match.status === "live" ? "cyan" : data.match.status === "postponed" ? "crimson" : "blue"}
-          intensity="premium"
-          aside={
-            <div className="score-spotlight score-spotlight-tight">
-              <p className="eyebrow">Match Center</p>
-              <StageBadge status={data.match.status} label={data.match.isBye ? "bye" : data.match.status} tone={data.match.isBye ? "alert" : undefined} />
-              <h2>{data.match.result?.winner?.name ?? "No winner yet"}</h2>
-              <strong>{data.match.result?.scoreSummary ?? "Score line pending"}</strong>
-              <p>{data.match.result?.note ?? "Control room notes will land here once organizers update the result."}</p>
-            </div>
-          }
-        />
+        <ScrollStorySection variant="hero">
+          <BroadcastHero
+            eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? data.match.round}`}
+            kicker={formatDateTime(data.match.day, data.match.startTime)}
+            title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
+            description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Awaiting scoreboard update"}`}
+            tone={data.match.status === "live" ? "cyan" : data.match.status === "postponed" ? "crimson" : "blue"}
+            intensity="premium"
+            variant={data.match.winnerToMatchId || data.match.loserToMatchId ? "bracket-showcase" : "sport-masthead"}
+            aside={
+              <div className="score-spotlight score-spotlight-tight">
+                <p className="eyebrow">Match Center</p>
+                <StageBadge status={data.match.status} label={data.match.isBye ? "bye" : data.match.status} tone={data.match.isBye ? "alert" : undefined} />
+                <h2>{data.match.result?.winner?.name ?? "No winner yet"}</h2>
+                <strong>{data.match.result?.scoreSummary ?? "Score line pending"}</strong>
+                <p>{data.match.result?.note ?? "Control room notes will land here once organizers update the result."}</p>
+              </div>
+            }
+          />
+        </ScrollStorySection>
       </MotionIn>
 
       <MotionIn className="detail-grid" delay={0.08}>

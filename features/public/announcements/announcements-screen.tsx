@@ -1,7 +1,7 @@
 import type { Announcement } from "@/domain/announcements/types";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { MotionIn } from "@/shared/motion";
+import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { NewsBulletin } from "@/shared/ui";
 
 type AnnouncementsScreenProps = {
@@ -15,26 +15,29 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
   return (
     <div className="stack-xl">
       <MotionIn>
-        <BroadcastHero
-          eyebrow="Bulletin Desk"
-          title="Announcements"
-          description="Pinned headlines ride the top of the cyber arena board, while the rest of the newsroom feed stacks below in a premium editorial sequence."
-          compact
-          tone="crimson"
-          intensity="premium"
-          aside={
-            <div className="hero-aside-list hero-aside-list-cyber">
-              <div>
-                <span className="aside-label">Pinned</span>
-                <strong>{pinnedItems.length}</strong>
+        <ScrollStorySection variant="hero">
+          <BroadcastHero
+            eyebrow="Bulletin Desk"
+            title="Announcements"
+            description="Pinned headlines ride the top of the cyber arena board, while the rest of the newsroom feed stacks below in a premium editorial sequence."
+            compact
+            tone="crimson"
+            intensity="premium"
+            variant="newsroom-story"
+            aside={
+              <div className="hero-aside-list hero-aside-list-cyber">
+                <div>
+                  <span className="aside-label">Pinned</span>
+                  <strong>{pinnedItems.length}</strong>
+                </div>
+                <div>
+                  <span className="aside-label">Feed items</span>
+                  <strong>{feedItems.length}</strong>
+                </div>
               </div>
-              <div>
-                <span className="aside-label">Feed items</span>
-                <strong>{feedItems.length}</strong>
-              </div>
-            </div>
-          }
-        />
+            }
+          />
+        </ScrollStorySection>
       </MotionIn>
 
       {pinnedItems.length > 0 ? (
