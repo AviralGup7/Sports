@@ -1,9 +1,15 @@
 "use server";
 
-import { performUpsertAnnouncement } from "@/lib/admin-actions/announcements";
-import { performAdminLogin, performAdminSignOut } from "@/lib/admin-actions/auth";
-import { performGenerateStructure, performSubmitResult, performUpsertMatch } from "@/lib/admin-actions/matches";
-import { performArchiveTeam, performUpsertTeam } from "@/lib/admin-actions/teams";
+import {
+  performAdminLogin,
+  performAdminSignOut,
+  performArchiveTeam,
+  performGenerateStructure,
+  performSubmitResult,
+  performUpsertAnnouncement,
+  performUpsertMatch,
+  performUpsertTeam
+} from "@/server/actions/admin";
 
 export async function loginAdminAction(formData: FormData) {
   return performAdminLogin(formData);
@@ -36,3 +42,4 @@ export async function submitResultAction(formData: FormData) {
 export async function upsertAnnouncementAction(formData: FormData) {
   return performUpsertAnnouncement(formData);
 }
+

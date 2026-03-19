@@ -1,7 +1,5 @@
-import { ActionNotice } from "@/components/action-notice";
-import { hasSupabaseEnv } from "@/lib/supabase/env";
-
-import { loginAdminAction } from "../actions";
+import { LoginScreen } from "@/features/admin/auth/login-screen";
+import { hasSupabaseEnv } from "@/server/supabase/env";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -16,40 +14,6 @@ type AdminLoginPageProps = {
 export default async function AdminLoginPage({ searchParams }: AdminLoginPageProps) {
   const params = (await searchParams) ?? {};
   const tone = params.status === "error" ? "error" : params.status === "success" ? "success" : "info";
-  const envReady = hasSupabaseEnv();
 
-  return (
-    <div className="auth-shell">
-      <section className="backstage-card">
-        <div className="backstage-copy">
-          <p className="eyebrow">Protected Organizer Area</p>
-          <h1>Backstage access</h1>
-          <p className="hero-text">
-            Sign in with a pre-created organizer account to run fixture control, results, announcements, and exports.
-          </p>
-          {!envReady ? (
-            <ActionNotice
-              message="Supabase environment variables are missing on this deployment. Add NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY in Vercel."
-              tone="error"
-            />
-          ) : null}
-          <ActionNotice message={params.message} tone={tone} />
-        </div>
-
-        <form action={loginAdminAction} className="backstage-form">
-          <label className="field">
-            <span>Email</span>
-            <input name="email" type="email" required placeholder="lead@college.edu" autoComplete="email" />
-          </label>
-          <label className="field">
-            <span>Password</span>
-            <input name="password" type="password" required placeholder="********" autoComplete="current-password" />
-          </label>
-          <button type="submit" className="button" disabled={!envReady}>
-            Sign in to control room
-          </button>
-        </form>
-      </section>
-    </div>
-  );
+  return <LoginScreen envReady={hasSupabaseEnv()} message={params.message} tone={tone} />;
 }

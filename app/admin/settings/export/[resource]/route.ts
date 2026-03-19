@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { getAdminProfile } from "@/lib/auth";
-import { getAdminAnnouncementsData, getAdminMatchesData, getAdminTeamsData } from "@/lib/data";
+import { getAdminProfile } from "@/server/auth";
+import { getAdminAnnouncementsData, getAdminMatchesData, getAdminTeamsData } from "@/server/data/admin";
 
 type RouteContext = {
   params: Promise<{

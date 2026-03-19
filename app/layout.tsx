@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
-import { SiteHeader } from "@/components/site-header";
-import { getGlobalChromeData } from "@/lib/data";
+import { SiteHeader } from "@/shared/navigation";
+import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
 import "./globals.css";
 
@@ -56,3 +56,4 @@ export default async function RootLayout({
     </html>
   );
 }
+

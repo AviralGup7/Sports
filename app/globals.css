@@ -1,6 +1,6 @@
-@import "../styles/tokens.css";
-@import "../styles/base.css";
-@import "../styles/layout.css";
-@import "../styles/public/broadcast.css";
-@import "../styles/admin/control-room.css";
-@import "../styles/responsive.css";
+@import "../styles/tokens/index.css";
+@import "../styles/foundations/index.css";
+@import "../styles/shared/index.css";
+@import "../styles/features/public/index.css";
+@import "../styles/features/admin/index.css";
+

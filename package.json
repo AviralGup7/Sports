@@ -6,8 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "test:unit": "vitest run --pool=threads tests/data-format.test.ts tests/progression.test.ts",
+    "lint": "eslint . --max-warnings=0",
+    "test:unit": "vitest run --config vitest.config.ts",
     "test:e2e": "playwright test"
   },
   "dependencies": {

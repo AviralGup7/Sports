@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
-import { AdminActionBar } from "@/components/admin-action-bar";
-import { AdminSidebar } from "@/components/admin-sidebar";
-import { requireAdminProfile } from "@/lib/auth";
+import { AdminActionBar } from "@/shared/layout";
+import { AdminSidebar } from "@/shared/layout";
+import { requireAdminProfile } from "@/server/auth";
 
 import { signOutAdminAction } from "../actions";
 
@@ -34,3 +34,4 @@ export default async function AdminProtectedLayout({
     </div>
   );
 }
+

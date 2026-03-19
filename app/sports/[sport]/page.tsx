@@ -1,17 +1,8 @@
-import { CSSProperties } from "react";
-import Link from "next/link";
 import { notFound } from "next/navigation";
 
-import { BracketTree } from "@/components/bracket-tree";
-import { BroadcastHero } from "@/components/broadcast-hero";
-import { EmptyState } from "@/components/empty-state";
-import { FixtureStrip } from "@/components/fixture-strip";
-import { MotionIn } from "@/components/motion-in";
-import { StageSummaryRail } from "@/components/stage-summary-rail";
-import { StandingsTable } from "@/components/standings-table";
-import { getSportPageData } from "@/lib/data";
-import { sportOrder } from "@/lib/mock-data";
-import { SportSlug } from "@/lib/types";
+import { SportCenterScreen } from "@/features/public/sport-center/sport-center-screen";
+import { getSportPageData } from "@/server/data/public/sport-center-query";
+import { sportOrder } from "@/server/mock/tournament-snapshot";
 
 type SportPageProps = {
   params: Promise<{
@@ -26,188 +17,16 @@ export default async function SportPage({ params, searchParams }: SportPageProps
   const { sport: sportSlug } = await params;
   const routeParams = (await searchParams) ?? {};
   const selectedTab = routeParams.tab ?? "overview";
+  const resolvedSportSlug = sportOrder.find((sport) => sport === sportSlug);
 
-  if (!sportOrder.includes(sportSlug as SportSlug)) {
+  if (!resolvedSportSlug) {
     notFound();
   }
 
-  const data = await getSportPageData(sportSlug as SportSlug);
+  const data = await getSportPageData(resolvedSportSlug);
   if (!data) {
     notFound();
   }
 
-  const liveCount = data.matches.filter((match) => match.status === "live").length;
-  const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
-
-  return (
-    <div className="stack-xl">
-      <MotionIn>
-        <BroadcastHero
-          eyebrow="Sport Center"
-          kicker={data.sport.format}
-          title={data.sport.name}
-          description={data.sport.rulesSummary}
-          accent={data.sport.color}
-          aside={
-            <div className="score-spotlight">
-              <p className="eyebrow">Stage Status</p>
-              <h2>{liveCount > 0 ? "Live Round" : data.stageSummaries[0]?.stage.label ?? "Structure Ready"}</h2>
-              <strong>{data.teams.length} squads active</strong>
-              <p>
-                {data.sport.id === "athletics"
-                  ? "Athletics stays on event-result cards rather than a bracket tree."
-                  : liveCount > 0
-                    ? `${liveCount} boards are active right now.`
-                    : "Use the tabs below to move between overview, standings, bracket, and fixtures."}
-              </p>
-            </div>
-          }
-        />
-      </MotionIn>
-
-      <MotionIn className="filter-rail sport-center-rail" delay={0.06}>
-        <div className="filter-block">
-          <p className="eyebrow">View</p>
-          <div className="chip-row">
-            {["overview", "standings", "bracket", "fixtures"].map((tab) => (
-              <Link key={tab} href={tabHref(tab)} className={selectedTab === tab ? "chip chip-active" : "chip"}>
-                {tab}
-              </Link>
-            ))}
-          </div>
-        </div>
-      </MotionIn>
-
-      <MotionIn className="section-shell" delay={0.08}>
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Stage Progress</p>
-            <h2>Tournament path</h2>
-          </div>
-        </div>
-        <StageSummaryRail summaries={data.stageSummaries} />
-      </MotionIn>
-
-      {selectedTab === "overview" ? (
-        <MotionIn className="split-stage" delay={0.12}>
-          <section className="section-shell">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Spotlight</p>
-                <h2>Current boards</h2>
-              </div>
-            </div>
-            <div className="fixture-stack">
-              {data.overviewMatches.length > 0 ? (
-                data.overviewMatches.map((match) => <FixtureStrip key={match.id} match={match} />)
-              ) : (
-                <EmptyState compact eyebrow="Overview" title="No boards yet" description="Once this sport is seeded, overview boards will show up here." />
-              )}
-            </div>
-          </section>
-
-          <section className="section-shell">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Teams</p>
-                <h2>Association roster</h2>
-              </div>
-            </div>
-            <div className="team-chip-grid">
-              {data.teams.length > 0 ? (
-                data.teams.map((team) => (
-                  <article key={team.id} className="team-chip-card" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
-                    <strong>{team.name}</strong>
-                    <span>{team.association}</span>
-                    <small>Seed {team.seed}</small>
-                  </article>
-                ))
-              ) : (
-                <EmptyState compact eyebrow="Teams" title="No teams assigned yet" description="Attach teams to this sport in the admin roster and they will show up here." />
-              )}
-            </div>
-          </section>
-        </MotionIn>
-      ) : null}
-
-      {selectedTab === "standings" ? (
-        <MotionIn className="section-shell" delay={0.12}>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Standings</p>
-              <h2>Qualification watch</h2>
-            </div>
-          </div>
-          {data.standings.length > 0 ? (
-            <StandingsTable cards={data.standings} />
-          ) : (
-            <EmptyState
-              eyebrow="Standings"
-              title={data.sport.id === "athletics" ? "Athletics does not use group standings" : "No standings yet"}
-              description={
-                data.sport.id === "athletics"
-                  ? "Athletics results are tracked as event cards and medal boards, not group tables."
-                  : "Complete group-stage results to unlock the qualification tables."
-              }
-            />
-          )}
-        </MotionIn>
-      ) : null}
-
-      {selectedTab === "bracket" ? (
-        <MotionIn className="section-shell" delay={0.12}>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Winner Tree</p>
-              <h2>Interactive bracket</h2>
-            </div>
-          </div>
-          {data.bracket ? (
-            <BracketTree bracket={data.bracket} />
-          ) : (
-            <EmptyState
-              eyebrow="Winner Tree"
-              title={data.sport.id === "athletics" ? "Athletics stays off the bracket tree" : "Bracket will appear once stages are linked"}
-              description={
-                data.sport.id === "athletics"
-                  ? "Use the fixtures tab for athletics heats and medal rounds."
-                  : "Set winner and loser routes in the control room to turn this sport hub into a connected winner tree."
-              }
-            />
-          )}
-        </MotionIn>
-      ) : null}
-
-      {selectedTab === "fixtures" ? (
-        <MotionIn className="section-shell" delay={0.12}>
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Fixtures</p>
-              <h2>{data.sport.id === "athletics" ? "Event result cards" : "Every stage on one board"}</h2>
-            </div>
-            <Link href="/schedule" className="inline-link">
-              Return to schedule
-            </Link>
-          </div>
-          <div className="fixture-stack">
-            {data.matches.length > 0 ? (
-              data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
-            ) : (
-              <EmptyState
-                compact
-                eyebrow="Fixture Rail"
-                title="No fixtures for this sport yet"
-                description="Create sport fixtures from the control room to populate this board."
-                action={
-                  <Link href="/admin/matches?mode=live" className="button button-ghost">
-                    Open match control
-                  </Link>
-                }
-              />
-            )}
-          </div>
-        </MotionIn>
-      ) : null}
-    </div>
-  );
+  return <SportCenterScreen sportSlug={resolvedSportSlug} selectedTab={selectedTab} data={data} />;
 }
