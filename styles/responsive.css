@@ -134,9 +134,25 @@
     padding: 0.7rem;
   }
 
+  .filter-rail .chip-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    padding-bottom: 0.2rem;
+    scrollbar-width: none;
+  }
+
+  .filter-rail .chip-row::-webkit-scrollbar {
+    display: none;
+  }
+
+  .filter-rail .chip {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
   .page-shell {
     padding-top: 1.25rem;
-    padding-bottom: calc(var(--mobile-bottom-clearance) + 1rem);
+    padding-bottom: calc(var(--mobile-bottom-clearance) + 1.2rem);
   }
 
   .broadcast-hero,
@@ -270,7 +286,8 @@
   }
 
   .operations-hero h1 {
-    font-size: clamp(2.2rem, 10vw, 3rem);
+    font-size: clamp(1.95rem, 8.8vw, 2.45rem);
+    line-height: 0.96;
   }
 
   .attention-card {
@@ -308,6 +325,10 @@
   .broadcast-hero-main h1,
   .backstage-card h1 {
     font-size: clamp(2.65rem, 16vw, 4.4rem);
+  }
+
+  .operations-hero h1 {
+    font-size: clamp(1.75rem, 9.2vw, 2.15rem);
   }
 
   .score-spotlight h2 {
@@ -349,7 +370,7 @@
   }
 
   .page-shell {
-    padding-bottom: calc(var(--mobile-bottom-clearance) + 0.75rem);
+    padding-bottom: calc(var(--mobile-bottom-clearance) + 1.4rem);
   }
 
   .admin-nav {

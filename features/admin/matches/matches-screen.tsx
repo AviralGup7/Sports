@@ -148,17 +148,7 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
 
       {mode === "live" ? (
         <>
-          <MotionIn delay={0.1}>
-            <AdminMatchCreatePanel
-              sports={data.sports}
-              stages={visibleStages}
-              groups={selectedSport ? data.groups.filter((group) => group.sportId === selectedSport) : data.groups}
-              teams={data.teams}
-              action={upsertMatchAction}
-            />
-          </MotionIn>
-
-          <MotionIn className="stack-lg" delay={0.14}>
+          <MotionIn className="stack-lg" delay={0.1}>
             {visibleMatches.length > 0 ? (
               visibleMatches.map((match) => (
                 <AdminMatchOpsCard
@@ -173,8 +163,18 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
                 />
               ))
             ) : (
-              <EmptyState eyebrow="Live Desk" title="No matches match the current filters" description="Change sport, day, stage, or status filters, or create a new fixture above to start the result workflow." />
+              <EmptyState eyebrow="Live Desk" title="No matches match the current filters" description="Change sport, day, stage, or status filters, or create a new fixture below to start the result workflow." />
             )}
+          </MotionIn>
+
+          <MotionIn delay={0.16}>
+            <AdminMatchCreatePanel
+              sports={data.sports}
+              stages={visibleStages}
+              groups={selectedSport ? data.groups.filter((group) => group.sportId === selectedSport) : data.groups}
+              teams={data.teams}
+              action={upsertMatchAction}
+            />
           </MotionIn>
         </>
       ) : null}
