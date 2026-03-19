@@ -19,7 +19,6 @@
     "@supabase/ssr": "^0.9.0",
     "@supabase/supabase-js": "^2.99.2",
     "@theatre/core": "^0.7.2",
-    "@theatre/r3f": "^0.7.2",
     "framer-motion": "^12.38.0",
     "glsl-noise": "^0.0.0",
     "gsap": "^3.14.2",

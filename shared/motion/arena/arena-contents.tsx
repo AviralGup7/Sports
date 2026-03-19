@@ -3,7 +3,6 @@
 import { EffectComposer, Bloom, ChromaticAberration, DepthOfField, Vignette } from "@react-three/postprocessing";
 import { useFrame } from "@react-three/fiber";
 import { Float, PerspectiveCamera, Sparkles } from "@react-three/drei";
-import { SheetProvider } from "@theatre/r3f";
 import { BlendFunction } from "postprocessing";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
@@ -117,7 +116,7 @@ export function ArenaContents({ variant, tone = "cyan" }: ArenaContentsProps) {
   });
 
   return (
-    <SheetProvider sheet={sheet}>
+    <>
       <PerspectiveCamera ref={cameraRef} makeDefault position={[0, values.cameraElevation, preset.cameraDistance]} fov={42} />
       <color attach="background" args={["#050811"]} />
       <fog attach="fog" args={["#050811", 6, 14]} />
@@ -155,6 +154,6 @@ export function ArenaContents({ variant, tone = "cyan" }: ArenaContentsProps) {
           <Vignette eskil={false} offset={values.vignette} darkness={0.82} />
         </EffectComposer>
       ) : null}
-    </SheetProvider>
+    </>
   );
 }
