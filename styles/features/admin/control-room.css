@@ -458,6 +458,13 @@
   font-family: var(--font-heading), sans-serif;
 }
 
+@media (max-width: 920px) {
+  .admin-shell {
+    display: flex;
+    flex-direction: column;
+  }
+}
+
 .attention-card span {
   color: var(--muted);
   line-height: 1.5;
