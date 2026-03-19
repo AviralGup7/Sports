@@ -5,7 +5,7 @@ import type { SchedulePageData } from "@/server/data/public/types";
 import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FixtureStrip, StageTimeline } from "@/shared/ui";
+import { DayNoteBanner, FixtureStrip, StageTimeline } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
 type ScheduleScreenProps = {
@@ -62,6 +62,10 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </div>
           }
         />
+      </MotionIn>
+
+      <MotionIn delay={0.06}>
+        <DayNoteBanner note={data.dayNote} />
       </MotionIn>
 
       <MotionIn className="filter-rail" delay={0.08}>
@@ -142,7 +146,53 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
       </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.12}>
-        {data.scheduleGroups.length > 0 ? (
+        {!selectedSport && data.sportBlocks.length > 0 ? (
+          <section className="section-shell">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Quick Sport Jump</p>
+                <h2>Visible sport lanes</h2>
+              </div>
+            </div>
+            <div className="chip-row">
+              {data.sportBlocks.map((block) => (
+                <Link key={`jump-${block.sport.id}`} href={buildHref({ sport: block.sport.id, stage: undefined, group: undefined })} className="chip">
+                  {block.sport.name} {block.visibleCount}
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
+
+        {!selectedSport && data.sportBlocks.length > 0 ? (
+          data.sportBlocks.map((block) => (
+            <section key={block.sport.id} className="section-shell schedule-sport-block">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">{block.activeStageLabel}</p>
+                  <h2>{block.sport.name}</h2>
+                </div>
+                <span className="pill">{block.visibleCount} boards</span>
+              </div>
+              <div className="stack-lg">
+                {block.scheduleGroups.map((group) => (
+                  <section key={`${block.sport.id}-${group.time}`} className="timeline-group timeline-group-cyber">
+                    <div className="timeline-marker">
+                      <p className="eyebrow">Time Slot</p>
+                      <h2>{group.label}</h2>
+                      <span>{group.matches.length} boards</span>
+                    </div>
+                    <div className="timeline-stack">
+                      {group.matches.map((match) => (
+                        <FixtureStrip key={match.id} match={match} />
+                      ))}
+                    </div>
+                  </section>
+                ))}
+              </div>
+            </section>
+          ))
+        ) : data.scheduleGroups.length > 0 ? (
           data.scheduleGroups.map((group) => (
             <section key={group.time} className="timeline-group timeline-group-cyber">
               <div className="timeline-marker">

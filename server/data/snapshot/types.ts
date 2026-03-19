@@ -68,6 +68,7 @@ export type AnnouncementRow = {
 };
 
 export type RepositorySnapshot = {
+  source: "supabase" | "fallback";
   tournament: Tournament;
   sports: Sport[];
   stages: CompetitionStage[];

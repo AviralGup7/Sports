@@ -38,6 +38,7 @@ import type {
 
 function getFallbackSnapshot() {
   return hydrateSnapshot({
+    source: "fallback",
     tournament: tournamentSeed,
     sports: sportsSeed,
     stages: competitionStagesSeed,
@@ -124,6 +125,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
     }
 
     return hydrateSnapshot({
+      source: "supabase",
       tournament: mapTournamentRow(tournamentRow),
       sports: mapSportRows(sportsRes.data),
       stages: mapStageRows(stagesRes.data),

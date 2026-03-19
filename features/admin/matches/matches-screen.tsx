@@ -2,9 +2,9 @@ import Link from "next/link";
 
 import { generateStructureAction, submitResultAction, upsertMatchAction } from "@/app/admin/actions";
 import type { AdminMatchesData } from "@/server/data/admin/types";
-import { ActionNotice, EmptyState } from "@/shared/feedback";
+import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { BracketTree, FixtureStrip, IntegrityWarning, StandingsTable } from "@/shared/ui";
+import { AthleticsEventBoard, BracketTree, FixtureStrip, IntegrityWarning, StandingsTable } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 import { AdminMatchCreatePanel } from "@/features/admin/matches/components/match-create-panel";
 import { AdminMatchFilters } from "@/features/admin/matches/components/match-filters";
@@ -58,6 +58,8 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
 
   return (
     <div className="stack-xl">
+      <ActionToast message={params.message} tone={tone} />
+
       <MotionIn>
         <section className="operations-hero">
           <div>
@@ -148,6 +150,40 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
 
       {mode === "live" ? (
         <>
+          <MotionIn className="split-stage" delay={0.095}>
+            <ControlPanel eyebrow="Fast Result Deck" title="Winner declaration lane" description="Close a board quickly, then fall back to the full form only when you need advanced routing or metadata edits.">
+              <div className="quick-result-candidate-list">
+                {data.quickResultCandidates.length > 0 ? (
+                  data.quickResultCandidates.slice(0, 6).map((candidate) => (
+                    <Link key={candidate.id} href={`/admin/matches?mode=live&sport=${candidate.sportId}`} className="quick-result-candidate">
+                      <div>
+                        <p className="eyebrow">{candidate.status}</p>
+                        <strong>{candidate.matchLabel}</strong>
+                        <span>
+                          {candidate.teamAName} vs {candidate.teamBName}
+                        </span>
+                      </div>
+                      <small>{candidate.progressionHint}</small>
+                    </Link>
+                  ))
+                ) : (
+                  <EmptyState compact eyebrow="Fast Result Deck" title="No quick result targets" description="Once live or newly-finished boards exist, they will appear here for faster closeout." />
+                )}
+              </div>
+            </ControlPanel>
+
+            <ControlPanel eyebrow="Operator Guide" title="How to use the control room" description="Keep day-of work in Live Desk, and move to Builder or Bracket Manager only when structure needs intervention.">
+              <div className="operator-guide-panel">
+                {data.operatorGuide.map((item) => (
+                  <div key={item} className="operator-guide-item">
+                    <span className="operator-guide-dot" aria-hidden="true" />
+                    <p>{item}</p>
+                  </div>
+                ))}
+              </div>
+            </ControlPanel>
+          </MotionIn>
+
           <MotionIn className="stack-lg" delay={0.1}>
             {visibleMatches.length > 0 ? (
               visibleMatches.map((match) => (
@@ -158,6 +194,7 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
                   stages={data.stages}
                   groups={data.groups}
                   teams={data.teams}
+                  quickResultCandidate={data.quickResultCandidates.find((candidate) => candidate.matchId === match.id)}
                   updateAction={upsertMatchAction}
                   resultAction={submitResultAction}
                 />
@@ -168,6 +205,18 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
           </MotionIn>
 
           <MotionIn delay={0.16}>
+            {(!selectedSport || selectedSport === "athletics") && data.athleticsBoards.length > 0 ? (
+              <ControlPanel eyebrow="Athletics Board" title="Event-control lane" description="Athletics stays on event-style cards rather than forcing a two-team bracket workflow.">
+                <div className="stack-lg">
+                  {data.athleticsBoards.map((board) => (
+                    <AthleticsEventBoard key={board.id} board={board} admin />
+                  ))}
+                </div>
+              </ControlPanel>
+            ) : null}
+          </MotionIn>
+
+          <MotionIn delay={0.18}>
             <AdminMatchCreatePanel
               sports={data.sports}
               stages={visibleStages}

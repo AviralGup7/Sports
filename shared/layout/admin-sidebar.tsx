@@ -59,6 +59,16 @@ export function AdminSidebar({ profile }: AdminSidebarProps) {
           );
         })}
       </nav>
+
+      <section className="operator-guide-card">
+        <p className="eyebrow">How to use</p>
+        <h3>Control-room shortcuts</h3>
+        <ul className="operator-guide-list">
+          <li>Use Live Desk for day-of result locking.</li>
+          <li>Open Bracket Manager before finals if any lane looks unresolved.</li>
+          <li>Run an export before big builder or reset actions.</li>
+        </ul>
+      </section>
     </aside>
   );
 }

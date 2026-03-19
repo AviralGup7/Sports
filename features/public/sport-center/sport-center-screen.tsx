@@ -3,7 +3,7 @@ import Link from "next/link";
 
 import type { SportSlug } from "@/domain/sports/types";
 import type { SportPageData } from "@/server/data/public/types";
-import { BracketTree, FixtureStrip, StageSummaryRail, StandingsTable } from "@/shared/ui";
+import { AthleticsEventBoard, BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn } from "@/shared/motion";
@@ -72,6 +72,11 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             <h2>Tournament path</h2>
           </div>
         </div>
+        <div className="sport-progress-grid">
+          <SportProgressCard card={data.sportProgressCard} />
+          {data.bracketPreview ? <BracketPreviewCard card={data.bracketPreview} /> : null}
+        </div>
+        <div className="spacer-sm" />
         {data.stageSummaries.length > 0 ? (
           <StageSummaryRail summaries={data.stageSummaries} />
         ) : (
@@ -185,23 +190,31 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
               Return to schedule
             </Link>
           </div>
-          <div className="fixture-stack">
-            {data.matches.length > 0 ? (
-              data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
-            ) : (
-              <EmptyState
-                compact
-                eyebrow="Fixture Rail"
-                title="No fixtures for this sport yet"
-                description="Create sport fixtures from the control room to populate this board."
-                action={
-                  <Link href="/admin/matches?mode=live" className="button button-ghost">
-                    Open match control
-                  </Link>
-                }
-              />
-            )}
-          </div>
+          {data.sport.id === "athletics" && data.athleticsBoards.length > 0 ? (
+            <div className="stack-lg">
+              {data.athleticsBoards.map((board) => (
+                <AthleticsEventBoard key={board.id} board={board} />
+              ))}
+            </div>
+          ) : (
+            <div className="fixture-stack">
+              {data.matches.length > 0 ? (
+                data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
+              ) : (
+                <EmptyState
+                  compact
+                  eyebrow="Fixture Rail"
+                  title="No fixtures for this sport yet"
+                  description="Create sport fixtures from the control room to populate this board."
+                  action={
+                    <Link href="/admin/matches?mode=live" className="button button-ghost">
+                      Open match control
+                    </Link>
+                  }
+                />
+              )}
+            </div>
+          )}
         </MotionIn>
       ) : null}
     </div>

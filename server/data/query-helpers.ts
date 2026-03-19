@@ -2,11 +2,14 @@ import type { Profile } from "@/domain/admin/types";
 import { hasSupabaseEnv } from "@/server/supabase/env";
 import { profilesSeed } from "@/server/mock/tournament-snapshot";
 import {
+  AthleticsEventBoard,
+  BracketPreviewCard,
   BracketTreeColumn,
   BracketTreeData,
   BracketTreeNode,
   ChampionEntry,
   ChampionSpotlight,
+  DayNote,
   GlobalChromeData,
   GroupStandingsCard,
   HeroSignal,
@@ -16,6 +19,8 @@ import {
   MatchLineageCard,
   ScheduleGroup,
   SchedulePageData,
+  SportProgressCard,
+  SportScheduleBlock,
   SportPageData,
   StageSummary,
   TickerGroup,
@@ -63,6 +68,48 @@ function getStagesForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
 
 function getGroupsForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
   return snapshot.groups.filter((group) => group.sportId === sportId).sort((a, b) => a.orderIndex - b.orderIndex);
+}
+
+const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
+  "2026-04-02": {
+    title: "Opening day lanes",
+    detail: "Cricket pool play and early athletics results set the first qualification pressure for the tournament.",
+    tone: "info"
+  },
+  "2026-04-03": {
+    title: "Full arena running",
+    detail: "Every sport is live today, so schedule pressure, result locking, and notice visibility matter most.",
+    tone: "alert"
+  },
+  "2026-04-04": {
+    title: "Knockout squeeze",
+    detail: "Semi-finals and late qualification boards tighten the title race across the campus.",
+    tone: "alert"
+  },
+  "2026-04-05": {
+    title: "Finals day",
+    detail: "Championship boards, bronze matches, and medal events decide the podium before closeout.",
+    tone: "success"
+  }
+};
+
+function buildDayNote(snapshot: RepositorySnapshot, day?: string): DayNote {
+  const selectedDay = day ?? snapshot.matches[0]?.day ?? snapshot.tournament.startDate;
+  const note = tournamentDayNotes[selectedDay];
+
+  if (note) {
+    return {
+      id: selectedDay,
+      ...note
+    };
+  }
+
+  return {
+    id: selectedDay,
+    title: "Tournament note",
+    detail: `Operational focus for ${formatDateLabel(selectedDay)}. Review schedule pressure, live boards, and announcement needs for this window.`,
+    tone: "info"
+  };
 }
 
 function getActiveStage(snapshot: RepositorySnapshot, sportId: SportSlug) {
@@ -321,6 +368,147 @@ function buildStageSummaries(snapshot: RepositorySnapshot, sportId?: SportSlug):
   });
 }
 
+function buildSportProgressCards(snapshot: RepositorySnapshot, sportIds?: SportSlug[]): SportProgressCard[] {
+  const sports = sportIds ? snapshot.sports.filter((sport) => sportIds.includes(sport.id)) : snapshot.sports;
+
+  return sports.map((sport) => {
+    const matches = getMatchesForSport(snapshot, sport.id);
+    const completedMatches = matches.filter((match) => match.status === "completed").length;
+    const liveMatches = matches.filter((match) => match.status === "live").length;
+    const pendingMatches = matches.length - completedMatches - liveMatches;
+    const finalsPending = matches.filter((match) => isTitleFinalRound(match.round) && match.status !== "completed").length;
+    const completionPercent = matches.length > 0 ? Math.round((completedMatches / matches.length) * 100) : 0;
+    const activeStageLabel = getActiveStage(snapshot, sport.id)?.label ?? "Structure open";
+
+    return {
+      sport,
+      completedMatches,
+      totalMatches: matches.length,
+      liveMatches,
+      pendingMatches,
+      finalsPending,
+      completionPercent,
+      activeStageLabel,
+      note:
+        liveMatches > 0
+          ? `${liveMatches} live board${liveMatches === 1 ? "" : "s"} currently active.`
+          : finalsPending > 0
+            ? `${finalsPending} championship lane${finalsPending === 1 ? "" : "s"} still unresolved.`
+            : pendingMatches > 0
+              ? `${pendingMatches} board${pendingMatches === 1 ? "" : "s"} remain to be locked.`
+              : "All visible boards are locked.",
+      href: `/sports/${sport.id}`
+    };
+  });
+}
+
+function buildBracketPreviewCard(snapshot: RepositorySnapshot, sport: Sport): BracketPreviewCard | null {
+  if (sport.id === "athletics") {
+    return null;
+  }
+
+  const sportMatches = getMatchesForSport(snapshot, sport.id);
+  const bracket = buildBracketTree(sportMatches, getStagesForSport(snapshot, sport.id));
+
+  if (!bracket) {
+    return null;
+  }
+
+  const rounds = bracket.columns.slice(0, 4).map((column) => ({
+    label: column.label,
+    filled: column.nodes.filter((node) => node.match.teamAId || node.match.teamBId).length,
+    total: column.nodes.length
+  }));
+
+  const championMatch = sportMatches.find((match) => isTitleFinalRound(match.round));
+
+  return {
+    sport,
+    stageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Winner tree",
+    championLabel: championMatch?.result?.winner?.name ?? "Champion pending",
+    href: `/sports/${sport.id}?tab=bracket`,
+    rounds
+  };
+}
+
+function buildBracketPreviewCards(snapshot: RepositorySnapshot, sportIds?: SportSlug[]) {
+  const sports = sportIds ? snapshot.sports.filter((sport) => sportIds.includes(sport.id)) : snapshot.sports;
+  return sports.map((sport) => buildBracketPreviewCard(snapshot, sport)).filter((card): card is BracketPreviewCard => Boolean(card));
+}
+
+function buildSportScheduleBlocks(snapshot: RepositorySnapshot, fixtures: Match[]): SportScheduleBlock[] {
+  return snapshot.sports
+    .map((sport) => {
+      const sportMatches = fixtures.filter((match) => match.sportId === sport.id);
+
+      if (sportMatches.length === 0) {
+        return null;
+      }
+
+      return {
+        sport,
+        visibleCount: sportMatches.length,
+        activeStageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Mixed boards",
+        scheduleGroups: buildScheduleGroups(sportMatches)
+      };
+    })
+    .filter((block): block is SportScheduleBlock => Boolean(block));
+}
+
+function buildAthleticsBoards(snapshot: RepositorySnapshot): AthleticsEventBoard[] {
+  const athleticsMatches = getMatchesForSport(snapshot, "athletics");
+  const grouped = new Map<string, Match[]>();
+
+  for (const match of athleticsMatches) {
+    const bucket = grouped.get(match.round) ?? [];
+    bucket.push(match);
+    grouped.set(match.round, bucket);
+  }
+
+  return Array.from(grouped.entries()).map(([title, matches]) => ({
+    id: title.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+    title,
+    stageLabel: matches[0]?.stage?.label ?? "Athletics results",
+    description:
+      matches.length > 1
+        ? `${matches.length} association result cards feed this athletics lane.`
+        : "Single athletics result card currently in this lane.",
+    matches
+  }));
+}
+
+function buildQuickResultCandidates(matches: Match[]) {
+  return matches
+    .filter((match) => match.status !== "cancelled")
+    .map((match) => ({
+      id: `${match.id}-quick`,
+      matchId: match.id,
+      sportId: match.sportId,
+      matchLabel: `${match.stage?.label ?? match.round}${match.group ? ` | ${match.group.code}` : ""}`,
+      teamAName: match.teamA?.name ?? "TBD",
+      teamBName: match.teamB?.name ?? "TBD",
+      winnerTeamId: match.result?.winnerTeamId ?? null,
+      scoreSummary: match.result?.scoreSummary ?? null,
+      progressionHint:
+        match.winnerToMatchId || match.loserToMatchId
+          ? "Saving a completed result will advance linked winner and loser routes immediately."
+          : "This board does not currently feed another linked match.",
+      status: match.status
+    }));
+}
+
+function buildBackupStatus(snapshot: RepositorySnapshot) {
+  return {
+    envReady: hasSupabaseEnv(),
+    usingFallbackData: snapshot.source === "fallback",
+    exportedAt: new Date().toISOString(),
+    note:
+      snapshot.source === "fallback"
+        ? "The app is currently rendering fallback tournament data. Exports still work, but live Supabase records are not being read."
+        : "Live tournament data is available. Use exports as event-day backups before major updates."
+  };
+}
+
 function mapNodeState(match: Match): BracketTreeNode["state"] {
   if (match.isBye) {
     return "bye";
@@ -539,17 +727,21 @@ export async function getHomePageData(): Promise<HomePageData> {
   const stats = getTournamentStatsFromSnapshot(snapshot);
   const highlightMatch = buildHighlightMatch(snapshot);
   const featuredMatches = snapshot.matches.filter((match) => match.status !== "completed").slice(0, 6);
+  const anchorDay = highlightMatch?.match.day ?? featuredMatches[0]?.day ?? snapshot.tournament.startDate;
 
   return {
     tournament: snapshot.tournament,
     sports: snapshot.sports,
     stats,
+    dayNote: buildDayNote(snapshot, anchorDay),
     highlightMatch,
     heroSignals: buildHeroSignals(snapshot, stats, highlightMatch),
     featuredMatches,
     announcements: getPublicAnnouncements(snapshot).slice(0, 4),
     champions: buildChampionEntries(snapshot),
     championSpotlights: buildChampionSpotlights(snapshot),
+    sportProgressCards: buildSportProgressCards(snapshot),
+    bracketPreviewCards: buildBracketPreviewCards(snapshot),
     stageSummaries: snapshot.sports.map((sport) => {
       const matches = getMatchesForSport(snapshot, sport.id);
       return {
@@ -594,8 +786,10 @@ export async function getSchedulePageData(
     sports: snapshot.sports,
     stages,
     groups,
+    dayNote: buildDayNote(snapshot, selectedDay),
     fixtures,
-    scheduleGroups: buildScheduleGroups(fixtures)
+    scheduleGroups: buildScheduleGroups(fixtures),
+    sportBlocks: buildSportScheduleBlocks(snapshot, fixtures)
   };
 }
 
@@ -625,8 +819,11 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
     matches,
     standings,
     bracket: sportId === "athletics" ? null : buildBracketTree(matches, stages),
+    sportProgressCard: buildSportProgressCards(snapshot, [sportId])[0],
+    bracketPreview: buildBracketPreviewCard(snapshot, sport),
     overviewMatches: matches.slice(0, 6),
-    athleticsMatches: sportId === "athletics" ? matches : []
+    athleticsMatches: sportId === "athletics" ? matches : [],
+    athleticsBoards: sportId === "athletics" ? buildAthleticsBoards(snapshot) : []
   };
 }
 
@@ -682,13 +879,17 @@ export async function getAdminDashboardData(profile: Profile): Promise<AdminDash
   return {
     profile,
     stats: getTournamentStatsFromSnapshot(snapshot),
+    dayNote: buildDayNote(snapshot, anchorDay),
     todaysMatches,
     pendingResults: visibleMatches.filter((match) => match.status !== "completed" && match.status !== "cancelled").slice(0, 6),
     announcements: snapshot.announcements.slice(0, 5),
     attentionItems: buildAdminAttentionItems(snapshot, visibleMatches, integrityIssues),
     stageSummaries: snapshot.sports
       .filter((sport) => allowedSports.includes(sport.id))
-      .flatMap((sport) => buildStageSummaries(snapshot, sport.id))
+      .flatMap((sport) => buildStageSummaries(snapshot, sport.id)),
+    sportProgressCards: buildSportProgressCards(snapshot, allowedSports),
+    bracketPreviewCards: buildBracketPreviewCards(snapshot, allowedSports),
+    backupStatus: buildBackupStatus(snapshot)
   };
 }
 
@@ -754,7 +955,17 @@ export async function getAdminMatchesData(profile: Profile): Promise<AdminMatche
       ...snapshot,
       matches: matches.filter((match) => match.sportId === "athletics")
     }),
-    integrityIssues
+    athleticsBoards: buildAthleticsBoards({
+      ...snapshot,
+      matches: matches.filter((match) => match.sportId === "athletics")
+    }),
+    integrityIssues,
+    quickResultCandidates: buildQuickResultCandidates(matches),
+    operatorGuide: [
+      "Use quick result to close live or just-finished boards without opening the full fixture editor.",
+      "Switch to Builder when you need to regenerate structure, not for day-of score entry.",
+      "Open Bracket Manager to check unresolved winner or loser routes before finals day."
+    ]
   };
 }
 
@@ -773,9 +984,11 @@ export async function getAdminAnnouncementsData(profile: Profile): Promise<Admin
 }
 
 export async function getAdminSettingsData(profile: Profile): Promise<AdminSettingsData> {
+  const snapshot = await loadSnapshot();
   return {
     profile,
     envReady: hasSupabaseEnv(),
+    usingFallbackData: snapshot.source === "fallback",
     exportedAt: new Date().toISOString()
   };
 }

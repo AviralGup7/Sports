@@ -5,6 +5,7 @@ import {
   performAdminSignOut,
   performArchiveTeam,
   performGenerateStructure,
+  performResetTournamentData,
   performSubmitResult,
   performUpsertAnnouncement,
   performUpsertMatch,
@@ -41,5 +42,9 @@ export async function submitResultAction(formData: FormData) {
 
 export async function upsertAnnouncementAction(formData: FormData) {
   return performUpsertAnnouncement(formData);
+}
+
+export async function resetTournamentDataAction(formData: FormData) {
+  return performResetTournamentData(formData);
 }
 

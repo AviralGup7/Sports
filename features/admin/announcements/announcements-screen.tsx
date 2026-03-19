@@ -1,6 +1,6 @@
 import { upsertAnnouncementAction } from "@/app/admin/actions";
 import type { AdminAnnouncementsData } from "@/server/data/admin/types";
-import { ActionNotice, EmptyState } from "@/shared/feedback";
+import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
 import { FormCluster, NewsBulletin, SubmitButton } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
@@ -14,6 +14,8 @@ type AdminAnnouncementsScreenProps = {
 export function AdminAnnouncementsScreen({ data, message, tone }: AdminAnnouncementsScreenProps) {
   return (
     <div className="stack-xl">
+      <ActionToast message={message} tone={tone} />
+
       <MotionIn>
         <section className="operations-hero">
           <div>

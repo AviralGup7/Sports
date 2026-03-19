@@ -5,7 +5,7 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FixtureStrip, MetricTile, NewsBulletin, PodiumCard, StageSummaryRail } from "@/shared/ui";
+import { BracketPreviewCard, DayNoteBanner, FixtureStrip, MetricTile, NewsBulletin, PodiumCard, SportProgressCard, StageSummaryRail } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
 type HomeScreenProps = {
@@ -13,7 +13,7 @@ type HomeScreenProps = {
 };
 
 export function HomeScreen({ data }: HomeScreenProps) {
-  const { tournament, sports, stats, highlightMatch, heroSignals, featuredMatches, announcements, championSpotlights, stageSummaries } = data;
+  const { tournament, sports, stats, dayNote, highlightMatch, heroSignals, featuredMatches, announcements, championSpotlights, stageSummaries, sportProgressCards, bracketPreviewCards } = data;
 
   return (
     <div className="stack-hero">
@@ -80,6 +80,10 @@ export function HomeScreen({ data }: HomeScreenProps) {
         />
       </MotionIn>
 
+      <MotionIn delay={0.05}>
+        <DayNoteBanner note={dayNote} />
+      </MotionIn>
+
       <MotionIn className="metric-grid" delay={0.08}>
         <MetricTile label="Sports" value={stats.sports} detail="Color-coded tournament lanes" accent="#f59e0b" href="/schedule" />
         <MetricTile label="Active Teams" value={stats.teams} detail="Associations on the board" accent="#38bdf8" href="/schedule" />
@@ -101,6 +105,20 @@ export function HomeScreen({ data }: HomeScreenProps) {
       </MotionIn>
 
       <MotionIn className="home-showcase-grid" delay={0.1}>
+        <section className="section-shell section-shell-ops">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Ops Snapshot</p>
+              <h2>Completion pressure</h2>
+            </div>
+          </div>
+          <div className="sport-progress-grid">
+            {sportProgressCards.map((card) => (
+              <SportProgressCard key={card.sport.id} card={card} compact />
+            ))}
+          </div>
+        </section>
+
         <section className="section-shell section-shell-holo">
           <div className="section-heading">
             <div>
@@ -151,6 +169,22 @@ export function HomeScreen({ data }: HomeScreenProps) {
       </MotionIn>
 
       <MotionIn className="stack-xl" delay={0.12}>
+        <section className="section-shell section-shell-bracket-preview">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Winner Tree Preview</p>
+              <h2>Compact bracket lanes</h2>
+            </div>
+          </div>
+          <div className="bracket-preview-grid">
+            {bracketPreviewCards.length > 0 ? (
+              bracketPreviewCards.map((card) => <BracketPreviewCard key={card.sport.id} card={card} />)
+            ) : (
+              <EmptyState compact eyebrow="Winner Tree Preview" title="Bracket previews are waiting" description="Seed knockout lanes and linked stages to unlock compact bracket previews here." />
+            )}
+          </div>
+        </section>
+
         <section className="section-shell section-shell-podium">
           <div className="section-heading">
             <div>

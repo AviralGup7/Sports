@@ -14,6 +14,13 @@ export type TournamentStats = {
   announcements: number;
 };
 
+export type DayNote = {
+  id: string;
+  title: string;
+  detail: string;
+  tone: "info" | "alert" | "success";
+};
+
 export type ChampionEntry = {
   sport: Sport;
   winner: Team | null;
@@ -70,10 +77,42 @@ export type StageSummary = {
   groups: CompetitionGroup[];
 };
 
+export type SportProgressCard = {
+  sport: Sport;
+  completedMatches: number;
+  totalMatches: number;
+  liveMatches: number;
+  pendingMatches: number;
+  finalsPending: number;
+  completionPercent: number;
+  activeStageLabel: string;
+  note: string;
+  href: string;
+};
+
+export type BracketPreviewCard = {
+  sport: Sport;
+  stageLabel: string;
+  championLabel: string;
+  href: string;
+  rounds: Array<{
+    label: string;
+    filled: number;
+    total: number;
+  }>;
+};
+
 export type ScheduleGroup = {
   time: string;
   label: string;
   matches: Match[];
+};
+
+export type SportScheduleBlock = {
+  sport: Sport;
+  visibleCount: number;
+  activeStageLabel: string;
+  scheduleGroups: ScheduleGroup[];
 };
 
 export type BracketTreeNode = {
@@ -108,6 +147,14 @@ export type GroupStandingsCard = {
   rows: StandingsRow[];
 };
 
+export type AthleticsEventBoard = {
+  id: string;
+  title: string;
+  stageLabel: string;
+  description: string;
+  matches: Match[];
+};
+
 export type MatchLineageCard = {
   label: string;
   matches: Match[];
@@ -124,12 +171,15 @@ export type HomePageData = {
   tournament: Tournament;
   sports: Sport[];
   stats: TournamentStats;
+  dayNote: DayNote;
   highlightMatch: HighlightMatch | null;
   heroSignals: HeroSignal[];
   featuredMatches: Match[];
   announcements: Announcement[];
   champions: ChampionEntry[];
   championSpotlights: ChampionSpotlight[];
+  sportProgressCards: SportProgressCard[];
+  bracketPreviewCards: BracketPreviewCard[];
   stageSummaries: Array<{
     sport: Sport;
     activeStage: CompetitionStage | null;
@@ -149,8 +199,10 @@ export type SchedulePageData = {
   sports: Sport[];
   stages: CompetitionStage[];
   groups: CompetitionGroup[];
+  dayNote: DayNote;
   fixtures: Match[];
   scheduleGroups: ScheduleGroup[];
+  sportBlocks: SportScheduleBlock[];
 };
 
 export type SportPageData = {
@@ -162,8 +214,11 @@ export type SportPageData = {
   matches: Match[];
   standings: GroupStandingsCard[];
   bracket: BracketTreeData | null;
+  sportProgressCard: SportProgressCard;
+  bracketPreview: BracketPreviewCard | null;
   overviewMatches: Match[];
   athleticsMatches: Match[];
+  athleticsBoards: AthleticsEventBoard[];
 };
 
 export type MatchPageData = {

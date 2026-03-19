@@ -1,9 +1,9 @@
 import Link from "next/link";
 
 import type { AdminDashboardData } from "@/server/data/admin/types";
-import { ActionNotice, EmptyState } from "@/shared/feedback";
+import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { FixtureStrip, NewsBulletin, StageSummaryRail } from "@/shared/ui";
+import { BracketPreviewCard, DayNoteBanner, FixtureStrip, NewsBulletin, SportProgressCard, StageSummaryRail } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
 type DashboardScreenProps = {
@@ -15,6 +15,8 @@ type DashboardScreenProps = {
 export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
   return (
     <div className="stack-xl">
+      <ActionToast message={message} tone={tone} />
+
       <MotionIn>
         <section className="operations-hero">
           <div>
@@ -33,6 +35,10 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
       </MotionIn>
 
       <ActionNotice message={message} tone={tone} />
+
+      <MotionIn delay={0.04}>
+        <DayNoteBanner note={data.dayNote} />
+      </MotionIn>
 
       <MotionIn className="section-shell" delay={0.06}>
         <div className="section-heading">
@@ -60,6 +66,54 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
           </div>
         </div>
         <StageSummaryRail summaries={data.stageSummaries} />
+      </MotionIn>
+
+      <MotionIn className="split-stage" delay={0.09}>
+        <ControlPanel eyebrow="Progress Snapshot" title="Per-sport completion" description="Use these compact widgets to see which sports still need result locks or finals resolution.">
+          <div className="sport-progress-grid">
+            {data.sportProgressCards.map((card) => (
+              <SportProgressCard key={card.sport.id} card={card} compact />
+            ))}
+          </div>
+        </ControlPanel>
+
+        <ControlPanel eyebrow="Backup Status" title="Data and export readiness" description="Keep one eye on live-read health before a busy operations run.">
+          <div className="backup-status-card">
+            <div className={data.backupStatus.envReady ? "status-banner status-banner-success" : "status-banner status-banner-error"}>
+              {data.backupStatus.envReady ? "Supabase environment is available for this deployment." : "Supabase environment variables are missing for this deployment."}
+            </div>
+            <div className={data.backupStatus.usingFallbackData ? "status-banner status-banner-alert" : "status-banner status-banner-success"}>
+              {data.backupStatus.usingFallbackData
+                ? "The app is currently rendering fallback tournament data."
+                : "The app is reading live tournament data from Supabase."}
+            </div>
+            <p className="muted">{data.backupStatus.note}</p>
+            <div className="admin-quick-actions">
+              <Link href="/admin/settings" className="button button-ghost">
+                Open backup tools
+              </Link>
+              <Link href="/admin/settings/export/matches" className="button button-ghost">
+                Export fixtures
+              </Link>
+            </div>
+          </div>
+        </ControlPanel>
+      </MotionIn>
+
+      <MotionIn className="section-shell" delay={0.1}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Bracket Preview</p>
+            <h2>Finals watch and compact trees</h2>
+          </div>
+        </div>
+        <div className="bracket-preview-grid">
+          {data.bracketPreviewCards.length > 0 ? (
+            data.bracketPreviewCards.map((card) => <BracketPreviewCard key={card.sport.id} card={card} />)
+          ) : (
+            <EmptyState compact eyebrow="Bracket Preview" title="Bracket previews are waiting" description="Link knockout lanes and finals routing to unlock compact previews here." />
+          )}
+        </div>
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.1}>

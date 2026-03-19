@@ -129,6 +129,7 @@ export function mapAnnouncementRows(rows: AnnouncementRow[]): Announcement[] {
 }
 
 export function hydrateSnapshot(input: {
+  source?: "supabase" | "fallback";
   tournament: Tournament;
   sports: Sport[];
   stages: CompetitionStage[];
@@ -169,6 +170,7 @@ export function hydrateSnapshot(input: {
   );
 
   return {
+    source: input.source ?? "supabase",
     tournament: input.tournament,
     sports: [...input.sports].sort((a, b) => sportOrder.indexOf(a.id) - sportOrder.indexOf(b.id)),
     stages: [...input.stages].sort((a, b) => a.orderIndex - b.orderIndex || a.label.localeCompare(b.label)),

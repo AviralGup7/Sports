@@ -2,7 +2,10 @@ import type { CompetitionGroup, CompetitionStage, Match } from "@/domain/matches
 import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
 
-import { FormCluster, StageBadge } from "@/shared/ui";
+import type { QuickResultCandidate } from "@/server/data/admin/types";
+import { FormCluster, StageBadge, SubmitButton } from "@/shared/ui";
+
+import { QuickResultDrawer } from "./quick-result-drawer";
 
 type AdminMatchOpsCardProps = {
   match: Match;
@@ -10,6 +13,7 @@ type AdminMatchOpsCardProps = {
   stages: CompetitionStage[];
   groups: CompetitionGroup[];
   teams: Team[];
+  quickResultCandidate?: QuickResultCandidate;
   updateAction: (formData: FormData) => void | Promise<void>;
   resultAction: (formData: FormData) => void | Promise<void>;
 };
@@ -20,6 +24,7 @@ export function AdminMatchOpsCard({
   stages,
   groups,
   teams,
+  quickResultCandidate,
   updateAction,
   resultAction
 }: AdminMatchOpsCardProps) {
@@ -177,75 +182,81 @@ export function AdminMatchOpsCard({
           </FormCluster>
 
           <div className="form-actions">
-            <button type="submit" className="button button-ghost">
+            <SubmitButton className="button button-ghost" pendingLabel="Updating fixture...">
               Update fixture
-            </button>
+            </SubmitButton>
           </div>
         </form>
 
-        <form action={resultAction} className="result-bay">
-          <input type="hidden" name="matchId" value={match.id} />
-          <input type="hidden" name="sportId" value={match.sportId} />
-          <FormCluster label="Result bay" title="Lock score and winner">
-            <div className="form-grid">
-              <label className="field">
-                <span>Status</span>
-                <select name="status" defaultValue={match.status}>
-                  <option value="scheduled">Scheduled</option>
-                  <option value="live">Live</option>
-                  <option value="completed">Completed</option>
-                  <option value="postponed">Postponed</option>
-                  <option value="cancelled">Cancelled</option>
-                </select>
-              </label>
-              <label className="field">
-                <span>Decision</span>
-                <select name="decisionType" defaultValue={match.result?.decisionType ?? "normal"}>
-                  <option value="normal">Normal</option>
-                  <option value="walkover">Walkover</option>
-                  <option value="penalties">Penalties</option>
-                  <option value="retired">Retired</option>
-                </select>
-              </label>
-              <label className="field">
-                <span>Winner</span>
-                <select name="winnerTeamId" defaultValue={match.result?.winnerTeamId ?? ""}>
-                  <option value="">Not decided</option>
-                  {winnerOptions.map((team) => (
-                    <option key={`${match.id}-${team.id}`} value={team.id}>
-                      {team.name}
-                    </option>
-                  ))}
-                </select>
-              </label>
-              <label className="field">
-                <span>Team A score</span>
-                <input name="teamAScore" type="number" step="1" defaultValue={match.result?.teamAScore ?? undefined} />
-              </label>
-              <label className="field">
-                <span>Team B score</span>
-                <input name="teamBScore" type="number" step="1" defaultValue={match.result?.teamBScore ?? undefined} />
-              </label>
-              <label className="field">
-                <span>Score summary</span>
-                <input name="scoreSummary" defaultValue={match.result?.scoreSummary ?? ""} placeholder="2 - 1" />
-              </label>
-              <label className="field field-wide">
-                <span>Note</span>
-                <textarea name="note" defaultValue={match.result?.note ?? ""} rows={4} />
-              </label>
+        <div className="result-bay">
+          {quickResultCandidate ? <QuickResultDrawer match={match} candidate={quickResultCandidate} action={resultAction} /> : null}
+
+          <form action={resultAction} className="stack-lg">
+            <input type="hidden" name="matchId" value={match.id} />
+            <input type="hidden" name="sportId" value={match.sportId} />
+            <FormCluster label="Result bay" title="Lock score and winner">
+              <div className="form-grid">
+                <label className="field">
+                  <span>Status</span>
+                  <select name="status" defaultValue={match.status}>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="live">Live</option>
+                    <option value="completed">Completed</option>
+                    <option value="postponed">Postponed</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </label>
+                <label className="field">
+                  <span>Decision</span>
+                  <select name="decisionType" defaultValue={match.result?.decisionType ?? "normal"}>
+                    <option value="normal">Normal</option>
+                    <option value="walkover">Walkover</option>
+                    <option value="penalties">Penalties</option>
+                    <option value="retired">Retired</option>
+                  </select>
+                </label>
+                <label className="field">
+                  <span>Winner</span>
+                  <select name="winnerTeamId" defaultValue={match.result?.winnerTeamId ?? ""}>
+                    <option value="">Not decided</option>
+                    {winnerOptions.map((team) => (
+                      <option key={`${match.id}-${team.id}`} value={team.id}>
+                        {team.name}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+                <label className="field">
+                  <span>Team A score</span>
+                  <input name="teamAScore" type="number" step="1" defaultValue={match.result?.teamAScore ?? undefined} />
+                </label>
+                <label className="field">
+                  <span>Team B score</span>
+                  <input name="teamBScore" type="number" step="1" defaultValue={match.result?.teamBScore ?? undefined} />
+                </label>
+                <label className="field">
+                  <span>Score summary</span>
+                  <input name="scoreSummary" defaultValue={match.result?.scoreSummary ?? ""} placeholder="2 - 1" />
+                </label>
+                <label className="field field-wide">
+                  <span>Note</span>
+                  <textarea name="note" defaultValue={match.result?.note ?? ""} rows={4} />
+                </label>
+              </div>
+            </FormCluster>
+
+            <div className="result-bay-footer">
+              <p className="muted">
+                Completed results immediately push winner and loser routes where the tree is linked. Postponed boards stay in the integrity watchlist until rescheduled.
+              </p>
+              <div className="admin-quick-actions">
+                <SubmitButton className="button" pendingLabel="Saving result...">
+                  Save result
+                </SubmitButton>
+              </div>
             </div>
-          </FormCluster>
-
-          <div className="result-bay-footer">
-            <p className="muted">
-              Completed results immediately push winner and loser routes where the tree is linked. Postponed boards stay in the integrity watchlist until rescheduled.
-            </p>
-            <button type="submit" className="button">
-              Save result
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
     </section>
   );
