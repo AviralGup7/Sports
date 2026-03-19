@@ -152,6 +152,11 @@ export function CyberArenaScene({
     const draw = (time: number) => {
       const width = canvas.clientWidth;
       const height = canvas.clientHeight;
+      if (width <= 0 || height <= 0) {
+        animationFrame = window.requestAnimationFrame(draw);
+        return;
+      }
+
       context.clearRect(0, 0, width, height);
 
       const gradient = context.createLinearGradient(0, 0, width, height);

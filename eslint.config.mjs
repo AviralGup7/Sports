@@ -98,6 +98,9 @@ const adminFeatureBoundaryRules = {
 };
 
 const config = [
+  {
+    ignores: [".next/**", "node_modules/**", "test-results/**", "playwright-report/**"]
+  },
   ...compat.extends("next/core-web-vitals"),
   appBoundaryRules,
   sharedBoundaryRules,

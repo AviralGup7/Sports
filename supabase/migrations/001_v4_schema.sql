@@ -81,13 +81,6 @@ create table if not exists public.matches (
 
 alter table public.matches drop constraint if exists matches_status_check;
 alter table public.matches add constraint matches_status_check check (status in ('scheduled', 'live', 'completed', 'postponed', 'cancelled'));
-alter table public.matches drop constraint if exists matches_next_slot_check;
-alter table public.matches add constraint matches_next_slot_check check (next_slot in ('team_a', 'team_b') or next_slot is null);
-alter table public.matches drop constraint if exists matches_winner_to_slot_check;
-alter table public.matches add constraint matches_winner_to_slot_check check (winner_to_slot in ('team_a', 'team_b') or winner_to_slot is null);
-alter table public.matches drop constraint if exists matches_loser_to_slot_check;
-alter table public.matches add constraint matches_loser_to_slot_check check (loser_to_slot in ('team_a', 'team_b') or loser_to_slot is null);
-
 alter table public.matches add column if not exists stage_id text references public.competition_stages(id) on delete set null;
 alter table public.matches add column if not exists group_id text references public.competition_groups(id) on delete set null;
 alter table public.matches add column if not exists round_index integer not null default 1;
@@ -97,6 +90,12 @@ alter table public.matches add column if not exists winner_to_slot text;
 alter table public.matches add column if not exists loser_to_match_id text references public.matches(id) on delete set null;
 alter table public.matches add column if not exists loser_to_slot text;
 alter table public.matches add column if not exists is_bye boolean not null default false;
+alter table public.matches drop constraint if exists matches_next_slot_check;
+alter table public.matches add constraint matches_next_slot_check check (next_slot in ('team_a', 'team_b') or next_slot is null);
+alter table public.matches drop constraint if exists matches_winner_to_slot_check;
+alter table public.matches add constraint matches_winner_to_slot_check check (winner_to_slot in ('team_a', 'team_b') or winner_to_slot is null);
+alter table public.matches drop constraint if exists matches_loser_to_slot_check;
+alter table public.matches add constraint matches_loser_to_slot_check check (loser_to_slot in ('team_a', 'team_b') or loser_to_slot is null);
 
 create table if not exists public.match_results (
   match_id text primary key references public.matches(id) on delete cascade,

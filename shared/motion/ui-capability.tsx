@@ -21,19 +21,23 @@ export type UICapability = {
   bracketMode: UIBracketMode;
 };
 
+function getServerSafeCapability(reducedMotion: boolean): UICapability {
+  return {
+    isAndroid: false,
+    isMobile: false,
+    isCompactWidth: false,
+    reducedMotion,
+    profile: "desktop",
+    effects: reducedMotion ? "safe" : "enhanced",
+    heroMode: reducedMotion ? "reduced" : "css-fallback",
+    tickerMode: "static",
+    bracketMode: reducedMotion ? "minimal" : "highlighted"
+  };
+}
+
 function readCapability(reducedMotion: boolean): UICapability {
   if (typeof window === "undefined") {
-    return {
-      isAndroid: false,
-      isMobile: false,
-      isCompactWidth: false,
-      reducedMotion,
-      profile: "desktop",
-      effects: reducedMotion ? "safe" : "full",
-      heroMode: reducedMotion ? "reduced" : "full",
-      tickerMode: reducedMotion ? "static" : "looping",
-      bracketMode: reducedMotion ? "minimal" : "animated"
-    };
+    return getServerSafeCapability(reducedMotion);
   }
 
   const userAgent = window.navigator.userAgent.toLowerCase();
@@ -64,7 +68,7 @@ function readCapability(reducedMotion: boolean): UICapability {
 export function useUICapability() {
   const reducedMotion = useReducedMotion();
   const prefersReducedMotion = Boolean(reducedMotion);
-  const [capability, setCapability] = useState<UICapability>(() => readCapability(prefersReducedMotion));
+  const [capability, setCapability] = useState<UICapability>(() => getServerSafeCapability(prefersReducedMotion));
 
   useEffect(() => {
     const apply = () => {
