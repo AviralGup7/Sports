@@ -1,4 +1,5 @@
 import type { Profile } from "@/domain/admin/types";
+import { cache } from "react";
 import { hasSupabaseEnv } from "@/server/supabase/env";
 import { profilesSeed } from "@/server/mock/tournament-snapshot";
 import {
@@ -710,16 +711,22 @@ function buildAthleticsCards(snapshot: RepositorySnapshot): AthleticsResultCard[
   }));
 }
 
-export async function getGlobalChromeData(): Promise<GlobalChromeData> {
-  const snapshot = await loadSnapshot();
-  const tickerItems = buildTickerItems(snapshot);
+const getGlobalChromeDataCached = cache(
+  async (): Promise<GlobalChromeData> => {
+    const snapshot = await loadSnapshot();
+    const tickerItems = buildTickerItems(snapshot);
 
-  return {
-    tournament: snapshot.tournament,
-    sports: snapshot.sports,
-    tickerItems,
-    tickerGroups: buildTickerGroups(tickerItems)
-  };
+    return {
+      tournament: snapshot.tournament,
+      sports: snapshot.sports,
+      tickerItems,
+      tickerGroups: buildTickerGroups(tickerItems)
+    };
+  }
+);
+
+export async function getGlobalChromeData(): Promise<GlobalChromeData> {
+  return getGlobalChromeDataCached();
 }
 
 export async function getHomePageData(): Promise<HomePageData> {

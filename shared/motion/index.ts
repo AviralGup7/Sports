@@ -1,3 +1,4 @@
+export * from "@/shared/motion/ambient-backdrop";
 export * from "@/shared/motion/count-up-value";
 export * from "@/shared/motion/public-scroll-rig";
 export * from "@/shared/motion/cyber-arena-scene";

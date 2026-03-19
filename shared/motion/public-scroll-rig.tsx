@@ -22,15 +22,16 @@ export function PublicScrollRig() {
     root.dataset.scrollMode = shouldUseLenis ? "lenis" : "native";
 
     if (!shouldUseLenis) {
+      ScrollTrigger.getAll().forEach((trigger) => trigger.update());
       ScrollTrigger.refresh();
       return;
     }
 
     const lenis = new Lenis({
-      lerp: capability.isMobile ? 0.12 : 0.09,
+      lerp: 0.12,
       smoothWheel: true,
-      syncTouch: capability.isMobile,
-      touchInertiaMultiplier: capability.isMobile ? 24 : 36
+      syncTouch: false,
+      touchInertiaMultiplier: 20
     });
 
     let frameId = 0;
@@ -53,7 +54,7 @@ export function PublicScrollRig() {
       lenis.destroy();
       ScrollTrigger.refresh();
     };
-  }, [capability.isMobile, capability.scrollMode, pathname]);
+  }, [capability.scrollMode, pathname]);
 
   return null;
 }

@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
-import { CyberArenaScene, PublicScrollRig, RouteTransitionLayer, RuntimeCapabilityFlags } from "@/shared/motion";
+import { AmbientBackdrop, PublicScrollRig, RouteTransitionLayer, RuntimeCapabilityFlags } from "@/shared/motion";
 import { SiteHeader } from "@/shared/navigation";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
@@ -53,7 +53,7 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <div className="broadcast-backdrop">
-          <CyberArenaScene className="site-backdrop-scene" tone="blue" intensity="premium" variant="site-backdrop" />
+          <AmbientBackdrop />
           <div className="bg-grid" />
           <div className="bg-beam bg-beam-one" />
           <div className="bg-beam bg-beam-two" />

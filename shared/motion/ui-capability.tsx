@@ -77,7 +77,7 @@ function readCapability(reducedMotion: boolean): UICapability {
       : isAndroid
         ? "light"
         : "medium";
-  const scrollMode: ScrollMode = reducedMotion ? "native" : "lenis";
+  const scrollMode: ScrollMode = reducedMotion || profile !== "desktop" ? "native" : "lenis";
 
   return {
     isAndroid,
@@ -96,6 +96,24 @@ function readCapability(reducedMotion: boolean): UICapability {
   };
 }
 
+function sameCapability(left: UICapability, right: UICapability) {
+  return (
+    left.isAndroid === right.isAndroid &&
+    left.isMobile === right.isMobile &&
+    left.isCompactWidth === right.isCompactWidth &&
+    left.reducedMotion === right.reducedMotion &&
+    left.profile === right.profile &&
+    left.effects === right.effects &&
+    left.heroMode === right.heroMode &&
+    left.tickerMode === right.tickerMode &&
+    left.bracketMode === right.bracketMode &&
+    left.sceneMode === right.sceneMode &&
+    left.sceneQuality === right.sceneQuality &&
+    left.postFxQuality === right.postFxQuality &&
+    left.scrollMode === right.scrollMode
+  );
+}
+
 export function useUICapability() {
   const reducedMotion = useReducedMotion();
   const prefersReducedMotion = Boolean(reducedMotion);
@@ -103,7 +121,8 @@ export function useUICapability() {
 
   useEffect(() => {
     const apply = () => {
-      setCapability(readCapability(prefersReducedMotion));
+      const nextCapability = readCapability(prefersReducedMotion);
+      setCapability((current) => (sameCapability(current, nextCapability) ? current : nextCapability));
     };
 
     apply();
