@@ -33,6 +33,56 @@
   color: var(--text);
 }
 
+.admin-menu {
+  position: relative;
+}
+
+.admin-menu summary {
+  list-style: none;
+}
+
+.admin-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-menu-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 2.45rem;
+  padding: 0.6rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--surface-border);
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.admin-menu-panel {
+  position: absolute;
+  top: calc(100% + 0.5rem);
+  right: 0;
+  min-width: 13rem;
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.65rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.98), rgba(7, 12, 20, 0.94)),
+    radial-gradient(circle at top right, rgba(50, 230, 255, 0.06), transparent 30%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
+}
+
+.admin-menu-link {
+  display: block;
+  padding: 0.75rem 0.8rem;
+  border-radius: 0.85rem;
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+}
+
 .admin-shell,
 .admin-two-speed,
 .split-stage,
@@ -62,7 +112,6 @@
   display: flex;
   flex-wrap: wrap;
   gap: 0.55rem;
-  margin-bottom: 1rem;
 }
 
 .admin-sport-pill {
@@ -79,6 +128,57 @@
   display: flex;
   flex-direction: column;
   gap: 0.65rem;
+}
+
+.admin-nav-group {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-nav-group-links {
+  display: grid;
+  gap: 0.65rem;
+}
+
+.admin-side-group {
+  margin-bottom: 1rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.admin-side-group summary {
+  list-style: none;
+}
+
+.admin-side-group summary::-webkit-details-marker {
+  display: none;
+}
+
+.admin-side-group-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1rem;
+  cursor: pointer;
+}
+
+.admin-side-group-summary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.admin-side-group-summary strong {
+  color: var(--chrome);
+}
+
+.admin-side-group .admin-nav,
+.admin-side-group .admin-sport-pills,
+.operator-guide-card .operator-guide-list {
+  padding: 0 1rem 1rem;
 }
 
 .admin-link {
@@ -254,6 +354,35 @@
 
 .archive-stack {
   gap: 0.75rem;
+}
+
+.admin-summary-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-summary-card {
+  padding: 1rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.94), rgba(7, 12, 20, 0.82)),
+    radial-gradient(circle at top right, rgba(50, 230, 255, 0.06), transparent 28%);
+}
+
+.admin-summary-card strong {
+  display: block;
+  margin: 0.2rem 0 0.25rem;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2.25rem;
+  font-weight: 400;
+  color: var(--chrome);
+}
+
+.admin-summary-card span {
+  color: var(--muted);
+  line-height: 1.5;
 }
 
 .archived-row {
@@ -564,7 +693,6 @@
 
 .operator-guide-card {
   margin-top: 1rem;
-  padding: 0.95rem 1rem;
   border-radius: 1rem;
   border: 1px solid rgba(114, 197, 255, 0.12);
   background: rgba(255, 255, 255, 0.03);
@@ -583,6 +711,57 @@
   color: #dce8f9;
   display: grid;
   gap: 0.45rem;
+}
+
+.disclosure-panel {
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.94), rgba(7, 12, 20, 0.82)),
+    radial-gradient(circle at top right, rgba(50, 230, 255, 0.05), transparent 28%);
+  overflow: hidden;
+}
+
+.disclosure-summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.05rem;
+  cursor: pointer;
+  list-style: none;
+}
+
+.disclosure-summary::-webkit-details-marker {
+  display: none;
+}
+
+.disclosure-copy {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.disclosure-copy strong {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.disclosure-copy span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.disclosure-chevron {
+  color: var(--chrome);
+  transition: transform var(--motion-fast) ease;
+}
+
+.disclosure-panel[open] .disclosure-chevron {
+  transform: rotate(180deg);
+}
+
+.disclosure-body {
+  padding: 0 1.05rem 1.05rem;
 }
 
 .operator-guide-item {
@@ -706,6 +885,10 @@
     display: flex;
     flex-direction: column;
   }
+
+  .admin-summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 @media (max-width: 720px) {
@@ -723,6 +906,26 @@
   .quick-result-head {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .admin-bar-meta {
+    width: 100%;
+  }
+
+  .admin-menu {
+    width: 100%;
+  }
+
+  .admin-menu-trigger,
+  .admin-bar-link {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .admin-menu-panel {
+    position: static;
+    min-width: 0;
+    margin-top: 0.45rem;
   }
 
   .form-grid {
@@ -763,6 +966,10 @@
 
   .result-bay-footer {
     padding: 0.9rem;
+  }
+
+  .admin-summary-grid {
+    grid-template-columns: 1fr;
   }
 }
 

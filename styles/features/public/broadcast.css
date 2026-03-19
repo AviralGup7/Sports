@@ -205,6 +205,58 @@
   color: var(--muted);
 }
 
+.nav-dropdown {
+  position: relative;
+}
+
+.nav-dropdown summary {
+  list-style: none;
+}
+
+.nav-dropdown summary::-webkit-details-marker {
+  display: none;
+}
+
+.nav-dropdown-trigger {
+  cursor: pointer;
+}
+
+.nav-dropdown-panel {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  left: 0;
+  min-width: 14rem;
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.65rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.16);
+  background:
+    linear-gradient(180deg, rgba(10, 16, 28, 0.98), rgba(7, 12, 20, 0.94)),
+    radial-gradient(circle at top right, rgba(50, 230, 255, 0.08), transparent 30%);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.32);
+}
+
+.nav-dropdown-link {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding: 0.8rem 0.85rem;
+  border-radius: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+}
+
+.nav-dropdown-link strong {
+  color: var(--text);
+}
+
+.nav-dropdown-link span {
+  color: var(--muted);
+  font-size: 0.82rem;
+}
+
 .nav-link-active,
 .chip-active {
   color: var(--text);
@@ -916,6 +968,45 @@
 
 .detail-card h2 {
   font-size: 2rem;
+}
+
+.page-guide-shell {
+  display: grid;
+  gap: 1rem;
+  padding: 1.15rem 1.2rem;
+}
+
+.page-guide-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.page-guide-card {
+  padding: 1rem 1.05rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.page-guide-card strong {
+  display: block;
+  margin: 0.15rem 0 0.25rem;
+  font-family: var(--font-heading), sans-serif;
+  font-size: 2.15rem;
+  font-weight: 400;
+  color: var(--chrome);
+}
+
+.page-guide-card span {
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.page-guide-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
 }
 
 
@@ -1877,6 +1968,7 @@ html[data-ui-profile="android-mobile"] .bracket-tree-node {
 @media (max-width: 1080px) {
   .home-essential-grid,
   .home-showcase-grid,
+  .page-guide-grid,
   .bracket-tree-shell-cyber {
     grid-template-columns: 1fr;
   }
@@ -1989,7 +2081,8 @@ html[data-ui-profile="android-mobile"] .bracket-tree-node {
 
   .nav-links,
   .brand-copy span,
-  .ticker-label {
+  .ticker-label,
+  .nav-dropdown {
     display: none !important;
   }
 

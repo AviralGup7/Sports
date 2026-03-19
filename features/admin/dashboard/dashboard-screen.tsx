@@ -36,6 +36,56 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
 
       <ActionNotice message={message} tone={tone} />
 
+      <MotionIn className="admin-summary-grid" delay={0.03}>
+        <article className="admin-summary-card">
+          <p className="eyebrow">Sports</p>
+          <strong>{data.stats.sports}</strong>
+          <span>Active tournament lanes</span>
+        </article>
+        <article className="admin-summary-card">
+          <p className="eyebrow">Teams</p>
+          <strong>{data.stats.teams}</strong>
+          <span>Registered associations</span>
+        </article>
+        <article className="admin-summary-card">
+          <p className="eyebrow">Matches</p>
+          <strong>{data.stats.matches}</strong>
+          <span>Total boards in the map</span>
+        </article>
+        <article className="admin-summary-card">
+          <p className="eyebrow">Notices</p>
+          <strong>{data.stats.announcements}</strong>
+          <span>Editorial items available</span>
+        </article>
+      </MotionIn>
+
+      <MotionIn className="section-shell" delay={0.035}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Quick Actions</p>
+            <h2>Common control-room jumps</h2>
+          </div>
+        </div>
+        <div className="quick-tile-grid">
+          <Link href="/admin/matches?mode=live" className="quick-tile">
+            <strong>Run live desk</strong>
+            <span>Handle active boards and close results without leaving the queue.</span>
+          </Link>
+          <Link href="/admin/matches?mode=tree" className="quick-tile">
+            <strong>Review finals watch</strong>
+            <span>Check bracket integrity before finals and placement boards go live.</span>
+          </Link>
+          <Link href="/admin/teams" className="quick-tile">
+            <strong>Update team registry</strong>
+            <span>Seed associations, assign sports, and archive old entries.</span>
+          </Link>
+          <Link href="/admin/settings/export/matches" className="quick-tile">
+            <strong>Export fixture data</strong>
+            <span>Pull a fresh backup before large operations or resets.</span>
+          </Link>
+        </div>
+      </MotionIn>
+
       <MotionIn delay={0.04}>
         <DayNoteBanner note={data.dayNote} />
       </MotionIn>

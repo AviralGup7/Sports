@@ -2,7 +2,7 @@ import { upsertAnnouncementAction } from "@/app/admin/actions";
 import type { AdminAnnouncementsData } from "@/server/data/admin/types";
 import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { FormCluster, NewsBulletin, SubmitButton } from "@/shared/ui";
+import { DisclosurePanel, FormCluster, NewsBulletin, SubmitButton } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
 type AdminAnnouncementsScreenProps = {
@@ -80,44 +80,52 @@ export function AdminAnnouncementsScreen({ data, message, tone }: AdminAnnouncem
         <div className="stack-lg">
           {data.announcements.length > 0 ? (
             data.announcements.map((announcement) => (
-              <ControlPanel key={announcement.id} eyebrow="Editable bulletin" title={announcement.title} description={`${announcement.visibility} audience`} dense>
-                <NewsBulletin announcement={announcement} compact showAdminMeta />
-                <form action={upsertAnnouncementAction} className="stack-lg">
-                  <input type="hidden" name="id" value={announcement.id} />
-                  <div className="form-grid">
+              <DisclosurePanel
+                key={announcement.id}
+                eyebrow="Editable bulletin"
+                title={announcement.title}
+                meta={`${announcement.visibility} audience | ${announcement.pinned ? "pinned" : "standard"} | ${announcement.isPublished ? "published" : "draft"}`}
+                compact
+              >
+                <div className="stack-lg">
+                  <NewsBulletin announcement={announcement} compact showAdminMeta />
+                  <form action={upsertAnnouncementAction} className="stack-lg">
+                    <input type="hidden" name="id" value={announcement.id} />
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Title</span>
+                        <input name="title" defaultValue={announcement.title} required />
+                      </label>
+                      <label className="field">
+                        <span>Visibility</span>
+                        <select name="visibility" defaultValue={announcement.visibility}>
+                          <option value="public">Public</option>
+                          <option value="admin">Admin</option>
+                        </select>
+                      </label>
+                    </div>
                     <label className="field">
-                      <span>Title</span>
-                      <input name="title" defaultValue={announcement.title} required />
+                      <span>Body</span>
+                      <textarea name="body" rows={4} defaultValue={announcement.body} required />
                     </label>
-                    <label className="field">
-                      <span>Visibility</span>
-                      <select name="visibility" defaultValue={announcement.visibility}>
-                        <option value="public">Public</option>
-                        <option value="admin">Admin</option>
-                      </select>
-                    </label>
-                  </div>
-                  <label className="field">
-                    <span>Body</span>
-                    <textarea name="body" rows={4} defaultValue={announcement.body} required />
-                  </label>
-                  <div className="selection-pills">
-                    <label className="selection-pill">
-                      <input type="checkbox" name="pinned" defaultChecked={announcement.pinned} />
-                      <span>Pinned</span>
-                    </label>
-                    <label className="selection-pill">
-                      <input type="checkbox" name="isPublished" defaultChecked={announcement.isPublished} />
-                      <span>Published</span>
-                    </label>
-                  </div>
-                  <div className="form-actions">
-                    <SubmitButton className="button button-ghost" pendingLabel="Updating announcement...">
-                      Update announcement
-                    </SubmitButton>
-                  </div>
-                </form>
-              </ControlPanel>
+                    <div className="selection-pills">
+                      <label className="selection-pill">
+                        <input type="checkbox" name="pinned" defaultChecked={announcement.pinned} />
+                        <span>Pinned</span>
+                      </label>
+                      <label className="selection-pill">
+                        <input type="checkbox" name="isPublished" defaultChecked={announcement.isPublished} />
+                        <span>Published</span>
+                      </label>
+                    </div>
+                    <div className="form-actions">
+                      <SubmitButton className="button button-ghost" pendingLabel="Updating announcement...">
+                        Update announcement
+                      </SubmitButton>
+                    </div>
+                  </form>
+                </div>
+              </DisclosurePanel>
             ))
           ) : (
             <EmptyState eyebrow="Editorial Queue" title="No announcements yet" description="Use the composer on the left to publish the first public or admin notice." />

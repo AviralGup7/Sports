@@ -16,6 +16,8 @@ type SportCenterScreenProps = {
 
 export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterScreenProps) {
   const liveCount = data.matches.filter((match) => match.status === "live").length;
+  const completedCount = data.matches.filter((match) => match.status === "completed").length;
+  const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Structure ready";
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
   const tabs = [
     { id: "overview", label: "Overview" },
@@ -65,6 +67,40 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
               </Link>
             ))}
           </div>
+        </div>
+      </MotionIn>
+
+      <MotionIn className="section-shell page-guide-shell" delay={0.07}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Sport Snapshot</p>
+            <h2>Read this sport fast</h2>
+          </div>
+          <div className="page-guide-actions">
+            <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
+              Filter schedule
+            </Link>
+            <Link href={`/admin/matches?mode=live&sport=${data.sport.id}`} className="button button-ghost">
+              Open control room
+            </Link>
+          </div>
+        </div>
+        <div className="page-guide-grid">
+          <article className="page-guide-card">
+            <p className="eyebrow">Live now</p>
+            <strong>{liveCount}</strong>
+            <span>{liveCount > 0 ? "Boards active right now" : "Waiting on the next whistle"}</span>
+          </article>
+          <article className="page-guide-card">
+            <p className="eyebrow">Teams</p>
+            <strong>{data.teams.length}</strong>
+            <span>Associations assigned to this sport</span>
+          </article>
+          <article className="page-guide-card">
+            <p className="eyebrow">Progress</p>
+            <strong>{completedCount}</strong>
+            <span>{activeStageLabel}</span>
+          </article>
         </div>
       </MotionIn>
 

@@ -16,6 +16,9 @@ type ScheduleScreenProps = {
 export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
   const selectedSportRecord = getSportBySlugFromCollection(data.sports, selectedSport);
   const hasActiveFilters = Boolean(data.selectedSport || data.selectedStage || data.selectedGroup || data.selectedStatus);
+  const selectedStageLabel = data.selectedStage ? data.stages.find((stage) => stage.id === data.selectedStage)?.label ?? "Selected stage" : "All stages";
+  const selectedGroupLabel = data.selectedGroup ? data.groups.find((group) => group.id === data.selectedGroup)?.code ?? "Selected group" : "All groups";
+  const selectedStatusLabel = data.selectedStatus ? formatStatusLabel(data.selectedStatus) : "Any status";
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const next = new URLSearchParams();
@@ -69,6 +72,42 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
 
       <MotionIn delay={0.06}>
         <DayNoteBanner note={data.dayNote} />
+      </MotionIn>
+
+      <MotionIn className="section-shell page-guide-shell" delay={0.07}>
+        <div className="section-heading">
+          <div>
+            <p className="eyebrow">Filter Snapshot</p>
+            <h2>What this board is showing</h2>
+          </div>
+          <div className="page-guide-actions">
+            {hasActiveFilters ? (
+              <Link href={buildHref({ sport: undefined, stage: undefined, group: undefined, status: undefined })} className="button button-ghost">
+                Clear filters
+              </Link>
+            ) : null}
+            <Link href="/admin/matches?mode=live" className="button button-ghost">
+              Update fixtures
+            </Link>
+          </div>
+        </div>
+        <div className="page-guide-grid">
+          <article className="page-guide-card">
+            <p className="eyebrow">Visible boards</p>
+            <strong>{data.fixtures.length}</strong>
+            <span>Fixtures matching the current board state</span>
+          </article>
+          <article className="page-guide-card">
+            <p className="eyebrow">Sport lane</p>
+            <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
+            <span>{selectedGroupLabel}</span>
+          </article>
+          <article className="page-guide-card">
+            <p className="eyebrow">Stage view</p>
+            <strong>{selectedStageLabel}</strong>
+            <span>{selectedStatusLabel}</span>
+          </article>
+        </div>
       </MotionIn>
 
       <MotionIn className="filter-rail" delay={0.08}>

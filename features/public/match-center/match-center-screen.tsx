@@ -24,9 +24,17 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
   return (
     <div className="stack-xl">
       <MotionIn>
-        <Link href={`/sports/${data.sport.id}`} className="inline-link">
-          Back to {data.sport.name}
-        </Link>
+        <div className="chip-row">
+          <Link href={`/sports/${data.sport.id}`} className="chip">
+            Back to {data.sport.name}
+          </Link>
+          <Link href={`/schedule?sport=${data.sport.id}`} className="chip">
+            Open sport schedule
+          </Link>
+          <Link href={`/admin/matches?mode=live&sport=${data.sport.id}`} className="chip">
+            Open control room
+          </Link>
+        </div>
       </MotionIn>
 
       <MotionIn>
@@ -54,10 +62,17 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
 
       <MotionIn className="detail-grid" delay={0.08}>
         <article className="detail-card detail-card-cyber">
-          <p className="eyebrow">Stage Path</p>
+          <p className="eyebrow">Board status</p>
+          <h2>{data.match.isBye ? "Bye" : data.match.status}</h2>
+          <p>
+            {data.match.venue} | {formatDateTime(data.match.day, data.match.startTime)}
+          </p>
+        </article>
+        <article className="detail-card detail-card-cyber">
+          <p className="eyebrow">Stage path</p>
           <h2>{data.match.group ? `${data.match.group.code}` : data.match.round}</h2>
           <p>
-            {data.match.stage?.label ?? "Standalone board"} | {formatDateTime(data.match.day, data.match.startTime)}
+            {data.match.stage?.label ?? "Standalone board"} | {data.match.result?.winner?.name ?? "Winner not locked"}
           </p>
         </article>
         <article className="detail-card detail-card-cyber">

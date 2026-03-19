@@ -2,6 +2,7 @@ export * from "@/shared/ui/bracket-node";
 export * from "@/shared/ui/bracket-preview-card";
 export * from "@/shared/ui/bracket-tree";
 export * from "@/shared/ui/day-note-banner";
+export * from "@/shared/ui/disclosure-panel";
 export * from "@/shared/ui/fixture-strip";
 export * from "@/shared/ui/form-cluster";
 export * from "@/shared/ui/integrity-warning";

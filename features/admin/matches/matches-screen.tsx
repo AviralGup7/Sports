@@ -4,7 +4,7 @@ import { generateStructureAction, submitResultAction, upsertMatchAction } from "
 import type { AdminMatchesData } from "@/server/data/admin/types";
 import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { AthleticsEventBoard, BracketTree, FixtureStrip, IntegrityWarning, StandingsTable } from "@/shared/ui";
+import { AthleticsEventBoard, BracketTree, DisclosurePanel, FixtureStrip, IntegrityWarning, StandingsTable } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 import { AdminMatchCreatePanel } from "@/features/admin/matches/components/match-create-panel";
 import { AdminMatchFilters } from "@/features/admin/matches/components/match-filters";
@@ -217,13 +217,19 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
           </MotionIn>
 
           <MotionIn delay={0.18}>
-            <AdminMatchCreatePanel
-              sports={data.sports}
-              stages={visibleStages}
-              groups={selectedSport ? data.groups.filter((group) => group.sportId === selectedSport) : data.groups}
-              teams={data.teams}
-              action={upsertMatchAction}
-            />
+            <DisclosurePanel
+              eyebrow="Advanced Tools"
+              title="Create or edit a fixture"
+              meta="Expand only when you need manual fixture entry"
+            >
+              <AdminMatchCreatePanel
+                sports={data.sports}
+                stages={visibleStages}
+                groups={selectedSport ? data.groups.filter((group) => group.sportId === selectedSport) : data.groups}
+                teams={data.teams}
+                action={upsertMatchAction}
+              />
+            </DisclosurePanel>
           </MotionIn>
         </>
       ) : null}

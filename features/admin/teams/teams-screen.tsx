@@ -1,7 +1,7 @@
 import type { AdminTeamsData } from "@/server/data/admin/types";
 import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
 import { ControlPanel } from "@/shared/layout";
-import { FormCluster, SubmitButton } from "@/shared/ui";
+import { DisclosurePanel, FormCluster, SubmitButton } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 import { archiveTeamAction, upsertTeamAction } from "@/app/admin/actions";
 
@@ -77,44 +77,52 @@ export function TeamsScreen({ data, message, tone }: TeamsScreenProps) {
         <div className="stack-lg">
           {activeTeams.length > 0 ? (
             activeTeams.map((team) => (
-              <ControlPanel key={team.id} eyebrow="Active Team" title={team.name} description={`${team.association} | seed ${team.seed}`} dense>
-                <form action={upsertTeamAction} className="stack-lg">
-                  <input type="hidden" name="id" value={team.id} />
-                  <div className="form-grid">
-                    <label className="field">
-                      <span>Name</span>
-                      <input name="name" defaultValue={team.name} required />
-                    </label>
-                    <label className="field">
-                      <span>Association</span>
-                      <input name="association" defaultValue={team.association} required />
-                    </label>
-                    <label className="field">
-                      <span>Seed</span>
-                      <input name="seed" type="number" min="1" defaultValue={team.seed} required />
-                    </label>
-                  </div>
-                  <div className="selection-pills">
-                    {data.sports.map((sport) => (
-                      <label key={`${team.id}-${sport.id}`} className="selection-pill">
-                        <input name="sportIds" type="checkbox" value={sport.id} defaultChecked={team.sportIds.includes(sport.id)} />
-                        <span>{sport.name}</span>
+              <DisclosurePanel
+                key={team.id}
+                eyebrow="Active Team"
+                title={team.name}
+                meta={`${team.association} | seed ${team.seed} | ${team.sportIds.length} sports`}
+                compact
+              >
+                <div className="stack-lg">
+                  <form action={upsertTeamAction} className="stack-lg">
+                    <input type="hidden" name="id" value={team.id} />
+                    <div className="form-grid">
+                      <label className="field">
+                        <span>Name</span>
+                        <input name="name" defaultValue={team.name} required />
                       </label>
-                    ))}
-                  </div>
-                  <div className="form-actions">
-                    <SubmitButton className="button" pendingLabel="Updating team...">
-                      Update team
+                      <label className="field">
+                        <span>Association</span>
+                        <input name="association" defaultValue={team.association} required />
+                      </label>
+                      <label className="field">
+                        <span>Seed</span>
+                        <input name="seed" type="number" min="1" defaultValue={team.seed} required />
+                      </label>
+                    </div>
+                    <div className="selection-pills">
+                      {data.sports.map((sport) => (
+                        <label key={`${team.id}-${sport.id}`} className="selection-pill">
+                          <input name="sportIds" type="checkbox" value={sport.id} defaultChecked={team.sportIds.includes(sport.id)} />
+                          <span>{sport.name}</span>
+                        </label>
+                      ))}
+                    </div>
+                    <div className="form-actions">
+                      <SubmitButton className="button" pendingLabel="Updating team...">
+                        Update team
+                      </SubmitButton>
+                    </div>
+                  </form>
+                  <form action={archiveTeamAction}>
+                    <input type="hidden" name="id" value={team.id} />
+                    <SubmitButton className="button button-danger" pendingLabel="Archiving...">
+                      Archive team
                     </SubmitButton>
-                  </div>
-                </form>
-                <form action={archiveTeamAction}>
-                  <input type="hidden" name="id" value={team.id} />
-                  <SubmitButton className="button button-danger" pendingLabel="Archiving...">
-                    Archive team
-                  </SubmitButton>
-                </form>
-              </ControlPanel>
+                  </form>
+                </div>
+              </DisclosurePanel>
             ))
           ) : (
             <EmptyState eyebrow="Team Registry" title="No active teams yet" description="Use the create panel to seed the first association records for the tournament." />

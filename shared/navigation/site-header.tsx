@@ -32,6 +32,20 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
   const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
+  const sportsActive = pathname.startsWith("/sports/");
+  const currentSectionLabel = isAdmin
+    ? "Organizer lane"
+    : pathname === "/"
+      ? "Broadcast home"
+      : pathname.startsWith("/schedule")
+        ? "Fixture board"
+        : pathname.startsWith("/sports/")
+          ? "Sport center"
+          : pathname.startsWith("/matches/")
+            ? "Match center"
+            : pathname.startsWith("/announcements")
+              ? "News desk"
+              : "Live portal";
 
   return (
     <>
@@ -48,6 +62,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           <div className="header-status">
             <span className="header-chip">{rangeLabel}</span>
             <span className="header-chip">{chrome.sports.length} sports</span>
+            <span className="header-chip">{currentSectionLabel}</span>
             {!isAdmin ? <span className="header-chip header-chip-live">Signal locked</span> : null}
             {!isAdmin ? (
               <Link href="/schedule" className="header-cta">
@@ -58,8 +73,35 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
         </div>
 
         <nav className="nav-links" aria-label="Primary">
-          {desktopNav.map((item) => {
+          {desktopNav.slice(0, 2).map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                prefetch
+                className={active ? "nav-link nav-link-active" : "nav-link"}
+                aria-current={active ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+
+          <details className={sportsActive ? "nav-dropdown nav-dropdown-active" : "nav-dropdown"}>
+            <summary className={sportsActive ? "nav-dropdown-trigger nav-link nav-link-active" : "nav-dropdown-trigger nav-link"}>Sports</summary>
+            <div className="nav-dropdown-panel">
+              {chrome.sports.map((sport) => (
+                <Link key={sport.id} href={`/sports/${sport.id}`} className="nav-dropdown-link" prefetch>
+                  <strong>{sport.name}</strong>
+                  <span>{sport.format}</span>
+                </Link>
+              ))}
+            </div>
+          </details>
+
+          {desktopNav.slice(2).map((item) => {
+            const active = item.href === "/admin" ? pathname.startsWith("/admin") : pathname.startsWith(item.href);
             const href = item.href === "/admin" && !isAdmin ? "/admin/login" : item.href;
             return (
               <Link
