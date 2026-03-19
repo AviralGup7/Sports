@@ -77,7 +77,7 @@ function readCapability(reducedMotion: boolean): UICapability {
       : isAndroid
         ? "light"
         : "medium";
-  const scrollMode: ScrollMode = reducedMotion || profile !== "desktop" ? "native" : "lenis";
+  const scrollMode: ScrollMode = "native";
 
   return {
     isAndroid,
