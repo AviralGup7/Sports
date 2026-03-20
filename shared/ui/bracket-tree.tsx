@@ -157,7 +157,7 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
               <div className="bracket-tree-column-head">
                 <div>
                   <p className="eyebrow">{column.label}</p>
-                  <strong>{column.count} boards</strong>
+                  <strong>{column.count} matches</strong>
                 </div>
               </div>
               <div className="bracket-tree-column-stack">
@@ -186,7 +186,7 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
       {selectedNode ? (
         <aside className="bracket-focus-panel">
           <div className="bracket-focus-head">
-            <p className="eyebrow">Focused lane</p>
+            <p className="eyebrow">Selected match</p>
             <h3>{selectedNode.match.round}</h3>
           </div>
           <div className="bracket-focus-score">
@@ -195,13 +195,13 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
             <strong>{selectedNode.match.teamB?.name ?? "TBD"}</strong>
           </div>
           <p className="bracket-focus-meta">
-            {selectedNode.match.stage?.label ?? "Bracket lane"} | {selectedNode.match.venue}
+            {selectedNode.match.stage?.label ?? "Bracket match"} | {selectedNode.match.venue}
           </p>
           <p className="bracket-focus-summary">
             {selectedNode.match.result?.scoreSummary ??
               (selectedNode.match.status === "live"
-                ? "This lane is currently live on the board."
-                : "Awaiting score confirmation and progression update.")}
+                ? "This match is currently live."
+                : "Waiting for a result and bracket update.")}
           </p>
           <div className="bracket-focus-route-grid">
             <div>
@@ -215,11 +215,11 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
           </div>
           <div className="bracket-focus-actions">
             <Link href={admin ? `/admin/matches?mode=live&sport=${selectedNode.match.sportId}` : `/matches/${selectedNode.match.id}`} className="button button-ghost">
-              {admin ? "Control lane" : "Open match center"}
+              {admin ? "Control match" : "Match Details"}
             </Link>
             {!admin ? (
               <Link href={`/sports/${selectedNode.match.sportId}?tab=fixtures`} className="inline-link">
-                Open full sport center
+                View full sport page
               </Link>
             ) : null}
           </div>

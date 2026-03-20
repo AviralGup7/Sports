@@ -5,8 +5,8 @@ export default function Loading() {
         <span className="route-buffer-ring" />
         <span className="route-buffer-ring route-buffer-ring-delayed" />
         <div className="route-buffer-copy">
-          <p className="eyebrow">Switching Arena</p>
-          <strong>Loading next board</strong>
+          <p className="eyebrow">Loading</p>
+          <strong>Opening the next page</strong>
         </div>
       </div>
     </div>

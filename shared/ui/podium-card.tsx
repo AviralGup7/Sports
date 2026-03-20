@@ -16,7 +16,7 @@ export function PodiumCard({ spotlight, index }: PodiumCardProps) {
       <span className="podium-status">{spotlight.statusLabel}</span>
       <p>{spotlight.note}</p>
       <Link href={`/sports/${spotlight.sport.id}`} className="inline-link">
-        Open sport hub
+        View {spotlight.sport.name}
       </Link>
     </article>
   );

@@ -5,7 +5,7 @@ import type { SchedulePageData } from "@/server/data/public/types";
 import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { DayNoteBanner, FixtureStrip, StageTimeline } from "@/shared/ui";
+import { DayNoteBanner, FixtureStrip, FreshnessStamp, StageTimeline } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type ScheduleScreenProps = {
@@ -46,10 +46,10 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Fixture Board"
+            eyebrow="Schedule"
             kicker={formatDateLabel(data.selectedDay)}
-            title={selectedSportRecord ? `${selectedSportRecord.name} Schedule` : "Tournament Schedule"}
-            description="Scan the arena like a premium command surface. Filters now understand sport, stage, group, and board status with stage-aware lanes and live pressure."
+            title={selectedSportRecord ? `${selectedSportRecord.name} Matches` : "Tournament Schedule"}
+            description="Browse today’s fixtures, narrow by sport or stage, and jump straight into match details."
             compact
             tone={selectedSportRecord ? "cyan" : "blue"}
             intensity="premium"
@@ -57,13 +57,14 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             aside={
               <div className="hero-aside-list hero-aside-list-cyber">
                 <div>
-                  <span className="aside-label">Visible fixtures</span>
+                  <span className="aside-label">Matches shown</span>
                   <strong>{data.fixtures.length}</strong>
                 </div>
                 <div>
-                  <span className="aside-label">Active stage filter</span>
-                  <strong>{data.selectedStage ? data.stages.find((stage) => stage.id === data.selectedStage)?.label ?? "Stage" : "All"}</strong>
+                  <span className="aside-label">Current view</span>
+                  <strong>{selectedStageLabel}</strong>
                 </div>
+                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
@@ -78,7 +79,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
         <div className="section-heading">
           <div>
             <p className="eyebrow">Filter Snapshot</p>
-            <h2>What this board is showing</h2>
+            <h2>What this schedule is showing</h2>
           </div>
           <div className="page-guide-actions">
             {hasActiveFilters ? (
@@ -86,26 +87,26 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
                 Clear filters
               </Link>
             ) : null}
-            <Link href="/admin/matches?mode=live" className="button button-ghost">
-              Update fixtures
+            <Link href="/standings" className="button button-ghost">
+              View standings
             </Link>
           </div>
         </div>
         <div className="page-guide-grid">
           <article className="page-guide-card">
-            <p className="eyebrow">Visible boards</p>
+            <p className="eyebrow">Matches</p>
             <strong>{data.fixtures.length}</strong>
-            <span>Fixtures matching the current board state</span>
+            <span>Fixtures matching your current filters</span>
           </article>
           <article className="page-guide-card">
-            <p className="eyebrow">Sport lane</p>
+            <p className="eyebrow">Sport</p>
             <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
             <span>{selectedGroupLabel}</span>
           </article>
           <article className="page-guide-card">
-            <p className="eyebrow">Stage view</p>
-            <strong>{selectedStageLabel}</strong>
-            <span>{selectedStatusLabel}</span>
+            <p className="eyebrow">Status</p>
+            <strong>{selectedStatusLabel}</strong>
+            <span>{selectedStageLabel}</span>
           </article>
         </div>
       </MotionIn>
@@ -174,17 +175,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             ))}
           </div>
         </div>
-
-        {hasActiveFilters ? (
-          <div className="filter-block filter-block-compact">
-            <p className="eyebrow">Reset</p>
-            <div className="chip-row">
-              <Link href={buildHref({ sport: undefined, stage: undefined, group: undefined, status: undefined })} className="chip">
-                Clear filters
-              </Link>
-            </div>
-          </div>
-        ) : null}
       </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.12}>
@@ -192,8 +182,8 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           <section className="section-shell">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Quick Sport Jump</p>
-                <h2>Visible sport lanes</h2>
+                <p className="eyebrow">Quick Jump</p>
+                <h2>Sports on this day</h2>
               </div>
             </div>
             <div className="chip-row">
@@ -214,15 +204,15 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
                   <p className="eyebrow">{block.activeStageLabel}</p>
                   <h2>{block.sport.name}</h2>
                 </div>
-                <span className="pill">{block.visibleCount} boards</span>
+                <span className="pill">{block.visibleCount} matches</span>
               </div>
               <div className="stack-lg">
                 {block.scheduleGroups.map((group) => (
                   <section key={`${block.sport.id}-${group.time}`} className="timeline-group timeline-group-cyber">
                     <div className="timeline-marker">
-                      <p className="eyebrow">Time Slot</p>
+                      <p className="eyebrow">Time</p>
                       <h2>{group.label}</h2>
-                      <span>{group.matches.length} boards</span>
+                      <span>{group.matches.length} matches</span>
                     </div>
                     <div className="timeline-stack">
                       {group.matches.map((match) => (
@@ -238,9 +228,9 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           data.scheduleGroups.map((group) => (
             <section key={group.time} className="timeline-group timeline-group-cyber">
               <div className="timeline-marker">
-                <p className="eyebrow">Time Slot</p>
+                <p className="eyebrow">Time</p>
                 <h2>{group.label}</h2>
-                <span>{group.matches.length} boards</span>
+                <span>{group.matches.length} matches</span>
               </div>
               <div className="timeline-stack">
                 {group.matches.map((match) => (
@@ -251,14 +241,9 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           ))
         ) : (
           <EmptyState
-            eyebrow="Fixture Board"
-            title="No fixtures match this filter"
-            description="Try another day, sport, stage, or status filter, or seed more matches from the admin control room."
-            action={
-              <Link href="/admin/matches?mode=live" className="button button-ghost">
-                Open match control
-              </Link>
-            }
+            eyebrow="Schedule"
+            title="No matches match this filter"
+            description="Try another day, sport, stage, or status to see more fixtures."
           />
         )}
       </MotionIn>

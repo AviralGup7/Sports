@@ -10,7 +10,7 @@ export function ProgressPathCard({ card }: ProgressPathCardProps) {
   return (
     <article className="detail-card progress-path-card">
       <p className="eyebrow">{card.label}</p>
-      <h2>{card.matches.length} linked boards</h2>
+      <h2>{card.matches.length} linked matches</h2>
       <div className="stack-sm">
         {card.matches.map((match) => (
           <Link key={match.id} href={`/matches/${match.id}`} className="progress-link">

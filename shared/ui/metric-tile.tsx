@@ -21,7 +21,7 @@ export function MetricTile({ label, value, detail, accent, pulse = false, href }
     <motion.article
       className={`metric-tile${pulse ? " metric-tile-pulse" : ""}`}
       style={accent ? ({ "--tile-accent": accent } as CSSProperties) : undefined}
-      aria-label={`${label}: ${value}. ${detail}${href ? ". Open lane." : ""}`}
+      aria-label={`${label}: ${value}. ${detail}${href ? ". View details." : ""}`}
       initial={reduceMotion ? false : { opacity: 0, y: 18 }}
       animate={reduceMotion ? undefined : { opacity: 1, y: 0 }}
       transition={{ duration: 0.45 }}
@@ -32,7 +32,7 @@ export function MetricTile({ label, value, detail, accent, pulse = false, href }
         <CountUpValue value={value} />
       </strong>
       <span>{detail}</span>
-      {href ? <span className="metric-link-hint" aria-hidden="true">Open lane</span> : null}
+      {href ? <span className="metric-link-hint" aria-hidden="true">View</span> : null}
     </motion.article>
   );
 

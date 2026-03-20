@@ -4,5 +4,7 @@ export * from "@/server/data/public/home-query";
 export * from "@/server/data/public/match-center-query";
 export * from "@/server/data/public/schedule-query";
 export * from "@/server/data/public/sport-center-query";
+export * from "@/server/data/public/standings-query";
+export * from "@/server/data/public/teams-query";
 export * from "@/server/data/public/types";
 

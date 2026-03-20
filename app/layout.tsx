@@ -3,7 +3,7 @@ import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
 import { AmbientBackdrop, PublicScrollRig, RouteTransitionLayer, RuntimeCapabilityFlags } from "@/shared/motion";
-import { SiteHeader } from "@/shared/navigation";
+import { SiteFooter, SiteHeader } from "@/shared/navigation";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
 import "./globals.css";
@@ -25,8 +25,8 @@ const monoFont = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IASL Arena Portal",
-  description: "Broadcast-style college tournament portal with public spectacle and organizer control room."
+  title: "IASL Tournament Portal",
+  description: "Public-facing sports portal for live scores, schedules, standings, notices, and match details."
 };
 
 export const viewport: Viewport = {
@@ -64,6 +64,7 @@ export default async function RootLayout({
         <main id="main-content" className="page-shell" tabIndex={-1}>
           {children}
         </main>
+        <SiteFooter chrome={chrome} />
       </body>
     </html>
   );

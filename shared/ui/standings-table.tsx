@@ -1,4 +1,8 @@
+import { CSSProperties } from "react";
+import Link from "next/link";
+
 import type { GroupStandingsCard } from "@/server/data/public/types";
+import { getTeamAccent } from "@/lib/team-style";
 
 type StandingsTableProps = {
   cards: GroupStandingsCard[];
@@ -23,7 +27,7 @@ export function StandingsTable({ cards }: StandingsTableProps) {
             <table className="standings-table">
               <thead>
                 <tr>
-                  <th>Team</th>
+                  <th>Association</th>
                   <th>P</th>
                   <th>W</th>
                   <th>D</th>
@@ -33,19 +37,30 @@ export function StandingsTable({ cards }: StandingsTableProps) {
                 </tr>
               </thead>
               <tbody>
-                {card.rows.map((row) => (
-                  <tr key={row.teamId} className={row.qualified ? "standings-qualified" : undefined}>
-                    <td>
-                      <strong>{row.team?.name ?? row.teamId}</strong>
-                    </td>
-                    <td>{row.played}</td>
-                    <td>{row.wins}</td>
-                    <td>{row.draws}</td>
-                    <td>{row.losses}</td>
-                    <td>{row.points}</td>
-                    <td>{row.scoreDifference}</td>
-                  </tr>
-                ))}
+                {card.rows.map((row) => {
+                  const teamLabel = row.team?.name ?? row.teamId;
+                  const teamAccent = getTeamAccent(row.team ?? { id: row.teamId, name: teamLabel, association: "" });
+
+                  return (
+                    <tr key={row.teamId} className={row.qualified ? "standings-qualified" : undefined}>
+                      <td>
+                        <Link
+                          href={`/teams/${row.teamId}`}
+                          className="standings-team-link"
+                          style={{ "--team-accent": teamAccent } as CSSProperties}
+                        >
+                          <strong>{teamLabel}</strong>
+                        </Link>
+                      </td>
+                      <td>{row.played}</td>
+                      <td>{row.wins}</td>
+                      <td>{row.draws}</td>
+                      <td>{row.losses}</td>
+                      <td>{row.points}</td>
+                      <td>{row.scoreDifference}</td>
+                    </tr>
+                  );
+                })}
               </tbody>
             </table>
           </div>

@@ -15,37 +15,41 @@ type SiteHeaderProps = {
 
 const desktopNav = [
   { href: "/", label: "Home" },
+  { href: "/standings", label: "Standings" },
   { href: "/schedule", label: "Schedule" },
-  { href: "/announcements", label: "Notices" },
-  { href: "/admin", label: "Admin" }
+  { href: "/announcements", label: "Notices" }
 ];
 
 const mobileNav = [
   { href: "/", label: "Home" },
+  { href: "/standings", label: "Standings" },
   { href: "/schedule", label: "Schedule" },
-  { href: "/#sports-spotlight", label: "Sports" },
-  { href: "/announcements", label: "Notices" },
-  { href: "/admin", label: "Admin" }
+  { href: "/menu", label: "Menu" }
 ];
 
 export function SiteHeader({ chrome }: SiteHeaderProps) {
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
   const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
-  const sportsActive = pathname.startsWith("/sports/");
+  const sportsActive = pathname.startsWith("/sports/") || pathname === "/teams";
+  const menuActive = pathname.startsWith("/sports/") || pathname.startsWith("/announcements") || pathname.startsWith("/teams");
   const currentSectionLabel = isAdmin
     ? "Organizer lane"
     : pathname === "/"
-      ? "Broadcast home"
+      ? "Home"
+      : pathname.startsWith("/standings")
+        ? "Standings"
       : pathname.startsWith("/schedule")
-        ? "Fixture board"
+        ? "Schedule"
         : pathname.startsWith("/sports/")
-          ? "Sport center"
+          ? "Sports"
+          : pathname.startsWith("/teams")
+            ? "Teams"
           : pathname.startsWith("/matches/")
-            ? "Match center"
+            ? "Match Details"
             : pathname.startsWith("/announcements")
-              ? "News desk"
-              : "Live portal";
+              ? "Notices"
+              : "Portal";
 
   return (
     <>
@@ -55,7 +59,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             <BrandMark />
             <span className="brand-copy">
               <strong>{chrome.tournament.name}</strong>
-              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Cyber arena broadcast`}</span>
+              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Live tournament portal`}</span>
             </span>
           </Link>
 
@@ -63,17 +67,16 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             <span className="header-chip">{rangeLabel}</span>
             <span className="header-chip">{chrome.sports.length} sports</span>
             <span className="header-chip">{currentSectionLabel}</span>
-            {!isAdmin ? <span className="header-chip header-chip-live">Signal locked</span> : null}
             {!isAdmin ? (
               <Link href="/schedule" className="header-cta">
-                Open fixture board
+                View Schedule
               </Link>
             ) : null}
           </div>
         </div>
 
         <nav className="nav-links" aria-label="Primary">
-          {desktopNav.slice(0, 2).map((item) => {
+          {desktopNav.slice(0, 3).map((item) => {
             const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
             return (
               <Link
@@ -97,17 +100,20 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
                   <span>{sport.format}</span>
                 </Link>
               ))}
+              <Link href="/teams" className="nav-dropdown-link" prefetch>
+                <strong>Teams</strong>
+                <span>Association profiles</span>
+              </Link>
             </div>
           </details>
 
-          {desktopNav.slice(2).map((item) => {
-            const active = item.href === "/admin" ? pathname.startsWith("/admin") : pathname.startsWith(item.href);
-            const href = item.href === "/admin" && !isAdmin ? "/admin/login" : item.href;
+          {desktopNav.slice(3).map((item) => {
+            const active = pathname.startsWith(item.href);
             return (
               <Link
-                key={href}
-                href={href}
-                prefetch={item.href !== "/admin"}
+                key={item.href}
+                href={item.href}
+                prefetch
                 className={active ? "nav-link nav-link-active" : "nav-link"}
                 aria-current={active ? "page" : undefined}
               >
@@ -126,20 +132,38 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             const active =
               item.href === "/"
                 ? pathname === "/"
-                : item.href.startsWith("/#")
-                  ? pathname === "/"
-                  : pathname.startsWith(item.href.replace("/#", "/"));
-            const href = item.href === "/admin" && !isAdmin ? "/admin/login" : item.href;
+                : item.href === "/menu"
+                  ? menuActive
+                  : pathname.startsWith(item.href);
+            const href = item.href === "/menu" ? "#" : item.href;
             return (
+              item.href === "/menu" ? (
+                <details key={item.label} className="mobile-dock-menu">
+                  <summary className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}>
+                    <span>{item.label}</span>
+                  </summary>
+                  <div className="mobile-dock-menu-panel">
+                    <Link href="/announcements" className="mobile-dock-menu-link">
+                      Notices
+                    </Link>
+                    {chrome.sports.map((sport) => (
+                      <Link key={sport.id} href={`/sports/${sport.id}`} className="mobile-dock-menu-link">
+                        {sport.name}
+                      </Link>
+                    ))}
+                  </div>
+                </details>
+              ) : (
               <Link
                 key={item.label}
                 href={href}
-                prefetch={!item.href.startsWith("/#") && item.href !== "/admin"}
+                prefetch
                 className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}
                 aria-current={active ? "page" : undefined}
               >
                 <span>{item.label}</span>
               </Link>
+              )
             );
           })}
         </nav>

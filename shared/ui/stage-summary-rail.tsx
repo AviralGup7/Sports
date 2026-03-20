@@ -22,7 +22,7 @@ export function StageSummaryRail({ summaries }: StageSummaryRailProps) {
             </span>
           </div>
           <strong>{summary.completedMatches}/{summary.totalMatches}</strong>
-          <span>{summary.groups.length > 0 ? `${summary.groups.length} groups active` : "Direct elimination lane"}</span>
+              <span>{summary.groups.length > 0 ? `${summary.groups.length} groups active` : "Knockout stage"}</span>
           <div className="stage-summary-bar" aria-hidden="true">
             <span style={{ width: `${summary.totalMatches > 0 ? (summary.completedMatches / summary.totalMatches) * 100 : 0}%` }} />
           </div>

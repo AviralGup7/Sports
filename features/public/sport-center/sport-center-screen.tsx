@@ -2,8 +2,9 @@ import { CSSProperties } from "react";
 import Link from "next/link";
 
 import type { SportSlug } from "@/domain/sports/types";
+import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
-import { AthleticsEventBoard, BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
+import { AthleticsEventBoard, BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
@@ -17,12 +18,12 @@ type SportCenterScreenProps = {
 export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterScreenProps) {
   const liveCount = data.matches.filter((match) => match.status === "live").length;
   const completedCount = data.matches.filter((match) => match.status === "completed").length;
-  const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Structure ready";
+  const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Tournament view";
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "standings", label: "Standings" },
-    { id: "bracket", label: "Winner Tree" },
+    { id: "bracket", label: "Bracket" },
     { id: "fixtures", label: "Fixtures" }
   ];
 
@@ -31,26 +32,48 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Sport Center"
+            eyebrow={data.sport.name}
             kicker={data.sport.format}
-            title={data.sport.name}
+            title={`${data.sport.name} Centre`}
             description={data.sport.rulesSummary}
             accent={data.sport.color}
             tone={data.sport.id === "athletics" ? "crimson" : "cyan"}
             intensity="premium"
             variant="sport-masthead"
             aside={
-              <div className="score-spotlight score-spotlight-tight">
-                <p className="eyebrow">Stage Status</p>
-                <h2>{liveCount > 0 ? "Live Round" : data.stageSummaries[0]?.stage.label ?? "Structure Ready"}</h2>
-                <strong>{data.teams.length} squads active</strong>
-                <p>
-                  {data.sport.id === "athletics"
-                    ? "Athletics stays on event-result cards rather than a bracket tree."
-                    : liveCount > 0
-                      ? `${liveCount} boards are active right now.`
-                      : "Use the tabs below to move between overview, standings, bracket, and fixtures."}
-                </p>
+              <div className="stack-lg">
+                <div className="score-spotlight score-spotlight-tight">
+                  <p className="eyebrow">This sport</p>
+                  <h2>{liveCount > 0 ? "Live Now" : activeStageLabel}</h2>
+                  <strong>{data.teams.length} associations competing</strong>
+                  <p>
+                    {data.sport.id === "athletics"
+                      ? "Athletics uses event result cards rather than a knockout bracket."
+                      : liveCount > 0
+                        ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
+                        : "Standings, bracket views, and fixtures are all available below."}
+                  </p>
+                  <FreshnessStamp generatedAt={data.generatedAt} />
+                </div>
+                <div className="sport-banner-placeholder" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
+                  <span className="sport-banner-tag">{data.sport.id === "athletics" ? "Results Hub" : "Matchday Focus"}</span>
+                  <strong>{data.sport.name}</strong>
+                  <p>{data.sport.id === "athletics" ? "Event cards, medal moments, and association performances." : "Fixtures, bracket pressure, and standings all in one sport page."}</p>
+                  <div className="sport-banner-grid">
+                    <div>
+                      <small>Associations</small>
+                      <b>{data.teams.length}</b>
+                    </div>
+                    <div>
+                      <small>Live</small>
+                      <b>{liveCount}</b>
+                    </div>
+                    <div>
+                      <small>Results</small>
+                      <b>{completedCount}</b>
+                    </div>
+                  </div>
+                </div>
               </div>
             }
           />
@@ -74,30 +97,30 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <div className="section-heading">
           <div>
             <p className="eyebrow">Sport Snapshot</p>
-            <h2>Read this sport fast</h2>
+            <h2>Read this sport quickly</h2>
           </div>
           <div className="page-guide-actions">
             <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
-              Filter schedule
+              View schedule
             </Link>
-            <Link href={`/admin/matches?mode=live&sport=${data.sport.id}`} className="button button-ghost">
-              Open control room
+            <Link href="/standings" className="button button-ghost">
+              All standings
             </Link>
           </div>
         </div>
         <div className="page-guide-grid">
           <article className="page-guide-card">
-            <p className="eyebrow">Live now</p>
+            <p className="eyebrow">Matches live</p>
             <strong>{liveCount}</strong>
-            <span>{liveCount > 0 ? "Boards active right now" : "Waiting on the next whistle"}</span>
+            <span>{liveCount > 0 ? "Scores updating right now" : "Waiting for the next whistle"}</span>
           </article>
           <article className="page-guide-card">
             <p className="eyebrow">Teams</p>
             <strong>{data.teams.length}</strong>
-            <span>Associations assigned to this sport</span>
+            <span>Associations entered in this sport</span>
           </article>
           <article className="page-guide-card">
-            <p className="eyebrow">Progress</p>
+            <p className="eyebrow">Results in</p>
             <strong>{completedCount}</strong>
             <span>{activeStageLabel}</span>
           </article>
@@ -107,25 +130,20 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       <MotionIn className="section-shell" delay={0.08}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Stage Progress</p>
-            <h2>Tournament path</h2>
+            <p className="eyebrow">Progress</p>
+            <h2>Tournament picture</h2>
           </div>
         </div>
         <div className="sport-progress-grid">
           <SportProgressCard card={data.sportProgressCard} />
           {data.bracketPreview ? <BracketPreviewCard card={data.bracketPreview} /> : null}
         </div>
-        <div className="spacer-sm" />
         {data.stageSummaries.length > 0 ? (
-          <StageSummaryRail summaries={data.stageSummaries} />
-        ) : (
-          <EmptyState
-            compact
-            eyebrow="Stage Progress"
-            title="Stage map is still being linked"
-            description="This sport already has fixtures on the board, but the stage map has not been fully connected yet."
-          />
-        )}
+          <>
+            <div className="spacer-sm" />
+            <StageSummaryRail summaries={data.stageSummaries} />
+          </>
+        ) : null}
       </MotionIn>
 
       {selectedTab === "overview" ? (
@@ -133,15 +151,15 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <section className="section-shell">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Spotlight</p>
-                <h2>Current boards</h2>
+                <p className="eyebrow">Featured Matches</p>
+                <h2>Current spotlight</h2>
               </div>
             </div>
             <div className="fixture-stack">
               {data.overviewMatches.length > 0 ? (
                 data.overviewMatches.map((match) => <FixtureStrip key={match.id} match={match} />)
               ) : (
-                <EmptyState compact eyebrow="Overview" title="No boards yet" description="Once this sport is seeded, overview boards will show up here." />
+                <EmptyState compact eyebrow="Overview" title="No matches yet" description="Match details will appear here as soon as this sport begins." />
               )}
             </div>
           </section>
@@ -156,14 +174,21 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             <div className="team-chip-grid">
               {data.teams.length > 0 ? (
                 data.teams.map((team) => (
-                  <article key={team.id} className="team-chip-card" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
+                  <article
+                    key={team.id}
+                    className="team-chip-card team-profile-card-accent"
+                    style={{ "--sport-accent": data.sport.color, "--team-accent": getTeamAccent(team) } as CSSProperties}
+                  >
                     <strong>{team.name}</strong>
                     <span>{team.association}</span>
                     <small>Seed {team.seed}</small>
+                    <Link href={`/teams/${team.id}`} className="inline-link">
+                      View profile
+                    </Link>
                   </article>
                 ))
               ) : (
-                <EmptyState compact eyebrow="Teams" title="No teams assigned yet" description="Attach teams to this sport in the admin roster and they will show up here." />
+                <EmptyState compact eyebrow="Teams" title="No teams assigned yet" description="Association entries will appear here once they are confirmed for this sport." />
               )}
             </div>
           </section>
@@ -175,7 +200,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <div className="section-heading">
             <div>
               <p className="eyebrow">Standings</p>
-              <h2>Qualification watch</h2>
+              <h2>Current table</h2>
             </div>
           </div>
           {data.standings.length > 0 ? (
@@ -186,8 +211,8 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
               title={data.sport.id === "athletics" ? "Athletics does not use group standings" : "No standings yet"}
               description={
                 data.sport.id === "athletics"
-                  ? "Athletics results are tracked as event cards and medal boards, not group tables."
-                  : "Complete group-stage results to unlock the qualification tables."
+                  ? "Athletics results are shown as event cards rather than a league table."
+                  : "Standings will appear once enough results are recorded in this sport."
               }
             />
           )}
@@ -198,20 +223,20 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <MotionIn className="section-shell section-shell-bracket" delay={0.12}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Winner Tree</p>
-              <h2>Interactive bracket</h2>
+              <p className="eyebrow">Bracket</p>
+              <h2>Knockout view</h2>
             </div>
           </div>
           {data.bracket ? (
             <BracketTree bracket={data.bracket} />
           ) : (
             <EmptyState
-              eyebrow="Winner Tree"
-              title={data.sport.id === "athletics" ? "Athletics stays off the bracket tree" : "Bracket will appear once stages are linked"}
+              eyebrow="Bracket"
+              title={data.sport.id === "athletics" ? "Athletics has no bracket" : "Bracket will appear when knockout rounds begin"}
               description={
                 data.sport.id === "athletics"
-                  ? "Use the fixtures tab for athletics heats and medal rounds."
-                  : "Set winner and loser routes in the control room to turn this sport hub into a connected winner tree."
+                  ? "Use fixtures and event cards to follow athletics."
+                  : "As knockout rounds are seeded, the bracket view will fill in here."
               }
             />
           )}
@@ -223,10 +248,10 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <div className="section-heading">
             <div>
               <p className="eyebrow">Fixtures</p>
-              <h2>{data.sport.id === "athletics" ? "Event result cards" : "Every stage on one board"}</h2>
+              <h2>{data.sport.id === "athletics" ? "Event cards" : "Every match in this sport"}</h2>
             </div>
             <Link href="/schedule" className="inline-link">
-              Return to schedule
+              Back to schedule
             </Link>
           </div>
           {data.sport.id === "athletics" && data.athleticsBoards.length > 0 ? (
@@ -240,17 +265,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
               {data.matches.length > 0 ? (
                 data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
               ) : (
-                <EmptyState
-                  compact
-                  eyebrow="Fixture Rail"
-                  title="No fixtures for this sport yet"
-                  description="Create sport fixtures from the control room to populate this board."
-                  action={
-                    <Link href="/admin/matches?mode=live" className="button button-ghost">
-                      Open match control
-                    </Link>
-                  }
-                />
+                <EmptyState compact eyebrow="Fixtures" title="No fixtures yet" description="Fixtures for this sport will appear here once the schedule is published." />
               )}
             </div>
           )}

@@ -24,7 +24,7 @@ export function BracketNode({ node, active = false, linked = false, onSelect, ad
         <p className="eyebrow">{node.match.round}</p>
         <StageBadge
           status={node.match.status}
-          label={node.state === "bye" ? "bye" : node.match.status}
+          label={node.state === "bye" ? "Bye" : node.match.status === "live" ? "LIVE" : node.match.status === "completed" ? "Final" : node.match.status === "postponed" ? "Postponed" : "Upcoming"}
           tone={node.state === "bye" ? "alert" : undefined}
         />
       </div>
@@ -38,7 +38,7 @@ export function BracketNode({ node, active = false, linked = false, onSelect, ad
       </div>
       <div className="bracket-node-meta">
         <span>{node.subtitle}</span>
-        {node.match.result?.scoreSummary ? <small>{node.match.result.scoreSummary}</small> : <small>{admin ? "Select to control lane" : "Select for lineage view"}</small>}
+        {node.match.result?.scoreSummary ? <small>{node.match.result.scoreSummary}</small> : <small>{admin ? "Select to control match" : "Select to follow the bracket"}</small>}
       </div>
     </button>
   );

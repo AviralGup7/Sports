@@ -42,8 +42,8 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
   }
 
   return (
-    <div className="ticker-shell" aria-label="Live tournament ticker">
-      <div className="ticker-label">Arena Feed</div>
+    <div className="ticker-shell" aria-label="Live scores and match alerts">
+      <div className="ticker-label">Live Scores</div>
       <div className="ticker-window">
         {groups.length > 0 ? (
           <div className="ticker-groups" aria-hidden="true">

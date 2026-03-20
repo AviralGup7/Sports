@@ -2,13 +2,14 @@ import type { Announcement } from "@/domain/announcements/types";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { NewsBulletin } from "@/shared/ui";
+import { FreshnessStamp, NewsBulletin } from "@/shared/ui";
 
 type AnnouncementsScreenProps = {
+  generatedAt: string;
   items: Announcement[];
 };
 
-export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
+export function AnnouncementsScreen({ generatedAt, items }: AnnouncementsScreenProps) {
   const pinnedItems = items.filter((announcement) => announcement.pinned);
   const feedItems = items.filter((announcement) => !announcement.pinned);
 
@@ -17,9 +18,9 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Bulletin Desk"
-            title="Announcements"
-            description="Pinned headlines ride the top of the cyber arena board, while the rest of the newsroom feed stacks below in a premium editorial sequence."
+            eyebrow="Notices"
+            title="Updates & Alerts"
+            description="Check the latest schedule changes, venue notices, and important tournament updates in one place."
             compact
             tone="crimson"
             intensity="premium"
@@ -27,13 +28,14 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
             aside={
               <div className="hero-aside-list hero-aside-list-cyber">
                 <div>
-                  <span className="aside-label">Pinned</span>
+                  <span className="aside-label">Pinned notices</span>
                   <strong>{pinnedItems.length}</strong>
                 </div>
                 <div>
-                  <span className="aside-label">Feed items</span>
+                  <span className="aside-label">All notices</span>
                   <strong>{feedItems.length}</strong>
                 </div>
+                <FreshnessStamp generatedAt={generatedAt} />
               </div>
             }
           />
@@ -44,8 +46,8 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
         <MotionIn className="section-shell" delay={0.08}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Pinned Headlines</p>
-              <h2>Top of feed</h2>
+              <p className="eyebrow">Latest Notice</p>
+              <h2>Pinned updates</h2>
             </div>
           </div>
           <div className="news-grid">
@@ -59,8 +61,8 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
       <MotionIn className="section-shell" delay={0.12}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Newsroom Feed</p>
-            <h2>Latest calls</h2>
+            <p className="eyebrow">Notices</p>
+            <h2>All updates</h2>
           </div>
         </div>
         <div className="news-feed">
@@ -68,9 +70,9 @@ export function AnnouncementsScreen({ items }: AnnouncementsScreenProps) {
             feedItems.map((announcement) => <NewsBulletin key={announcement.id} announcement={announcement} />)
           ) : (
             <EmptyState
-              eyebrow="Newsroom Feed"
-              title="No regular feed items yet"
-              description="Pinned headlines can still run above, but standard bulletin entries have not been published yet."
+              eyebrow="Notices"
+              title="No additional notices yet"
+              description="Pinned updates can still appear above, but there are no extra notices to show right now."
             />
           )}
         </div>

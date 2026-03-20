@@ -17,6 +17,7 @@
   .podium-grid,
   .poster-grid,
   .attention-grid,
+  .site-footer-grid,
   .team-chip-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -298,6 +299,7 @@
 @media (max-width: 720px) {
   .page-shell,
   .site-header,
+  .site-footer,
   .ticker-shell {
     width: var(--mobile-shell-width);
   }
@@ -317,7 +319,9 @@
   .poster-grid,
   .news-grid,
   .attention-grid,
+  .site-footer-grid,
   .team-chip-grid,
+  .sport-banner-grid,
   .hero-aside-list,
   .form-grid {
     grid-template-columns: 1fr;
@@ -343,7 +347,7 @@
     bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
     z-index: 60;
     display: grid !important;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 0.45rem;
     padding: 0.45rem;
     border-radius: 18px;
@@ -363,6 +367,10 @@
     color: var(--muted);
     font-size: 0.78rem;
     text-align: center;
+  }
+
+  .mobile-dock-menu-panel {
+    width: min(14rem, calc(100vw - 1rem));
   }
 
   .mobile-dock-link-active {
@@ -396,6 +404,7 @@
 @media (max-width: 480px) {
   .page-shell,
   .site-header,
+  .site-footer,
   .ticker-shell {
     width: min(100% - 0.7rem, 32rem);
   }

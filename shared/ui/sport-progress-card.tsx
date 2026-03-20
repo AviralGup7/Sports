@@ -20,7 +20,7 @@ export function SportProgressCard({ card, compact = false }: SportProgressCardPr
       <div className="progress-bar-wrap" aria-hidden="true">
         <div className="progress-bar-label">
           <span>
-            {card.completedMatches}/{card.totalMatches} locked
+            {card.completedMatches}/{card.totalMatches} results in
           </span>
           <span>{card.liveMatches} live</span>
         </div>

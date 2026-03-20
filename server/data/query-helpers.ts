@@ -18,12 +18,19 @@ import {
   MatchPageData,
   HomePageData,
   MatchLineageCard,
+  NextMatchCountdown,
   ScheduleGroup,
   SchedulePageData,
   SportProgressCard,
   SportScheduleBlock,
   SportPageData,
+  StandingsPageData,
+  StandingsSportCard,
   StageSummary,
+  TeamListCard,
+  TeamProfilePageData,
+  TeamStandingsSnippet,
+  TeamsPageData,
   TickerGroup,
   TournamentStats,
   TickerItem
@@ -63,6 +70,17 @@ function getMatchesForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
   return snapshot.matches.filter((match) => match.sportId === sportId);
 }
 
+function getGeneratedAt() {
+  return new Date().toISOString();
+}
+
+function toMatchDateTime(day: string, time: string) {
+  const [hours, minutes] = time.split(":");
+  const date = new Date(`${day}T00:00:00`);
+  date.setHours(Number(hours), Number(minutes), 0, 0);
+  return date;
+}
+
 function getStagesForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
   return snapshot.stages.filter((stage) => stage.sportId === sportId).sort((a, b) => a.orderIndex - b.orderIndex);
 }
@@ -73,23 +91,23 @@ function getGroupsForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
 
 const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   "2026-04-02": {
-    title: "Opening day lanes",
-    detail: "Cricket pool play and early athletics results set the first qualification pressure for the tournament.",
+    title: "Opening day",
+    detail: "Cricket pool play and early athletics results set the tone for the tournament.",
     tone: "info"
   },
   "2026-04-03": {
-    title: "Full arena running",
-    detail: "Every sport is live today, so schedule pressure, result locking, and notice visibility matter most.",
+    title: "Full tournament day",
+    detail: "Every sport is active today, so live scores, schedule changes, and notices matter most.",
     tone: "alert"
   },
   "2026-04-04": {
-    title: "Knockout squeeze",
-    detail: "Semi-finals and late qualification boards tighten the title race across the campus.",
+    title: "Knockout day",
+    detail: "Semi-finals and late qualification matches tighten the title race across campus.",
     tone: "alert"
   },
   "2026-04-05": {
     title: "Finals day",
-    detail: "Championship boards, bronze matches, and medal events decide the podium before closeout.",
+    detail: "Championship matches, bronze playoffs, and medal events decide the podium before closeout.",
     tone: "success"
   }
 };
@@ -108,7 +126,7 @@ function buildDayNote(snapshot: RepositorySnapshot, day?: string): DayNote {
   return {
     id: selectedDay,
     title: "Tournament note",
-    detail: `Operational focus for ${formatDateLabel(selectedDay)}. Review schedule pressure, live boards, and announcement needs for this window.`,
+    detail: `Key tournament updates for ${formatDateLabel(selectedDay)}. Check live matches, schedule changes, and notices for this window.`,
     tone: "info"
   };
 }
@@ -196,8 +214,8 @@ function buildChampionSpotlights(snapshot: RepositorySnapshot): ChampionSpotligh
     winner,
     statusLabel: winner ? "Champion Locked" : "Final Pending",
     note: winner
-      ? `${winner.name} owns the ${sport.name.toLowerCase()} title lane.`
-      : `The ${sport.name.toLowerCase()} championship board is still open.`
+      ? `${winner.name} leads the ${sport.name.toLowerCase()} champions podium.`
+      : `The ${sport.name.toLowerCase()} title is still up for grabs.`
   }));
 }
 
@@ -221,17 +239,17 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
   const stageLabel = match.stage?.label ?? match.round;
   const headline =
     match.status === "live"
-      ? `${match.teamA?.name ?? "TBD"} and ${match.teamB?.name ?? "TBD"} are live on the board`
+      ? `${match.teamA?.name ?? "TBD"} and ${match.teamB?.name ?? "TBD"} are live right now`
       : match.status === "postponed"
         ? `${stageLabel} is waiting on a reschedule call`
         : match.status === "completed"
           ? `${match.result?.winner?.name ?? "Result saved"} closed the ${stageLabel}`
-          : `${stageLabel} is next in the tournament feed`;
+          : `${stageLabel} is next on the schedule`;
 
   return {
     match,
     sport,
-    label: match.status === "live" ? "Live Spotlight" : match.status === "postponed" ? "Delay Watch" : "Featured Board",
+    label: match.status === "live" ? "Live Match" : match.status === "postponed" ? "Schedule Update" : "Featured Match",
     headline,
     summary: match.result?.scoreSummary ?? `${formatDateLabel(match.day)} at ${match.startTime} from ${match.venue}`,
     urgency: match.status === "live" ? "live" : match.status === "postponed" ? "watch" : "next"
@@ -241,29 +259,32 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
 function buildTickerItems(snapshot: RepositorySnapshot): TickerItem[] {
   const ticker: TickerItem[] = [];
   const liveMatches = snapshot.matches.filter((match) => match.status === "live").slice(0, 2);
-
-  ticker.push({
-    id: "window",
-    label: "Tournament Window",
-    message: `${formatDateLabel(snapshot.tournament.startDate)} to ${formatDateLabel(snapshot.tournament.endDate)} at ${snapshot.tournament.venue}`,
-    href: "/schedule",
-    tone: "info"
-  });
+  const nextMatch = buildNextMatch(snapshot);
 
   for (const match of liveMatches) {
     ticker.push({
       id: `live-${match.id}`,
-      label: "Live",
-      message: `${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"} | ${match.round}`,
+      label: "LIVE",
+      message: `${match.sportId.toUpperCase()} | ${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"} | ${match.result?.scoreSummary ?? match.round}`,
       href: `/matches/${match.id}`,
       tone: "live"
+    });
+  }
+
+  if (liveMatches.length === 0 && nextMatch) {
+    ticker.push({
+      id: `next-${nextMatch.match.id}`,
+      label: "UP NEXT",
+      message: `${nextMatch.sport.name} | ${nextMatch.match.teamA?.name ?? "TBD"} vs ${nextMatch.match.teamB?.name ?? "TBD"} | ${formatDateTime(nextMatch.match.day, nextMatch.match.startTime)}`,
+      href: `/matches/${nextMatch.match.id}`,
+      tone: "info"
     });
   }
 
   for (const announcement of getPublicAnnouncements(snapshot).filter((item) => item.pinned).slice(0, 3)) {
     ticker.push({
       id: `notice-${announcement.id}`,
-      label: "Pinned",
+      label: "ALERT",
       message: announcement.title,
       href: "/announcements",
       tone: "alert"
@@ -302,37 +323,61 @@ function buildHeroSignals(snapshot: RepositorySnapshot, stats: TournamentStats, 
   return [
     {
       id: "signal-live",
-      label: "Live Boards",
+      label: "Matches Live",
       value: String(stats.liveMatches),
-      detail: stats.liveMatches > 0 ? "Matches currently charging through the arena." : "No live boards at this exact moment.",
+      detail: stats.liveMatches > 0 ? "Scores are updating on matches in progress right now." : "No matches are live at this exact moment.",
       tone: stats.liveMatches > 0 ? "live" : "neutral",
       href: "/schedule?status=live"
     },
     {
       id: "signal-spotlight",
-      label: "Spotlight",
-      value: highlightMatch?.sport.name ?? "Standby",
-      detail: highlightMatch?.headline ?? "The next headline board will take over this lane.",
+      label: "Featured Match",
+      value: highlightMatch ? `${highlightMatch.match.teamA?.name ?? "TBD"} vs ${highlightMatch.match.teamB?.name ?? "TBD"}` : "Standby",
+      detail: highlightMatch?.headline ?? "The next featured match will appear here.",
       tone: highlightMatch?.urgency === "live" ? "live" : highlightMatch?.urgency === "watch" ? "alert" : "info",
       href: highlightMatch ? `/matches/${highlightMatch.match.id}` : "/schedule"
     },
     {
       id: "signal-titles",
-      label: "Title Watch",
+      label: "Finals Today",
       value: `${snapshot.matches.filter((match) => isTitleFinalRound(match.round)).length} finals`,
-      detail: "Championship and placement lanes are ready for a prestige finish.",
+      detail: "Championship matches and decisive title moments are coming into focus.",
       tone: "info",
       href: "/schedule"
     },
     {
       id: "signal-news",
-      label: "Headline Feed",
-      value: latestHeadline ? "Pinned" : "Quiet",
-      detail: latestHeadline?.title ?? "No fresh notices are pinned to the arena feed yet.",
+      label: "Latest Notice",
+      value: latestHeadline ? "Posted" : "Quiet",
+      detail: latestHeadline?.title ?? "No new notices have been posted yet.",
       tone: latestHeadline ? "alert" : "neutral",
       href: "/announcements"
     }
   ];
+}
+
+function buildNextMatch(snapshot: RepositorySnapshot): NextMatchCountdown | null {
+  const now = new Date();
+  const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+  const nextMatch = snapshot.matches
+    .filter((match) => match.status === "scheduled" || match.status === "live" || match.status === "postponed")
+    .sort((a, b) => toMatchDateTime(a.day, a.startTime).getTime() - toMatchDateTime(b.day, b.startTime).getTime())
+    .find((match) => toMatchDateTime(match.day, match.startTime).getTime() >= now.getTime());
+
+  if (!nextMatch) {
+    return null;
+  }
+
+  const sport = sportsById.get(nextMatch.sportId);
+  if (!sport) {
+    return null;
+  }
+
+  return {
+    match: nextMatch,
+    sport,
+    startsAt: toMatchDateTime(nextMatch.day, nextMatch.startTime).toISOString()
+  };
 }
 
 function buildScheduleGroups(fixtures: Match[]): ScheduleGroup[] {
@@ -392,12 +437,12 @@ function buildSportProgressCards(snapshot: RepositorySnapshot, sportIds?: SportS
       activeStageLabel,
       note:
         liveMatches > 0
-          ? `${liveMatches} live board${liveMatches === 1 ? "" : "s"} currently active.`
+          ? `${liveMatches} live match${liveMatches === 1 ? "" : "es"} currently active.`
           : finalsPending > 0
-            ? `${finalsPending} championship lane${finalsPending === 1 ? "" : "s"} still unresolved.`
+            ? `${finalsPending} final${finalsPending === 1 ? "" : "s"} still to be decided.`
             : pendingMatches > 0
-              ? `${pendingMatches} board${pendingMatches === 1 ? "" : "s"} remain to be locked.`
-              : "All visible boards are locked.",
+              ? `${pendingMatches} match${pendingMatches === 1 ? "" : "es"} still to come.`
+              : "All visible results are in.",
       href: `/sports/${sport.id}`
     };
   });
@@ -425,7 +470,7 @@ function buildBracketPreviewCard(snapshot: RepositorySnapshot, sport: Sport): Br
 
   return {
     sport,
-    stageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Winner tree",
+    stageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Bracket",
     championLabel: championMatch?.result?.winner?.name ?? "Champion pending",
     href: `/sports/${sport.id}?tab=bracket`,
     rounds
@@ -449,11 +494,97 @@ function buildSportScheduleBlocks(snapshot: RepositorySnapshot, fixtures: Match[
       return {
         sport,
         visibleCount: sportMatches.length,
-        activeStageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Mixed boards",
+        activeStageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Mixed schedule",
         scheduleGroups: buildScheduleGroups(sportMatches)
       };
     })
     .filter((block): block is SportScheduleBlock => Boolean(block));
+}
+
+function getMatchesForTeam(snapshot: RepositorySnapshot, teamId: string) {
+  return snapshot.matches
+    .filter((match) => match.teamAId === teamId || match.teamBId === teamId)
+    .sort((a, b) => toMatchDateTime(a.day, a.startTime).getTime() - toMatchDateTime(b.day, b.startTime).getTime());
+}
+
+function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[] {
+  const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+
+  return snapshot.teams
+    .filter((team) => team.isActive)
+    .map((team) => {
+      const matches = getMatchesForTeam(snapshot, team.id);
+      return {
+        team,
+        sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
+        liveMatches: matches.filter((match) => match.status === "live"),
+        upcomingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed"),
+        completedMatches: matches.filter((match) => match.status === "completed")
+      };
+    })
+    .sort((a, b) => a.team.name.localeCompare(b.team.name));
+}
+
+function buildStandingsSections(snapshot: RepositorySnapshot, selectedSport?: SportSlug): StandingsSportCard[] {
+  const sports = selectedSport ? snapshot.sports.filter((sport) => sport.id === selectedSport) : snapshot.sports;
+  const sections: StandingsSportCard[] = [];
+
+  for (const sport of sports) {
+    const teams = snapshot.teams.filter((team) => team.isActive && team.sportIds.includes(sport.id));
+    const matches = getMatchesForSport(snapshot, sport.id);
+    const groups = getGroupsForSport(snapshot, sport.id);
+    const stages = getStagesForSport(snapshot, sport.id);
+    const cards = buildStandingsRows(teams, matches, groups, sport.id, stages);
+
+    if (cards.length === 0) {
+      continue;
+    }
+
+    sections.push({
+      sport,
+      cards,
+      liveMatches: matches.filter((match) => match.status === "live").length,
+      completedMatches: matches.filter((match) => match.status === "completed").length
+    });
+  }
+
+  return sections;
+}
+
+function buildTeamStandings(snapshot: RepositorySnapshot, team: Team): TeamStandingsSnippet[] {
+  const snippets: TeamStandingsSnippet[] = [];
+
+  for (const sportId of team.sportIds) {
+    const sport = snapshot.sports.find((item) => item.id === sportId);
+    if (!sport) {
+      continue;
+    }
+
+    const rows = buildStandingsRows(
+      snapshot.teams.filter((candidate) => candidate.isActive && candidate.sportIds.includes(sportId)),
+      getMatchesForSport(snapshot, sportId),
+      getGroupsForSport(snapshot, sportId),
+      sportId,
+      getStagesForSport(snapshot, sportId)
+    );
+    const cards = rows
+      .map((card) => ({
+        ...card,
+        rows: card.rows.filter((row) => row.teamId === team.id)
+      }))
+      .filter((card) => card.rows.length > 0);
+
+    if (cards.length === 0) {
+      continue;
+    }
+
+    snippets.push({
+      sport,
+      cards
+    });
+  }
+
+  return snippets;
 }
 
 function buildAthleticsBoards(snapshot: RepositorySnapshot): AthleticsEventBoard[] {
@@ -472,8 +603,8 @@ function buildAthleticsBoards(snapshot: RepositorySnapshot): AthleticsEventBoard
     stageLabel: matches[0]?.stage?.label ?? "Athletics results",
     description:
       matches.length > 1
-        ? `${matches.length} association result cards feed this athletics lane.`
-        : "Single athletics result card currently in this lane.",
+        ? `${matches.length} association result cards are grouped in this event.`
+        : "Single athletics result card for this event.",
     matches
   }));
 }
@@ -567,7 +698,7 @@ function buildBracketTree(matches: Match[], _stages: CompetitionStage[]): Bracke
         columnId: key,
         match,
         title: `${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"}`,
-        subtitle: `${match.stage?.label ?? "Bracket board"} | ${match.venue}`,
+        subtitle: `${match.stage?.label ?? "Bracket match"} | ${match.venue}`,
         state: mapNodeState(match),
         isHighlighted: match.status === "live" || Boolean(match.result?.winnerTeamId)
       }))
@@ -720,7 +851,7 @@ const getGlobalChromeDataCached = cache(
       tournament: snapshot.tournament,
       sports: snapshot.sports,
       tickerItems,
-      tickerGroups: buildTickerGroups(tickerItems)
+      tickerGroups: []
     };
   }
 );
@@ -731,17 +862,21 @@ export async function getGlobalChromeData(): Promise<GlobalChromeData> {
 
 export async function getHomePageData(): Promise<HomePageData> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   const stats = getTournamentStatsFromSnapshot(snapshot);
   const highlightMatch = buildHighlightMatch(snapshot);
+  const nextMatch = buildNextMatch(snapshot);
   const featuredMatches = snapshot.matches.filter((match) => match.status !== "completed").slice(0, 6);
   const anchorDay = highlightMatch?.match.day ?? featuredMatches[0]?.day ?? snapshot.tournament.startDate;
 
   return {
+    generatedAt,
     tournament: snapshot.tournament,
     sports: snapshot.sports,
     stats,
     dayNote: buildDayNote(snapshot, anchorDay),
     highlightMatch,
+    nextMatch,
     heroSignals: buildHeroSignals(snapshot, stats, highlightMatch),
     featuredMatches,
     announcements: getPublicAnnouncements(snapshot).slice(0, 4),
@@ -770,6 +905,7 @@ export async function getSchedulePageData(
   status?: string
 ): Promise<SchedulePageData> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   const days = Array.from(new Set(snapshot.matches.map((match) => match.day))).sort();
   const selectedDay = day && days.includes(day) ? day : days[0];
   const stages = sportId ? getStagesForSport(snapshot, sportId) : snapshot.stages;
@@ -784,6 +920,7 @@ export async function getSchedulePageData(
   );
 
   return {
+    generatedAt,
     days,
     selectedDay,
     selectedSport: sportId,
@@ -802,6 +939,7 @@ export async function getSchedulePageData(
 
 export async function getSportPageData(sportId: SportSlug): Promise<SportPageData | null> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   const sport = snapshot.sports.find((item) => item.id === sportId);
 
   if (!sport) {
@@ -815,10 +953,11 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
   const standings = buildStandingsRows(teams, matches, groups, sportId, stages);
 
   return {
-    sport: {
-      ...sport,
-      format: `${sport.format} | ${getActiveStage(snapshot, sportId)?.label ?? "Structure open"}`
-    },
+    generatedAt,
+      sport: {
+        ...sport,
+        format: `${sport.format} | ${getActiveStage(snapshot, sportId)?.label ?? "Tournament view"}`
+      },
     stages,
     groups,
     stageSummaries: buildStageSummaries(snapshot, sportId),
@@ -836,6 +975,7 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
 
 export async function getMatchPageData(matchId: string): Promise<MatchPageData | null> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   const match = snapshot.matches.find((item) => item.id === matchId);
 
   if (!match) {
@@ -848,6 +988,7 @@ export async function getMatchPageData(matchId: string): Promise<MatchPageData |
   }
 
   return {
+    generatedAt,
     match,
     sport,
     relatedMatches: buildRelatedMatches(snapshot, match),
@@ -868,7 +1009,53 @@ export async function getMatchPageData(matchId: string): Promise<MatchPageData |
 
 export async function getAnnouncementsPageData() {
   const snapshot = await loadSnapshot();
-  return getPublicAnnouncements(snapshot);
+  return {
+    generatedAt: getGeneratedAt(),
+    items: getPublicAnnouncements(snapshot)
+  };
+}
+
+export async function getStandingsPageData(selectedSport?: SportSlug): Promise<StandingsPageData> {
+  const snapshot = await loadSnapshot();
+
+  return {
+    generatedAt: getGeneratedAt(),
+    sports: snapshot.sports,
+    selectedSport,
+    sections: buildStandingsSections(snapshot, selectedSport)
+  };
+}
+
+export async function getTeamsPageData(): Promise<TeamsPageData> {
+  const snapshot = await loadSnapshot();
+
+  return {
+    generatedAt: getGeneratedAt(),
+    teams: buildTeamListCards(snapshot),
+    sports: snapshot.sports
+  };
+}
+
+export async function getTeamProfilePageData(teamId: string): Promise<TeamProfilePageData | null> {
+  const snapshot = await loadSnapshot();
+  const team = snapshot.teams.find((item) => item.id === teamId && item.isActive);
+
+  if (!team) {
+    return null;
+  }
+
+  const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+  const matches = getMatchesForTeam(snapshot, team.id);
+
+  return {
+    generatedAt: getGeneratedAt(),
+    team,
+    sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
+    liveMatches: matches.filter((match) => match.status === "live"),
+    upcomingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed"),
+    completedMatches: matches.filter((match) => match.status === "completed"),
+    standings: buildTeamStandings(snapshot, team)
+  };
 }
 
 export async function getAdminDashboardData(profile: Profile): Promise<AdminDashboardData> {

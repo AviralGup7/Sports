@@ -43,6 +43,16 @@ export type TickerGroup = {
   items: TickerItem[];
 };
 
+export type FreshnessInfo = {
+  generatedAt: string;
+};
+
+export type NextMatchCountdown = {
+  match: Match;
+  sport: Sport;
+  startsAt: string;
+};
+
 export type HighlightMatch = {
   match: Match;
   sport: Sport;
@@ -168,11 +178,13 @@ export type GlobalChromeData = {
 };
 
 export type HomePageData = {
+  generatedAt: string;
   tournament: Tournament;
   sports: Sport[];
   stats: TournamentStats;
   dayNote: DayNote;
   highlightMatch: HighlightMatch | null;
+  nextMatch: NextMatchCountdown | null;
   heroSignals: HeroSignal[];
   featuredMatches: Match[];
   announcements: Announcement[];
@@ -190,6 +202,7 @@ export type HomePageData = {
 };
 
 export type SchedulePageData = {
+  generatedAt: string;
   days: string[];
   selectedDay: string;
   selectedSport?: string;
@@ -206,6 +219,7 @@ export type SchedulePageData = {
 };
 
 export type SportPageData = {
+  generatedAt: string;
   sport: Sport;
   stages: CompetitionStage[];
   groups: CompetitionGroup[];
@@ -222,6 +236,7 @@ export type SportPageData = {
 };
 
 export type MatchPageData = {
+  generatedAt: string;
   match: Match;
   sport: Sport;
   relatedMatches: Match[];
@@ -233,5 +248,48 @@ export type MatchPageData = {
 
 export type PublicDataSeedProfile = {
   profile: Profile;
+};
+
+export type StandingsSportCard = {
+  sport: Sport;
+  cards: GroupStandingsCard[];
+  liveMatches: number;
+  completedMatches: number;
+};
+
+export type StandingsPageData = {
+  generatedAt: string;
+  sports: Sport[];
+  selectedSport?: string;
+  sections: StandingsSportCard[];
+};
+
+export type TeamListCard = {
+  team: Team;
+  sports: Sport[];
+  upcomingMatches: Match[];
+  completedMatches: Match[];
+  liveMatches: Match[];
+};
+
+export type TeamsPageData = {
+  generatedAt: string;
+  teams: TeamListCard[];
+  sports: Sport[];
+};
+
+export type TeamStandingsSnippet = {
+  sport: Sport;
+  cards: GroupStandingsCard[];
+};
+
+export type TeamProfilePageData = {
+  generatedAt: string;
+  team: Team;
+  sports: Sport[];
+  liveMatches: Match[];
+  upcomingMatches: Match[];
+  completedMatches: Match[];
+  standings: TeamStandingsSnippet[];
 };
 
