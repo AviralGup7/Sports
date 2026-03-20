@@ -1,13 +1,5 @@
-import { expect, test, type Page } from "@playwright/test";
-
-async function expectNoHorizontalOverflow(page: Page) {
-  const overflow = await page.evaluate(() => {
-    const { documentElement } = document;
-    return documentElement.scrollWidth - window.innerWidth;
-  });
-
-  expect(overflow).toBeLessThanOrEqual(1);
-}
+import { expect, test } from "@playwright/test";
+import { expectHealthyPage, expectNoHorizontalOverflow } from "./helpers";
 
 test.describe("android public shell", () => {
   test.beforeEach(async ({}, testInfo) => {
@@ -16,15 +8,17 @@ test.describe("android public shell", () => {
 
   test("home page keeps hero and dock visible", async ({ page }) => {
     await page.goto("/");
+    await expectHealthyPage(page);
 
     await expect(page.locator(".mobile-dock")).toBeVisible();
-    await expect(page.getByRole("link", { name: /enter live schedule/i })).toBeVisible();
+    await expect(page.getByRole("link", { name: "View Schedule" }).first()).toBeVisible();
     await expect(page.locator(".broadcast-hero")).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 
   test("schedule page wraps filters and fixtures safely", async ({ page }) => {
     await page.goto("/schedule");
+    await expectHealthyPage(page);
 
     await expect(page.locator(".filter-rail")).toBeVisible();
     await expect(page.locator(".timeline-group").first()).toBeVisible();
@@ -33,6 +27,7 @@ test.describe("android public shell", () => {
 
   test("sport center bracket works with tap-only interaction", async ({ page }) => {
     await page.goto("/sports/cricket?tab=bracket");
+    await expectHealthyPage(page);
 
     await expect(page.locator(".bracket-tree-shell")).toBeVisible();
 
@@ -45,6 +40,7 @@ test.describe("android public shell", () => {
 
   test("match center keeps scoreboard and actions above the dock", async ({ page }) => {
     await page.goto("/matches/cricket-final");
+    await expectHealthyPage(page);
 
     await expect(page.locator(".broadcast-hero")).toBeVisible();
     await expect(page.getByRole("link", { name: /back to cricket/i })).toBeVisible();
@@ -53,6 +49,7 @@ test.describe("android public shell", () => {
 
   test("announcements feed stays readable on narrow android widths", async ({ page }) => {
     await page.goto("/announcements");
+    await expectHealthyPage(page);
 
     await expect(page.locator(".news-bulletin").first()).toBeVisible();
     await expect(page.locator(".mobile-dock")).toBeVisible();

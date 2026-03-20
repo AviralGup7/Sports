@@ -851,7 +851,7 @@ const getGlobalChromeDataCached = cache(
       tournament: snapshot.tournament,
       sports: snapshot.sports,
       tickerItems,
-      tickerGroups: []
+      tickerGroups: buildTickerGroups(tickerItems)
     };
   }
 );

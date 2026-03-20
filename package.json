@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "e2e:serve": "next build && next start",
+    "e2e:build": "cross-env NEXT_DIST_PROFILE=e2e next build && node scripts/reset-next-type-paths.mjs",
+    "e2e:start": "cross-env NEXT_DIST_PROFILE=e2e next start -p 3100",
+    "e2e:serve": "npm run e2e:build && npm run e2e:start",
     "lint": "eslint . --max-warnings=0",
     "test:unit": "vitest run --config vitest.config.ts",
     "test:e2e": "playwright test"
@@ -34,6 +36,7 @@
     "@types/node": "^22.13.10",
     "@types/react": "^19.0.10",
     "@types/react-dom": "^19.0.4",
+    "cross-env": "^10.1.0",
     "eslint": "^9.21.0",
     "eslint-config-next": "^15.2.0",
     "typescript": "^5.8.2",

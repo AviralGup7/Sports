@@ -75,6 +75,8 @@ npm run dev
 - `npm run test:unit`
 - `npm run test:e2e`
 
+End-to-end runs now use an isolated `.next-e2e` build on port `3100`, so they do not reuse a local `next dev` server or its build artifacts.
+
 To exercise authenticated admin flows in Playwright, set:
 
 ```bash

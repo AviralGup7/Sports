@@ -1,8 +1,10 @@
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 import type { Profile } from "@/domain/admin/types";
 import type { SportSlug } from "@/domain/sports/types";
 import { getSafeSupabaseUser } from "@/server/supabase/auth-user";
+import { hasSupabaseAuthCookies } from "@/server/supabase/auth-cookies";
 import { hasSupabaseEnv } from "@/server/supabase/env";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
@@ -19,6 +21,11 @@ type AdminSportRow = {
 
 export async function getAdminProfile() {
   if (!hasSupabaseEnv()) {
+    return null;
+  }
+
+  const cookieStore = await cookies();
+  if (!hasSupabaseAuthCookies(cookieStore.getAll())) {
     return null;
   }
 

@@ -4,13 +4,13 @@ export default defineConfig({
   testDir: "./tests/e2e",
   fullyParallel: true,
   use: {
-    baseURL: "http://127.0.0.1:3000",
+    baseURL: "http://127.0.0.1:3100",
     trace: "on-first-retry"
   },
   webServer: {
     command: "npm run e2e:serve",
-    url: "http://127.0.0.1:3000",
-    reuseExistingServer: !process.env.CI,
+    url: "http://127.0.0.1:3100",
+    reuseExistingServer: process.env.PLAYWRIGHT_REUSE_SERVER === "true",
     timeout: 180 * 1000
   },
   projects: [
