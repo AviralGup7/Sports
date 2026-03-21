@@ -23,6 +23,15 @@ type PlanningAnnouncementContext = {
   isPublished: boolean;
 };
 
+type PlanningTeamContext = {
+  id: string;
+  name: string;
+  association: string;
+  seed: number;
+  sportIds: string[];
+  isActive: boolean;
+};
+
 export async function POST(request: Request) {
   const admin = await getAdminProfile();
   if (!admin) {
@@ -34,6 +43,7 @@ export async function POST(request: Request) {
     prompt?: string;
     matches?: PlanningMatchContext[];
     announcements?: PlanningAnnouncementContext[];
+    teams?: PlanningTeamContext[];
   };
 
   const apiKey = body.apiKey?.trim();
@@ -48,7 +58,8 @@ export async function POST(request: Request) {
       apiKey,
       prompt,
       matches: body.matches ?? [],
-      announcements: body.announcements ?? []
+      announcements: body.announcements ?? [],
+      teams: body.teams ?? []
     });
 
     return NextResponse.json(result);

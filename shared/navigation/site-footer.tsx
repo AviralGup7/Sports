@@ -6,6 +6,8 @@ import { usePathname } from "next/navigation";
 import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 
+import { BrandMark } from "./brand-mark";
+
 type SiteFooterProps = {
   chrome: GlobalChromeData;
 };
@@ -22,6 +24,9 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
       <div className="site-footer-grid">
         <section className="site-footer-card">
           <p className="eyebrow">Event</p>
+          <div className="footer-brand-lockup">
+            <BrandMark />
+          </div>
           <h2>{chrome.tournament.name}</h2>
           <p>{formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate)} at {chrome.tournament.venue}</p>
         </section>
@@ -35,7 +40,11 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
         <section className="site-footer-card">
           <p className="eyebrow">Queries</p>
           <h2>Need help?</h2>
-          <p>Check the latest notices first, then contact the tournament help desk at the venue for event-day queries.</p>
+          <p>Check the latest notices first, then reach the tournament help desk for event-day queries and access support.</p>
+          <p>Venue desk: {chrome.tournament.venue}, main entry control booth</p>
+          <p>
+            Call or WhatsApp: <a href="tel:+918830029704" className="inline-link">+91 88300 29704</a>
+          </p>
           <div className="site-footer-links">
             <Link href="/announcements" className="inline-link">
               Notices & Alerts

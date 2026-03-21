@@ -44,6 +44,7 @@ export type AdminDashboardData = {
   todaysMatches: Match[];
   pendingResults: Match[];
   announcements: Announcement[];
+  teams: Team[];
   attentionItems: AdminAttentionItem[];
   stageSummaries: StageSummary[];
   sportProgressCards: SportProgressCard[];

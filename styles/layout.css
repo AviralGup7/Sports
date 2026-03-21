@@ -100,6 +100,11 @@
   color: #d7e8ff;
 }
 
+.footer-brand-lockup {
+  display: inline-flex;
+  margin-bottom: 0.7rem;
+}
+
 .site-footer-links {
   display: flex;
   flex-wrap: wrap;
@@ -937,19 +942,7 @@ html {
 }
 
 .ticker-track-stepped {
-  flex-wrap: nowrap;
-  width: max-content;
-  animation: ticker-step-pan 26s linear infinite;
-}
-
-@keyframes ticker-step-pan {
-  from {
-    transform: translateX(0);
-  }
-
-  to {
-    transform: translateX(-18%);
-  }
+  width: 100%;
 }
 
 html[data-hero-mode="css-fallback"] .cyber-arena-canvas,
@@ -961,10 +954,6 @@ html[data-scene-mode="css-fallback"] .arena-r3f-host,
 html[data-scene-mode="canvas-fallback"] .arena-r3f-host,
 html[data-scene-mode="reduced"] .arena-r3f-host {
   display: none;
-}
-
-html[data-ticker-mode="static"] .ticker-track-stepped {
-  animation: none;
 }
 
 html[data-effects="safe"] .cyber-arena-beam,
@@ -1064,10 +1053,6 @@ html[data-ui-profile="android-mobile"] .bg-beam,
 html[data-ui-profile="android-mobile"] .bg-glow {
   opacity: 0.12;
   filter: blur(40px);
-}
-
-html[data-ui-profile="android-mobile"] .ticker-track-stepped {
-  animation-duration: 34s;
 }
 
 html[data-scene-quality="low"] .cyber-arena-beam,

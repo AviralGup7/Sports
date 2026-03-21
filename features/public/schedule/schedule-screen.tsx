@@ -54,6 +54,22 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             tone={selectedSportRecord ? "cyan" : "blue"}
             intensity="premium"
             variant="schedule-command"
+            actions={
+              <>
+                <Link href={buildHref({ status: undefined })} className={!data.selectedStatus ? "button" : "button button-ghost"}>
+                  All
+                </Link>
+                <Link href={buildHref({ status: "live" })} className={data.selectedStatus === "live" ? "button" : "button button-ghost"}>
+                  Live
+                </Link>
+                <Link href={buildHref({ status: "completed" })} className={data.selectedStatus === "completed" ? "button" : "button button-ghost"}>
+                  Results
+                </Link>
+                <Link href={buildHref({ status: "scheduled" })} className={data.selectedStatus === "scheduled" ? "button" : "button button-ghost"}>
+                  Upcoming
+                </Link>
+              </>
+            }
             aside={
               <div className="hero-aside-list hero-aside-list-cyber">
                 <div>

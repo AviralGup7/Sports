@@ -47,6 +47,14 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             tone={data.match.status === "live" ? "crimson" : data.match.status === "postponed" ? "crimson" : "blue"}
             intensity="premium"
             variant={data.match.winnerToMatchId || data.match.loserToMatchId ? "bracket-showcase" : "sport-masthead"}
+            actions={
+              <>
+                <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
+                  {data.sport.name} schedule
+                </Link>
+                <ShareMatchButton href={`/matches/${data.match.id}`} title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`} />
+              </>
+            }
             aside={
               <div className="score-spotlight score-spotlight-tight">
                 <p className="eyebrow">Match status</p>
@@ -84,12 +92,6 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
           <p className="eyebrow">Bracket Path</p>
           <h2>{primaryTargetMatch?.round ?? "Standalone fixture"}</h2>
           <p>{progressionSummary}</p>
-        </article>
-        <article className="detail-card detail-card-cyber">
-          <p className="eyebrow">Share</p>
-          <h2>Send this match</h2>
-          <p>Copy the match link or share it directly from your phone.</p>
-          <ShareMatchButton href={`/matches/${data.match.id}`} title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`} />
         </article>
       </MotionIn>
 

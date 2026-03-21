@@ -67,6 +67,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
             redirectTo="/admin"
             recentMatches={data.todaysMatches.length > 0 ? data.todaysMatches : data.pendingResults}
             recentAnnouncements={data.announcements}
+            recentTeams={data.teams}
           />
         </ControlPanel>
 

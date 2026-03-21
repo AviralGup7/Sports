@@ -2,6 +2,7 @@
 
 import type { Announcement } from "@/domain/announcements/types";
 import type { Match } from "@/domain/matches/types";
+import type { Team } from "@/domain/teams/types";
 import { useEffect, useRef, useState } from "react";
 
 import { runAdminAssistantAction } from "@/app/admin/actions";
@@ -12,6 +13,7 @@ type AdminAiCommandPanelProps = {
   description?: string;
   recentMatches?: Match[];
   recentAnnouncements?: Announcement[];
+  recentTeams?: Team[];
 };
 
 type ConnectionState = {
@@ -23,9 +25,12 @@ const GROQ_STORAGE_KEY = "admin_groq_api_key";
 
 const commandExamples = [
   "Post a pinned public notice saying the football final now starts at 7 PM.",
-  "Move cricket-final to April 5 at 18:30 in Main Ground.",
+  "Move cricket-final to April 5 at 18:30 in Main Ground and post a notice about it.",
   "Mark football-qf-2 live.",
-  "Save the football-qf-2 result as Pilani Tamil Mandram winning 2-1."
+  "Save the football-qf-2 result as Pilani Tamil Mandram winning 2-1.",
+  "Update announcement volunteer-briefing and publish the corrected time.",
+  "Update the Pilani Tamil Mandram team seed to 2 and keep it in football.",
+  "Archive the old volunteer squad team record."
 ];
 
 const defaultConnectionState: ConnectionState = {
@@ -57,12 +62,24 @@ function toAnnouncementContext(announcements: Announcement[]) {
   }));
 }
 
+function toTeamContext(teams: Team[]) {
+  return teams.slice(0, 10).map((team) => ({
+    id: team.id,
+    name: team.name,
+    association: team.association,
+    seed: team.seed,
+    sportIds: team.sportIds,
+    isActive: team.isActive
+  }));
+}
+
 export function AdminAiCommandPanel({
   redirectTo,
   title = "AI command desk",
   description = "Type a task in plain language. If a Groq key is connected, the desk will translate it into a safe admin command before running it.",
   recentMatches = [],
-  recentAnnouncements = []
+  recentAnnouncements = [],
+  recentTeams = []
 }: AdminAiCommandPanelProps) {
   const formRef = useRef<HTMLFormElement | null>(null);
   const hiddenCommandRef = useRef<HTMLInputElement | null>(null);
@@ -175,17 +192,18 @@ export function AdminAiCommandPanel({
             apiKey,
             prompt: trimmedPrompt,
             matches: toMatchContext(recentMatches),
-            announcements: toAnnouncementContext(recentAnnouncements)
+            announcements: toAnnouncementContext(recentAnnouncements),
+            teams: toTeamContext(recentTeams)
           })
         });
 
-        const result = (await response.json()) as { command?: string; summary?: string; error?: string };
-        if (!response.ok || !result.command) {
+        const result = (await response.json()) as { commands?: string[]; summary?: string; error?: string };
+        if (!response.ok || !result.commands?.length) {
           throw new Error(result.error ?? "Groq could not turn that request into an admin command.");
         }
 
-        finalCommand = result.command;
-        setPlannerSummary(result.summary ?? `AI prepared: ${result.command}`);
+        finalCommand = result.commands.join("\n");
+        setPlannerSummary(result.summary ?? `AI prepared ${result.commands.length} admin command${result.commands.length === 1 ? "" : "s"}.`);
         setConnectionState({
           tone: "success",
           label: "Groq planning ready."
@@ -291,6 +309,17 @@ export function AdminAiCommandPanel({
           {recentAnnouncements.slice(0, 5).map((announcement) => (
             <p key={announcement.id} className="muted">
               <strong>{announcement.id}</strong> | {announcement.title}
+            </p>
+          ))}
+        </div>
+      ) : null}
+
+      {recentTeams.length > 0 ? (
+        <div className="builder-preview stack-sm">
+          <p className="eyebrow">Team references</p>
+          {recentTeams.slice(0, 5).map((team) => (
+            <p key={team.id} className="muted">
+              <strong>{team.id}</strong> | {team.name} | seed {team.seed}
             </p>
           ))}
         </div>

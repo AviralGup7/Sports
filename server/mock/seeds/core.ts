@@ -13,15 +13,15 @@ export const sportsSeed: Sport[] = [
     id: "cricket",
     name: "Cricket",
     color: "#f59e0b",
-    rulesSummary: "T20 pool play narrows into knockout nights with a third-place board and seeded crossovers.",
-    format: "8 teams, 2 groups, knockout plus bronze"
+    rulesSummary: "T20 group play builds into the title run, with seeded crossovers and a bronze match before the final.",
+    format: "8 teams, 2 groups, finals weekend"
   },
   {
     id: "football",
     name: "Football",
     color: "#22c55e",
     rulesSummary: "Campus cup knockout with a third-place playoff and explicit penalty/late-change result handling.",
-    format: "8 teams, knockout plus bronze"
+    format: "8 teams, finals weekend plus bronze"
   },
   {
     id: "volleyball",

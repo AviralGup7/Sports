@@ -18,7 +18,7 @@ type SportCenterScreenProps = {
 export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterScreenProps) {
   const liveCount = data.matches.filter((match) => match.status === "live").length;
   const completedCount = data.matches.filter((match) => match.status === "completed").length;
-  const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Tournament view";
+  const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Current stage";
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
   const tabs = [
     { id: "overview", label: "Overview" },
@@ -41,56 +41,22 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             intensity="premium"
             variant="sport-masthead"
             aside={
-              <div className="stack-lg">
-                <div className="score-spotlight score-spotlight-tight">
-                  <p className="eyebrow">This sport</p>
-                  <h2>{liveCount > 0 ? "Live Now" : activeStageLabel}</h2>
-                  <strong>{data.teams.length} associations competing</strong>
-                  <p>
-                    {data.sport.id === "athletics"
-                      ? "Athletics uses event result cards rather than a knockout bracket."
-                      : liveCount > 0
-                        ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
-                        : "Standings, bracket views, and fixtures are all available below."}
-                  </p>
-                  <FreshnessStamp generatedAt={data.generatedAt} />
-                </div>
-                <div className="sport-banner-placeholder" style={{ "--sport-accent": data.sport.color } as CSSProperties}>
-                  <span className="sport-banner-tag">{data.sport.id === "athletics" ? "Results Hub" : "Matchday Focus"}</span>
-                  <strong>{data.sport.name}</strong>
-                  <p>{data.sport.id === "athletics" ? "Event cards, medal moments, and association performances." : "Fixtures, bracket pressure, and standings all in one sport page."}</p>
-                  <div className="sport-banner-grid">
-                    <div>
-                      <small>Associations</small>
-                      <b>{data.teams.length}</b>
-                    </div>
-                    <div>
-                      <small>Live</small>
-                      <b>{liveCount}</b>
-                    </div>
-                    <div>
-                      <small>Results</small>
-                      <b>{completedCount}</b>
-                    </div>
-                  </div>
-                </div>
+              <div className="score-spotlight score-spotlight-tight">
+                <p className="eyebrow">This sport</p>
+                <h2>{liveCount > 0 ? "Live Now" : activeStageLabel}</h2>
+                <strong>{data.teams.length} associations competing</strong>
+                <p>
+                  {data.sport.id === "athletics"
+                    ? "Athletics uses event result cards rather than a knockout bracket."
+                    : liveCount > 0
+                      ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
+                      : "Use the summary below to check standings, fixtures, and the current title picture."}
+                </p>
+                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
         </ScrollStorySection>
-      </MotionIn>
-
-      <MotionIn className="filter-rail sport-center-rail" delay={0.06}>
-        <div className="filter-block">
-          <p className="eyebrow">View</p>
-          <div className="chip-row">
-            {tabs.map((tab) => (
-              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "chip chip-active" : "chip"}>
-                {tab.label}
-              </Link>
-            ))}
-          </div>
-        </div>
       </MotionIn>
 
       <MotionIn className="section-shell page-guide-shell" delay={0.07}>
@@ -127,7 +93,20 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         </div>
       </MotionIn>
 
-      <MotionIn className="section-shell" delay={0.08}>
+      <MotionIn className="filter-rail sport-center-rail" delay={0.08}>
+        <div className="filter-block">
+          <p className="eyebrow">View</p>
+          <div className="chip-row">
+            {tabs.map((tab) => (
+              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "chip chip-active" : "chip"}>
+                {tab.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </MotionIn>
+
+      <MotionIn className="section-shell" delay={0.1}>
         <div className="section-heading">
           <div>
             <p className="eyebrow">Progress</p>
@@ -147,7 +126,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       </MotionIn>
 
       {selectedTab === "overview" ? (
-        <MotionIn className="split-stage" delay={0.12}>
+        <MotionIn className="split-stage" delay={0.14}>
           <section className="section-shell">
             <div className="section-heading">
               <div>
@@ -196,7 +175,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "standings" ? (
-        <MotionIn className="section-shell" delay={0.12}>
+        <MotionIn className="section-shell" delay={0.14}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Standings</p>
@@ -220,7 +199,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "bracket" ? (
-        <MotionIn className="section-shell section-shell-bracket" delay={0.12}>
+        <MotionIn className="section-shell section-shell-bracket" delay={0.14}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Bracket</p>
@@ -244,7 +223,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "fixtures" ? (
-        <MotionIn className="section-shell" delay={0.12}>
+        <MotionIn className="section-shell" delay={0.14}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Fixtures</p>

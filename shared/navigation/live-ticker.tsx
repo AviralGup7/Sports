@@ -2,7 +2,7 @@
 
 import { gsap } from "gsap";
 import Link from "next/link";
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import type { TickerGroup, TickerItem } from "@/server/data/public/types";
 import { useUICapability } from "@/shared/motion";
@@ -17,6 +17,7 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const tweenRef = useRef<gsap.core.Tween | null>(null);
   const loopingRail = useMemo(() => items, [items]);
+  const [steppedIndex, setSteppedIndex] = useState(0);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -37,9 +38,26 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
     };
   }, [capability.tickerMode, items.length, loopingRail]);
 
+  useEffect(() => {
+    if (capability.tickerMode !== "stepped" || items.length <= 1) {
+      setSteppedIndex(0);
+      return;
+    }
+
+    const interval = window.setInterval(() => {
+      setSteppedIndex((current) => (current + 1) % items.length);
+    }, 2600);
+
+    return () => {
+      window.clearInterval(interval);
+    };
+  }, [capability.tickerMode, items]);
+
   if (items.length === 0) {
     return null;
   }
+
+  const steppedItem = items[steppedIndex] ?? items[0];
 
   return (
     <div className="ticker-shell" aria-label="Live scores and match alerts">
@@ -54,8 +72,12 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
             ))}
           </div>
         ) : null}
-        {capability.tickerMode !== "looping" ? (
-          <div className={capability.tickerMode === "stepped" ? "ticker-track ticker-track-stepped" : "ticker-track ticker-track-static"}>
+        {capability.tickerMode === "stepped" ? (
+          <div className="ticker-track ticker-track-stepped">
+            <TickerChip key={steppedItem.id} item={steppedItem} />
+          </div>
+        ) : capability.tickerMode === "static" ? (
+          <div className="ticker-track ticker-track-static">
             {items.map((item) => (
               <TickerChip key={item.id} item={item} />
             ))}

@@ -45,6 +45,7 @@ export function AdminAssistantScreen({ data, message, tone }: AdminAssistantScre
             redirectTo="/admin/assistant"
             recentMatches={data.todaysMatches.length > 0 ? data.todaysMatches : data.pendingResults}
             recentAnnouncements={data.announcements}
+            recentTeams={data.teams}
           />
         </ControlPanel>
 
@@ -73,6 +74,10 @@ export function AdminAssistantScreen({ data, message, tone }: AdminAssistantScre
             <div className="operator-guide-item">
               <span className="operator-guide-dot" aria-hidden="true" />
               <p>Save a result, infer the winner from context, and push winner and loser routing forward in the bracket when the board is completed.</p>
+            </div>
+            <div className="operator-guide-item">
+              <span className="operator-guide-dot" aria-hidden="true" />
+              <p>Create a team, update a team profile, or archive an inactive team without opening the registry form.</p>
             </div>
           </div>
           <div className="admin-quick-actions">

@@ -1,75 +1,11 @@
+import { canonicalizePlannedCommands, extractJsonObject, getAuthHeaders, normalizePlannedCommand, parseGroqError } from "./groq/helpers";
+import { GROQ_SYSTEM_PROMPT } from "./groq/prompt";
+import type { GroqPlanningInput, GroqPlanningResult, RawGroqPlanningResult } from "./groq/types";
+
 const GROQ_BASE_URL = "https://api.groq.com/openai/v1";
 const GROQ_MODEL = "llama-3.1-8b-instant";
 
-type GroqMatchContext = {
-  id: string;
-  sportId: string;
-  round: string;
-  day: string;
-  startTime: string;
-  venue: string;
-  status: string;
-  teamAName: string;
-  teamBName: string;
-};
-
-type GroqAnnouncementContext = {
-  id: string;
-  title: string;
-  visibility: string;
-  pinned: boolean;
-  isPublished: boolean;
-};
-
-type GroqPlanningInput = {
-  apiKey: string;
-  prompt: string;
-  matches: GroqMatchContext[];
-  announcements: GroqAnnouncementContext[];
-};
-
-type GroqPlanningResult = {
-  command: string;
-  summary: string;
-};
-
-type GroqApiError = {
-  error?: {
-    message?: string;
-  };
-};
-
-function getAuthHeaders(apiKey: string) {
-  return {
-    Authorization: `Bearer ${apiKey}`,
-    "Content-Type": "application/json"
-  };
-}
-
-async function parseGroqError(response: Response) {
-  try {
-    const data = (await response.json()) as GroqApiError;
-    return data.error?.message ?? `Groq request failed with status ${response.status}.`;
-  } catch {
-    return `Groq request failed with status ${response.status}.`;
-  }
-}
-
-function extractJsonObject(content: string) {
-  const fenced = content.match(/```json\s*([\s\S]+?)```/i);
-  if (fenced) {
-    return fenced[1].trim();
-  }
-
-  const start = content.indexOf("{");
-  const end = content.lastIndexOf("}");
-
-  if (start >= 0 && end > start) {
-    return content.slice(start, end + 1);
-  }
-
-  return content.trim();
-}
+export { normalizePlannedCommand } from "./groq/helpers";
 
 export async function testGroqConnection(apiKey: string) {
   const response = await fetch(`${GROQ_BASE_URL}/models`, {
@@ -92,7 +28,7 @@ export async function testGroqConnection(apiKey: string) {
   };
 }
 
-export async function planAdminCommandWithGroq({ apiKey, prompt, matches, announcements }: GroqPlanningInput): Promise<GroqPlanningResult> {
+export async function planAdminCommandWithGroq({ apiKey, prompt, matches, announcements, teams }: GroqPlanningInput): Promise<GroqPlanningResult> {
   const response = await fetch(`${GROQ_BASE_URL}/chat/completions`, {
     method: "POST",
     headers: getAuthHeaders(apiKey),
@@ -103,21 +39,15 @@ export async function planAdminCommandWithGroq({ apiKey, prompt, matches, announ
       messages: [
         {
           role: "system",
-          content:
-            "You are an admin operations planner for a sports tournament portal. Convert a natural-language admin request into exactly one canonical command. Return JSON only with keys command and summary. Valid commands are: " +
-            '1) post announcement [pin] [draft] [admin] TITLE :: BODY ' +
-            '2) update announcement ANNOUNCEMENT_ID [pin|unpin] [draft|publish] [admin|public] TITLE :: BODY ' +
-            '3) move MATCH_ID to YYYY-MM-DD HH:MM [at VENUE] ' +
-            '4) status MATCH_ID scheduled|live|completed|postponed|cancelled ' +
-            '5) result MATCH_ID winner TEAM_NAME score A-B [note NOTE]. ' +
-            "Choose the correct match id or announcement id from the provided context. Prefer exact ids when they exist. Keep times in 24-hour HH:MM format."
+          content: GROQ_SYSTEM_PROMPT
         },
         {
           role: "user",
           content: JSON.stringify({
             prompt,
             matches,
-            announcements
+            announcements,
+            teams
           })
         }
       ]
@@ -141,14 +71,25 @@ export async function planAdminCommandWithGroq({ apiKey, prompt, matches, announ
     throw new Error("Groq returned an empty planning response.");
   }
 
-  const parsed = JSON.parse(extractJsonObject(rawContent)) as Partial<GroqPlanningResult>;
+  const parsed = JSON.parse(extractJsonObject(rawContent)) as RawGroqPlanningResult;
+  const rawCommands = Array.isArray(parsed.commands)
+    ? parsed.commands.map((command) => String(command))
+    : parsed.command
+      ? [String(parsed.command)]
+      : [];
 
-  if (!parsed.command || !parsed.summary) {
+  if (rawCommands.length === 0) {
+    throw new Error("Groq did not return a usable admin command.");
+  }
+
+  const commands = canonicalizePlannedCommands(prompt, rawCommands);
+
+  if (commands.length === 0) {
     throw new Error("Groq did not return a usable admin command.");
   }
 
   return {
-    command: parsed.command.trim(),
-    summary: parsed.summary.trim()
+    commands,
+    summary: parsed.summary?.trim() || `Prepared ${commands.length} admin command${commands.length === 1 ? "" : "s"}.`
   };
 }

@@ -317,37 +317,34 @@ function buildTickerGroups(items: TickerItem[]): TickerGroup[] {
   return Array.from(grouped.values());
 }
 
-function buildHeroSignals(snapshot: RepositorySnapshot, stats: TournamentStats, highlightMatch: HighlightMatch | null): HeroSignal[] {
+function buildHeroSignals(
+  snapshot: RepositorySnapshot,
+  stats: TournamentStats,
+  highlightMatch: HighlightMatch | null,
+  nextMatch: NextMatchCountdown | null
+): HeroSignal[] {
   const latestHeadline = getPublicAnnouncements(snapshot).find((announcement) => announcement.pinned) ?? getPublicAnnouncements(snapshot)[0];
 
   return [
     {
       id: "signal-live",
-      label: "Matches Live",
+      label: "Live now",
       value: String(stats.liveMatches),
       detail: stats.liveMatches > 0 ? "Scores are updating on matches in progress right now." : "No matches are live at this exact moment.",
       tone: stats.liveMatches > 0 ? "live" : "neutral",
-      href: "/schedule?status=live"
+      href: highlightMatch?.urgency === "live" ? `/matches/${highlightMatch.match.id}` : "/schedule?status=live"
     },
     {
-      id: "signal-spotlight",
-      label: "Featured Match",
-      value: highlightMatch ? `${highlightMatch.match.teamA?.name ?? "TBD"} vs ${highlightMatch.match.teamB?.name ?? "TBD"}` : "Standby",
-      detail: highlightMatch?.headline ?? "The next featured match will appear here.",
-      tone: highlightMatch?.urgency === "live" ? "live" : highlightMatch?.urgency === "watch" ? "alert" : "info",
-      href: highlightMatch ? `/matches/${highlightMatch.match.id}` : "/schedule"
-    },
-    {
-      id: "signal-titles",
-      label: "Finals Today",
-      value: `${snapshot.matches.filter((match) => isTitleFinalRound(match.round)).length} finals`,
-      detail: "Championship matches and decisive title moments are coming into focus.",
-      tone: "info",
-      href: "/schedule"
+      id: "signal-next",
+      label: "Next / today",
+      value: nextMatch ? `${nextMatch.match.teamA?.name ?? "TBD"} vs ${nextMatch.match.teamB?.name ?? "TBD"}` : "Schedule ready",
+      detail: nextMatch ? `${formatDateTime(nextMatch.match.day, nextMatch.match.startTime)} | ${nextMatch.match.venue}` : "Open the schedule to browse the next fixtures.",
+      tone: nextMatch ? "info" : "neutral",
+      href: nextMatch ? `/matches/${nextMatch.match.id}` : "/schedule"
     },
     {
       id: "signal-news",
-      label: "Latest Notice",
+      label: "Important notice",
       value: latestHeadline ? "Posted" : "Quiet",
       detail: latestHeadline?.title ?? "No new notices have been posted yet.",
       tone: latestHeadline ? "alert" : "neutral",
@@ -877,7 +874,7 @@ export async function getHomePageData(): Promise<HomePageData> {
     dayNote: buildDayNote(snapshot, anchorDay),
     highlightMatch,
     nextMatch,
-    heroSignals: buildHeroSignals(snapshot, stats, highlightMatch),
+    heroSignals: buildHeroSignals(snapshot, stats, highlightMatch, nextMatch),
     featuredMatches,
     announcements: getPublicAnnouncements(snapshot).slice(0, 4),
     champions: buildChampionEntries(snapshot),
@@ -954,10 +951,10 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
 
   return {
     generatedAt,
-      sport: {
-        ...sport,
-        format: `${sport.format} | ${getActiveStage(snapshot, sportId)?.label ?? "Tournament view"}`
-      },
+    sport: {
+      ...sport,
+      format: getActiveStage(snapshot, sportId)?.label ? `${sport.format} | ${getActiveStage(snapshot, sportId)?.label}` : sport.format
+    },
     stages,
     groups,
     stageSummaries: buildStageSummaries(snapshot, sportId),
@@ -1077,6 +1074,9 @@ export async function getAdminDashboardData(profile: Profile): Promise<AdminDash
     todaysMatches,
     pendingResults: visibleMatches.filter((match) => match.status !== "completed" && match.status !== "cancelled").slice(0, 6),
     announcements: snapshot.announcements.slice(0, 5),
+    teams: snapshot.teams
+      .filter((team) => team.isActive && (profile.role === "super_admin" || team.sportIds.some((sportId) => profile.sportIds.includes(sportId))))
+      .slice(0, 8),
     attentionItems: buildAdminAttentionItems(snapshot, visibleMatches, integrityIssues),
     stageSummaries: snapshot.sports
       .filter((sport) => allowedSports.includes(sport.id))
