@@ -70,12 +70,15 @@ npm run dev
 
 ## Scripts
 
+- `npm run clean`
 - `npm run build`
 - `npm run lint`
 - `npm run test:unit`
 - `npm run test:e2e`
 
 End-to-end runs now use an isolated `.next-e2e` build on port `3100`, so they do not reuse a local `next dev` server or its build artifacts.
+
+Run `npm run clean` before a fresh build or debugging pass if local logs, screenshots, Playwright output, or Next build folders have piled up.
 
 To exercise authenticated admin flows in Playwright, set:
 

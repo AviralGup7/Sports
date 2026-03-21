@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "clean": "node scripts/clean-workspace.mjs",
     "e2e:build": "cross-env NEXT_DIST_PROFILE=e2e next build && node scripts/reset-next-type-paths.mjs",
     "e2e:start": "cross-env NEXT_DIST_PROFILE=e2e next start -p 3100",
     "e2e:serve": "npm run e2e:build && npm run e2e:start",

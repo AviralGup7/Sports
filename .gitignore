@@ -3,8 +3,11 @@
 node_modules
 dist
 coverage
+test-results
 .DS_Store
 *.log
+.codex-*.log
+.next-dev*.log
 *.tsbuildinfo
 .env
 .env.local
