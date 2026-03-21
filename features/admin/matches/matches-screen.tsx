@@ -63,13 +63,16 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
       <MotionIn>
         <section className="operations-hero">
           <div>
-            <p className="eyebrow">Match Engine</p>
-            <h1>Builder, live desk, and winner tree</h1>
-            <p className="hero-text">Switch between structure generation, day-of result locking, and bracket integrity review without leaving the control room.</p>
+            <p className="eyebrow">Matches</p>
+            <h1>Run fixtures without the clutter</h1>
+            <p className="hero-text">Stay in the mode you need right now: setup, live results, or bracket review.</p>
           </div>
           <div className="operations-hero-side">
             <span className="operations-chip">Visible {visibleMatches.length}</span>
             <span className="operations-chip">Issues {visibleIntegrityIssues.length}</span>
+            <Link href="/admin/assistant" className="button button-ghost">
+              AI desk
+            </Link>
           </div>
         </section>
       </MotionIn>
@@ -81,13 +84,13 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
           <p className="eyebrow">Mode</p>
           <div className="chip-row">
             <Link href={modeHref("builder")} className={mode === "builder" ? "chip chip-active" : "chip"}>
-              Builder
+              Setup
             </Link>
             <Link href={modeHref("live")} className={mode === "live" ? "chip chip-active" : "chip"}>
-              Live Desk
+              Live
             </Link>
             <Link href={modeHref("tree")} className={mode === "tree" ? "chip chip-active" : "chip"}>
-              Bracket Manager
+              Bracket
             </Link>
           </div>
         </div>
