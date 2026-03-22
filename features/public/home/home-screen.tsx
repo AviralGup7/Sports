@@ -27,7 +27,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow="Inter Cultural Assoc Sports League"
-            kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
+            kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | GYMG`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
             badge={
@@ -40,6 +40,8 @@ export function HomeScreen({ data }: HomeScreenProps) {
                     height={220}
                     className="hero-brand-image"
                     priority
+                    unoptimized
+                    sizes="(max-width: 480px) 100px, (max-width: 860px) 116px, 144px"
                   />
                 </div>
                 <div className="hero-brand-copy">
