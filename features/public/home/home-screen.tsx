@@ -3,6 +3,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { getTeamAccent } from "@/lib/team-style";
+import leagueLogo from "@/logo/v2.png";
 import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
@@ -33,7 +34,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
               <div className="hero-brand-lockup">
                 <div className="hero-brand-image-wrap">
                   <Image
-                    src="/inter-cultural-assoc-sports-league-logo.svg"
+                    src={leagueLogo}
                     alt="Inter Cultural Assoc Sports League logo"
                     width={168}
                     height={168}
