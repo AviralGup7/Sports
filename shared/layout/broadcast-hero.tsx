@@ -3,6 +3,7 @@ import { CSSProperties, ReactNode } from "react";
 import { CyberArenaScene, type HeroSceneVariant } from "@/shared/motion";
 
 type BroadcastHeroProps = {
+  badge?: ReactNode;
   eyebrow: string;
   title: string;
   description: string;
@@ -18,6 +19,7 @@ type BroadcastHeroProps = {
 };
 
 export function BroadcastHero({
+  badge,
   eyebrow,
   title,
   description,
@@ -36,6 +38,7 @@ export function BroadcastHero({
       <CyberArenaScene className="broadcast-hero-scene" tone={tone} intensity={intensity} variant={variant} />
       <div className="broadcast-hero-shine" aria-hidden="true" />
       <div className="broadcast-hero-main">
+        {badge ? <div className="hero-badge-slot">{badge}</div> : null}
         <p className="eyebrow">{eyebrow}</p>
         {kicker ? <p className="hero-kicker-line">{kicker}</p> : null}
         <h1>{title}</h1>

@@ -25,7 +25,7 @@ const monoFont = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "IASL Tournament Portal",
+  title: "Inter Cultural Assoc Sports League",
   description: "Public-facing sports portal for live scores, schedules, standings, notices, and match details."
 };
 

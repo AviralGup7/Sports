@@ -33,17 +33,23 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
 
         <section className="site-footer-card">
           <p className="eyebrow">Organiser</p>
-          <h2>IASL Organising Committee</h2>
+          <h2>Inter Cultural Assoc Sports League Committee</h2>
           <p>Official public portal for fixtures, standings, notices, and match updates during the tournament.</p>
         </section>
 
         <section className="site-footer-card">
           <p className="eyebrow">Queries</p>
           <h2>Need help?</h2>
-          <p>Check the latest notices first, then reach the tournament help desk for event-day queries and access support.</p>
+          <p>Check the latest notices first, then reach the organising team for event-day queries and coordination support.</p>
           <p>Venue desk: {chrome.tournament.venue}, main entry control booth</p>
           <p>
-            Call or WhatsApp: <a href="tel:+918830029704" className="inline-link">+91 88300 29704</a>
+            Moksh Goel: <a href="tel:+919971019074" className="inline-link">+91-9971019074</a>
+          </p>
+          <p>
+            Partho Kumar Das: <a href="tel:+917985898426" className="inline-link">+91-7985898426</a>
+          </p>
+          <p>
+            Aarav Saxena: <a href="tel:+919818650379" className="inline-link">+91-9818650379</a>
           </p>
           <div className="site-footer-links">
             <Link href="/announcements" className="inline-link">

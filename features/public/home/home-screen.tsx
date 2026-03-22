@@ -1,5 +1,6 @@
 import { CSSProperties } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 import { getTeamAccent } from "@/lib/team-style";
 import type { HomePageData } from "@/server/data/public/types";
@@ -24,10 +25,28 @@ export function HomeScreen({ data }: HomeScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Inter Association Sports League"
+            eyebrow="Inter Cultural Assoc Sports League"
             kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
+            badge={
+              <div className="hero-brand-lockup">
+                <div className="hero-brand-image-wrap">
+                  <Image
+                    src="/inter-cultural-assoc-sports-league-logo.svg"
+                    alt="Inter Cultural Assoc Sports League logo"
+                    width={168}
+                    height={168}
+                    className="hero-brand-image"
+                    priority
+                  />
+                </div>
+                <div className="hero-brand-copy">
+                  <span className="hero-brand-label">Official Crest</span>
+                  <strong>Inter Cultural Assoc Sports League</strong>
+                </div>
+              </div>
+            }
             tone={highlightMatch?.urgency === "live" ? "crimson" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
             intensity="premium"
             variant="home-hero"
@@ -143,6 +162,29 @@ export function HomeScreen({ data }: HomeScreenProps) {
                 href="/standings"
               />
             </div>
+
+            <section className="home-contact-card" aria-label="Organising committee contacts">
+              <div className="section-heading">
+                <div>
+                  <p className="eyebrow">Contacts</p>
+                  <h2>Organising committee</h2>
+                </div>
+              </div>
+              <div className="home-contact-grid">
+                <a href="tel:+919971019074" className="home-contact-person">
+                  <span className="home-contact-name">Moksh Goel</span>
+                  <strong>+91-9971019074</strong>
+                </a>
+                <a href="tel:+917985898426" className="home-contact-person">
+                  <span className="home-contact-name">Partho Kumar Das</span>
+                  <strong>+91-7985898426</strong>
+                </a>
+                <a href="tel:+919818650379" className="home-contact-person">
+                  <span className="home-contact-name">Aarav Saxena</span>
+                  <strong>+91-9818650379</strong>
+                </a>
+              </div>
+            </section>
           </section>
         </div>
 

@@ -1,0 +1,74 @@
+<svg width="1024" height="1024" viewBox="0 0 1024 1024" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="bgGlow" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(512 512) rotate(90) scale(420)">
+      <stop stop-color="#15375A"/>
+      <stop offset="1" stop-color="#07101B"/>
+    </radialGradient>
+    <linearGradient id="goldRing" x1="182" y1="182" x2="842" y2="842" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E5C27B"/>
+      <stop offset="0.5" stop-color="#A5792B"/>
+      <stop offset="1" stop-color="#F4D18C"/>
+    </linearGradient>
+    <linearGradient id="sky" x1="298" y1="248" x2="740" y2="784" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#D2F5FF"/>
+      <stop offset="1" stop-color="#6FD4FF"/>
+    </linearGradient>
+    <linearGradient id="trailA" x1="334" y1="514" x2="572" y2="716" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00C8FF"/>
+      <stop offset="1" stop-color="#1166FF"/>
+    </linearGradient>
+    <linearGradient id="trailB" x1="332" y1="522" x2="618" y2="640" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF4B3E"/>
+      <stop offset="1" stop-color="#FF9F1C"/>
+    </linearGradient>
+    <linearGradient id="trailC" x1="492" y1="420" x2="628" y2="718" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#27D76B"/>
+      <stop offset="1" stop-color="#D9FF56"/>
+    </linearGradient>
+    <path id="topArc" d="M221 350C282 249 392 185 512 185C632 185 742 249 803 350"/>
+    <path id="bottomArc" d="M793 674C726 776 624 839 512 839C400 839 298 776 231 674"/>
+  </defs>
+  <rect width="1024" height="1024" fill="#07101B"/>
+  <circle cx="512" cy="512" r="415" fill="url(#bgGlow)"/>
+  <circle cx="512" cy="512" r="382" stroke="url(#goldRing)" stroke-width="14"/>
+  <circle cx="512" cy="512" r="345" stroke="#6FCFFF" stroke-opacity="0.35" stroke-width="4"/>
+  <circle cx="512" cy="512" r="316" stroke="url(#goldRing)" stroke-width="8"/>
+  <text fill="#C8F2FF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" letter-spacing="5">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">INTER CULTURAL ASSOCIATION</textPath>
+  </text>
+  <text fill="#C8F2FF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" letter-spacing="5">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">SPORTS LEAGUE</textPath>
+  </text>
+  <ellipse cx="540" cy="680" rx="198" ry="76" fill="#0D2236" stroke="url(#goldRing)" stroke-width="5"/>
+  <path d="M358 696C412 662 480 645 560 645C625 645 690 658 740 686" stroke="#7DDCFF" stroke-width="4" stroke-linecap="round"/>
+  <path d="M346 722C400 690 474 673 566 673C639 673 699 684 748 710" stroke="#FF8D3A" stroke-width="4" stroke-linecap="round"/>
+  <rect x="396" y="360" width="28" height="142" rx="12" fill="#C99A5B" stroke="#F2D6A4" stroke-width="4" transform="rotate(-12 396 360)"/>
+  <rect x="292" y="420" width="24" height="130" rx="10" fill="#A3322A" stroke="#E7684F" stroke-width="4" transform="rotate(-34 292 420)"/>
+  <ellipse cx="356" cy="372" rx="54" ry="54" fill="#102133" stroke="#9EBDDB" stroke-width="4"/>
+  <path d="M320 372H392M356 336V408M332 348L380 396M332 396L380 348" stroke="#A9C6DF" stroke-width="3"/>
+  <path d="M430 505C470 446 535 418 592 436C646 453 685 501 690 558C694 604 675 646 640 670C606 693 562 700 522 686C473 668 435 626 427 576C424 553 424 530 430 505Z" fill="#115E97" stroke="#9DE7FF" stroke-width="8"/>
+  <circle cx="555" cy="443" r="8" fill="#FFE38A"/>
+  <path d="M602 430C640 410 672 430 698 462C720 488 728 528 708 565C697 584 676 596 657 596C648 596 640 591 636 584C631 574 634 563 646 554C663 542 672 522 668 504C664 486 647 471 624 462C609 456 599 444 602 430Z" fill="#C81916"/>
+  <path d="M619 420C660 401 696 423 724 458C753 492 763 536 742 575C729 598 706 614 684 616C673 618 661 615 653 608C652 605 650 602 650 600C684 587 705 558 705 521C705 479 678 443 619 420Z" fill="#F47F20"/>
+  <path d="M634 420C672 409 707 425 735 456C761 485 773 523 763 560C754 553 743 548 730 544C730 501 697 453 634 420Z" fill="#FFD54A"/>
+  <path d="M418 562C355 560 305 553 270 540C232 526 219 506 231 482C246 452 283 445 342 461C385 473 426 496 465 530" fill="url(#trailA)"/>
+  <path d="M421 573C343 586 284 588 245 577C211 567 196 546 204 521C213 492 242 479 294 485C343 490 390 515 438 559" fill="url(#trailB)"/>
+  <path d="M482 694C451 740 412 764 367 764C324 764 292 742 274 708C251 665 259 616 299 586C328 564 373 551 431 546" fill="url(#trailC)"/>
+  <path d="M411 544C472 586 522 610 561 615C607 620 629 607 627 578C625 549 600 531 550 526C506 521 460 528 411 544Z" fill="#E63D38"/>
+  <path d="M469 495C512 458 553 438 592 435C625 432 648 442 657 465C663 481 659 497 646 510C633 523 614 531 590 534C550 540 510 527 469 495Z" fill="#0F76E0"/>
+  <path d="M468 599C503 645 538 672 575 682C610 690 633 684 646 666C655 653 657 638 650 623C641 603 620 591 586 588C548 586 509 590 468 599Z" fill="#1C9E47"/>
+  <circle cx="700" cy="604" r="50" fill="#F7F4EA" stroke="#64748B" stroke-width="6"/>
+  <path d="M679 572L700 555L721 572L716 598H684L679 572Z" fill="#FFFFFF" stroke="#64748B" stroke-width="4"/>
+  <path d="M684 598L700 612L716 598L709 630H691L684 598Z" fill="#FFFFFF" stroke="#64748B" stroke-width="4"/>
+  <path d="M640 564L665 598" stroke="#F6D36A" stroke-width="9" stroke-linecap="round"/>
+  <path d="M493 466C458 482 431 510 417 549" stroke="#A6F1FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M502 510C538 536 568 557 594 574" stroke="#0E3058" stroke-width="12" stroke-linecap="round"/>
+  <path d="M556 470L535 540" stroke="#0E3058" stroke-width="12" stroke-linecap="round"/>
+  <path d="M558 545L612 620" stroke="#0E3058" stroke-width="12" stroke-linecap="round"/>
+  <path d="M493 548L454 626" stroke="#0E3058" stroke-width="12" stroke-linecap="round"/>
+  <rect x="454" y="736" width="116" height="78" rx="8" fill="#19283E" stroke="#E8C47A" stroke-width="5"/>
+  <rect x="480" y="690" width="62" height="64" rx="8" fill="#24344C" stroke="#E8C47A" stroke-width="5"/>
+  <circle cx="511" cy="692" r="16" fill="#E8C47A"/>
+  <path d="M480 736H542M498 706V754M524 706V754" stroke="#9BC7F8" stroke-width="4"/>
+  <text x="512" y="666" fill="#E9F8FF" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="middle">BITS PILANI</text>
+</svg>

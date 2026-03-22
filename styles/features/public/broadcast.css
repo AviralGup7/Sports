@@ -102,6 +102,60 @@
   font-size: 0.84rem;
 }
 
+.hero-badge-slot {
+  margin-bottom: 0.85rem;
+}
+
+.hero-brand-lockup {
+  display: inline-flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.8rem 1rem;
+  border-radius: 1.4rem;
+  border: 1px solid rgba(143, 247, 255, 0.18);
+  background:
+    linear-gradient(145deg, rgba(10, 17, 27, 0.94), rgba(7, 12, 20, 0.84)),
+    radial-gradient(circle at top left, rgba(77, 196, 255, 0.12), transparent 42%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.1),
+    0 16px 34px rgba(5, 12, 22, 0.28);
+}
+
+.hero-brand-image-wrap {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 5.5rem;
+  height: 5.5rem;
+  border-radius: 1.25rem;
+  background: radial-gradient(circle at center, rgba(42, 126, 211, 0.24), rgba(5, 10, 18, 0.05) 72%);
+}
+
+.hero-brand-image {
+  width: 100%;
+  height: auto;
+}
+
+.hero-brand-copy {
+  display: grid;
+  gap: 0.3rem;
+}
+
+.hero-brand-label {
+  color: #8ecfff;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.74rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero-brand-copy strong {
+  max-width: 18rem;
+  color: #f4fbff;
+  font-size: 1rem;
+  line-height: 1.3;
+}
+
 .header-status,
 .nav-links,
 .chip-row,
@@ -1302,6 +1356,58 @@
 .section-shell-home-essentials {
   display: grid;
   gap: 1rem;
+}
+
+.home-contact-card {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem 1.05rem;
+  border-radius: 1.45rem;
+  border: 1px solid rgba(114, 197, 255, 0.14);
+  background:
+    linear-gradient(180deg, rgba(10, 15, 25, 0.94), rgba(7, 12, 20, 0.82)),
+    radial-gradient(circle at top right, rgba(50, 230, 255, 0.08), transparent 28%);
+}
+
+.home-contact-card .section-heading {
+  margin-bottom: 0;
+}
+
+.home-contact-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.home-contact-person {
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.95rem 1rem;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.04);
+  text-decoration: none;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    background 160ms ease;
+}
+
+.home-contact-person:hover,
+.home-contact-person:focus-visible {
+  transform: translateY(-1px);
+  border-color: rgba(143, 247, 255, 0.24);
+  background: rgba(143, 247, 255, 0.08);
+}
+
+.home-contact-name {
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.home-contact-person strong {
+  color: #f4fbff;
+  font-size: 1rem;
 }
 
 .section-shell-home-headline .section-heading {
