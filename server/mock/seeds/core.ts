@@ -5,7 +5,7 @@ export const tournamentSeed: Tournament = {
   name: "Inter Cultural Assoc Sports League",
   startDate: "2026-04-02",
   endDate: "2026-04-05",
-  venue: "Central College Grounds"
+  venue: "GYMG"
 };
 
 export const sportsSeed: Sport[] = [

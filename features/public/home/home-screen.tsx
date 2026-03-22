@@ -36,8 +36,8 @@ export function HomeScreen({ data }: HomeScreenProps) {
                   <Image
                     src={leagueLogo}
                     alt="Inter Cultural Assoc Sports League logo"
-                    width={168}
-                    height={168}
+                    width={220}
+                    height={220}
                     className="hero-brand-image"
                     priority
                   />
