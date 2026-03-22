@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 
 import { AmbientBackdrop, PublicScrollRig, RouteTransitionLayer, RuntimeCapabilityFlags } from "@/shared/motion";
 import { SiteFooter, SiteHeader } from "@/shared/navigation";
+import { getDefaultSiteMetadata } from "@/server/data/public/page-metadata";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
 import "./globals.css";
@@ -24,10 +25,7 @@ const monoFont = JetBrains_Mono({
   variable: "--font-mono"
 });
 
-export const metadata: Metadata = {
-  title: "Inter Cultural Assoc Sports League",
-  description: "Public-facing sports portal for live scores, schedules, standings, notices, and match details."
-};
+export const metadata: Metadata = getDefaultSiteMetadata();
 
 export const viewport: Viewport = {
   width: "device-width",

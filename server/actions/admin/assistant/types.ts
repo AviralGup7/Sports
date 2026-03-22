@@ -48,6 +48,12 @@ export type CommandResult = {
   matchId?: string;
 };
 
+export type AssistantPreviewResult = {
+  source: "groq" | "builtin";
+  summary: string;
+  commands: string[];
+};
+
 export type ResolvedTeam = TeamRow & {
   sportIds: SportSlug[];
 };

@@ -1,4 +1,7 @@
+import type { Metadata } from "next";
+
 import { ScheduleScreen } from "@/features/public/schedule/schedule-screen";
+import { buildTournamentPageMetadata } from "@/server/data/public/page-metadata";
 import { getSchedulePageData } from "@/server/data/public/schedule-query";
 import { sportOrder } from "@/server/mock/tournament-snapshot";
 
@@ -18,4 +21,13 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
   const data = await getSchedulePageData(params.day, selectedSport, params.stage, params.group, params.status);
 
   return <ScheduleScreen data={data} selectedSport={selectedSport} />;
+}
+
+export async function generateMetadata({ searchParams }: SchedulePageProps): Promise<Metadata> {
+  const params = (await searchParams) ?? {};
+  const selectedSport = sportOrder.find((sport) => sport === params.sport);
+  const data = await getSchedulePageData(params.day, selectedSport, params.stage, params.group, params.status);
+  const title = selectedSport ? `${selectedSport} schedule` : "Tournament schedule";
+
+  return buildTournamentPageMetadata(title, `Browse fixtures, filters, and live tournament timings for ${data.selectedDay}.`);
 }

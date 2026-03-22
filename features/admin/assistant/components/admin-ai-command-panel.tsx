@@ -6,6 +6,7 @@ import type { Team } from "@/domain/teams/types";
 import { useEffect, useRef, useState } from "react";
 
 import { runAdminAssistantAction } from "@/app/admin/actions";
+import type { AssistantPreviewResult } from "@/server/actions/admin/assistant/types";
 
 type AdminAiCommandPanelProps = {
   redirectTo: string;
@@ -88,6 +89,7 @@ export function AdminAiCommandPanel({
   const [connectionState, setConnectionState] = useState<ConnectionState>(defaultConnectionState);
   const [plannerSummary, setPlannerSummary] = useState<string | null>(null);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [preview, setPreview] = useState<AssistantPreviewResult | null>(null);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -168,7 +170,7 @@ export function AdminAiCommandPanel({
     }
   };
 
-  const runTask = async () => {
+  const previewTask = async () => {
     const trimmedPrompt = prompt.trim();
     if (!trimmedPrompt) {
       setLocalError("Write a command first.");
@@ -178,10 +180,9 @@ export function AdminAiCommandPanel({
     setBusy(true);
     setLocalError(null);
     setPlannerSummary(null);
+    setPreview(null);
 
     try {
-      let finalCommand = trimmedPrompt;
-
       if (apiKey.trim()) {
         const response = await fetch("/api/admin/ai/plan", {
           method: "POST",
@@ -202,24 +203,51 @@ export function AdminAiCommandPanel({
           throw new Error(result.error ?? "Groq could not turn that request into an admin command.");
         }
 
-        finalCommand = result.commands.join("\n");
-        setPlannerSummary(result.summary ?? `AI prepared ${result.commands.length} admin command${result.commands.length === 1 ? "" : "s"}.`);
+        const previewResult: AssistantPreviewResult = {
+          source: "groq",
+          summary: result.summary ?? `AI prepared ${result.commands.length} admin command${result.commands.length === 1 ? "" : "s"}.`,
+          commands: result.commands
+        };
+
+        setPreview(previewResult);
+        setPlannerSummary(previewResult.summary);
         setConnectionState({
           tone: "success",
           label: "Groq planning ready."
         });
       } else {
-        setPlannerSummary("No Groq key connected. Running the built-in command parser.");
-      }
+        const previewResult: AssistantPreviewResult = {
+          source: "builtin",
+          summary: "No Groq key connected. The built-in parser will run the exact command preview shown below.",
+          commands: [trimmedPrompt]
+        };
 
-      if (hiddenCommandRef.current && formRef.current) {
-        hiddenCommandRef.current.value = finalCommand;
-        formRef.current.requestSubmit();
+        setPreview(previewResult);
+        setPlannerSummary(previewResult.summary);
       }
     } catch (error) {
       setLocalError(error instanceof Error ? error.message : "The AI desk could not prepare that command.");
     } finally {
       setBusy(false);
+    }
+  };
+
+  const runTask = async () => {
+    const trimmedPrompt = prompt.trim();
+
+    if (!trimmedPrompt) {
+      setLocalError("Write a command first.");
+      return;
+    }
+
+    if (!preview) {
+      setLocalError("Preview the task before running it.");
+      return;
+    }
+
+    if (hiddenCommandRef.current && formRef.current) {
+      hiddenCommandRef.current.value = preview.commands.join("\n");
+      formRef.current.requestSubmit();
     }
   };
 
@@ -266,7 +294,11 @@ export function AdminAiCommandPanel({
           <span>Task</span>
           <textarea
             value={prompt}
-            onChange={(event) => setPrompt(event.target.value)}
+            onChange={(event) => {
+              setPrompt(event.target.value);
+              setPreview(null);
+              setPlannerSummary(null);
+            }}
             rows={5}
             required
             placeholder="Example: Delay the football final to 19:00 and post a pinned public notice."
@@ -275,6 +307,16 @@ export function AdminAiCommandPanel({
 
         {plannerSummary ? <div className="status-banner status-banner-info">{plannerSummary}</div> : null}
         {localError ? <div className="status-banner status-banner-error">{localError}</div> : null}
+        {preview ? (
+          <div className="builder-preview stack-sm">
+            <p className="eyebrow">Previewed commands</p>
+            {preview.commands.map((command) => (
+              <p key={command} className="muted">
+                <strong>{preview.source === "groq" ? "AI" : "Direct"}</strong> | {command}
+              </p>
+            ))}
+          </div>
+        ) : null}
 
         <div className="operator-guide-panel">
           {commandExamples.map((example) => (
@@ -286,8 +328,11 @@ export function AdminAiCommandPanel({
         </div>
 
         <div className="form-actions">
-          <button type="button" className="button" onClick={runTask} disabled={busy}>
-            {busy ? "Preparing task..." : "Run AI task"}
+          <button type="button" className="button button-ghost" onClick={previewTask} disabled={busy}>
+            {busy ? "Preparing preview..." : "Preview task"}
+          </button>
+          <button type="button" className="button" onClick={runTask} disabled={busy || !preview}>
+            Run previewed task
           </button>
         </div>
       </form>

@@ -50,41 +50,8 @@ import type { CompetitionStage, Match, Sport, SportSlug, Team } from "@/domain";
 import { formatDateLabel, formatDateTime, formatTimeLabel } from "@/server/data/formatters";
 import { buildIntegrityIssues, buildProgressionEdges, buildStandingsRows } from "@/domain/matches";
 import { loadSnapshot, type RepositorySnapshot } from "@/server/data/snapshot";
-
-function getPublicAnnouncements(snapshot: RepositorySnapshot) {
-  return snapshot.announcements.filter((announcement) => announcement.visibility === "public" && announcement.isPublished);
-}
-
-function getTournamentStatsFromSnapshot(snapshot: RepositorySnapshot): TournamentStats {
-  return {
-    sports: snapshot.sports.length,
-    teams: snapshot.teams.filter((team) => team.isActive).length,
-    matches: snapshot.matches.length,
-    completedMatches: snapshot.matches.filter((match) => match.status === "completed").length,
-    liveMatches: snapshot.matches.filter((match) => match.status === "live").length,
-    announcements: getPublicAnnouncements(snapshot).length
-  };
-}
-
-function getMatchesForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
-  return snapshot.matches.filter((match) => match.sportId === sportId);
-}
-
-function getGeneratedAt() {
-  return new Date().toISOString();
-}
-
-function buildDataState(snapshot: RepositorySnapshot, generatedAt: string) {
-  return {
-    source: snapshot.source,
-    label: snapshot.source === "supabase" ? "Live tournament data" : "Fallback tournament data",
-    detail:
-      snapshot.source === "supabase"
-        ? "The app is reading from Supabase."
-        : "Supabase is unavailable or incomplete, so seeded fallback data is rendering.",
-    generatedAt
-  };
-}
+import { buildDataState, getGeneratedAt } from "@/server/data/shared/query-state";
+import { buildDayNote, getActiveStage, getGroupsForSport, getMatchesForSport, getPublicAnnouncements, getStagesForSport, getTournamentStatsFromSnapshot } from "@/server/data/shared/snapshot-selectors";
 
 function toMatchDateTime(day: string, time: string) {
   const [hours, minutes] = time.split(":");
@@ -93,69 +60,6 @@ function toMatchDateTime(day: string, time: string) {
   return date;
 }
 
-function getStagesForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
-  return snapshot.stages.filter((stage) => stage.sportId === sportId).sort((a, b) => a.orderIndex - b.orderIndex);
-}
-
-function getGroupsForSport(snapshot: RepositorySnapshot, sportId: SportSlug) {
-  return snapshot.groups.filter((group) => group.sportId === sportId).sort((a, b) => a.orderIndex - b.orderIndex);
-}
-
-const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
-  "2026-04-02": {
-    title: "Opening day",
-    detail: "Cricket pool play and early athletics results set the tone for the tournament.",
-    tone: "info"
-  },
-  "2026-04-03": {
-    title: "Full tournament day",
-    detail: "Every sport is active today, so live scores, schedule changes, and notices matter most.",
-    tone: "alert"
-  },
-  "2026-04-04": {
-    title: "Knockout day",
-    detail: "Semi-finals and late qualification matches tighten the title race across campus.",
-    tone: "alert"
-  },
-  "2026-04-05": {
-    title: "Finals day",
-    detail: "Championship matches, bronze playoffs, and medal events decide the podium before closeout.",
-    tone: "success"
-  }
-};
-
-function buildDayNote(snapshot: RepositorySnapshot, day?: string): DayNote {
-  const selectedDay = day ?? snapshot.matches[0]?.day ?? snapshot.tournament.startDate;
-  const note = tournamentDayNotes[selectedDay];
-
-  if (note) {
-    return {
-      id: selectedDay,
-      ...note
-    };
-  }
-
-  return {
-    id: selectedDay,
-    title: "Tournament note",
-    detail: `Key tournament updates for ${formatDateLabel(selectedDay)}. Check live matches, schedule changes, and notices for this window.`,
-    tone: "info"
-  };
-}
-
-function getActiveStage(snapshot: RepositorySnapshot, sportId: SportSlug) {
-  const sportStages = getStagesForSport(snapshot, sportId);
-  const matches = getMatchesForSport(snapshot, sportId);
-
-  return (
-    sportStages.find((stage) =>
-      matches.some((match) => match.stageId === stage.id && (match.status === "live" || match.status === "scheduled" || match.status === "postponed"))
-    ) ??
-    sportStages.find((stage) => stage.isActive) ??
-    sportStages[0] ??
-    null
-  );
-}
 
 function isTitleFinalRound(round: string) {
   const normalized = round.toLowerCase();
