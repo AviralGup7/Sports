@@ -6,12 +6,26 @@ delete from public.competition_stages;
 delete from public.team_sports;
 
 insert into public.tournaments (id, name, start_date, end_date, venue)
-values ('iasl-2026', 'Inter Association Sports League', '2026-04-02', '2026-04-05', 'Central College Grounds')
+values ('iasl-2026', 'Inter Cultural Assoc Sports League', '2026-04-02', '2026-04-05', 'GYMG')
 on conflict (id) do update
 set name = excluded.name,
     start_date = excluded.start_date,
     end_date = excluded.end_date,
     venue = excluded.venue;
+
+insert into public.tournament_settings (tournament_id, logo_asset_path, contacts_json)
+values (
+  'iasl-2026',
+  '/branding/icasl-logo.png',
+  '[
+    {"id":"moksh-goel","name":"Moksh Goel","phone":"+91-9971019074","role":"Tournament Coordinator"},
+    {"id":"partho-kumar-das","name":"Partho Kumar Das","phone":"+91-7985898426","role":"Operations Coordinator"},
+    {"id":"aarav-saxena","name":"Aarav Saxena","phone":"+91-9818650379","role":"Venue Coordinator"}
+  ]'::jsonb
+)
+on conflict (tournament_id) do update
+set logo_asset_path = excluded.logo_asset_path,
+    contacts_json = excluded.contacts_json;
 
 insert into public.sports (id, name, color, rules_summary, format)
 values

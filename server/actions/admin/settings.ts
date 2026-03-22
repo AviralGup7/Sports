@@ -1,5 +1,6 @@
 import { revalidatePath } from "next/cache";
 
+import type { TournamentContact } from "@/domain";
 import { requireAdminProfile } from "@/server/auth";
 import {
   announcementsSeed,
@@ -12,11 +13,96 @@ import {
   tournamentSeed
 } from "@/server/mock/tournament-snapshot";
 
+import { ActionValidationError, getOptionalString, getRequiredString } from "./form-validation";
 import {
   revalidateAdminShellPaths,
   revalidatePublicTournamentPaths,
   redirectWithMessage
 } from "./shared";
+
+function readTournamentContacts(formData: FormData): TournamentContact[] {
+  const contacts: TournamentContact[] = [];
+
+  for (let index = 0; index < 3; index += 1) {
+    const id = `contact-${index + 1}`;
+    const name = getOptionalString(formData, `contactName_${index}`);
+    const phone = getOptionalString(formData, `contactPhone_${index}`);
+    const role = getOptionalString(formData, `contactRole_${index}`) ?? undefined;
+
+    if (!name && !phone && !role) {
+      continue;
+    }
+
+    if (!name || !phone) {
+      throw new ActionValidationError("Each saved contact needs both a name and a phone number.");
+    }
+
+    contacts.push({
+      id,
+      name,
+      phone,
+      role
+    });
+  }
+
+  if (contacts.length === 0) {
+    throw new ActionValidationError("At least one organizer contact is required.");
+  }
+
+  return contacts;
+}
+
+export async function performUpdateTournamentSettings(formData: FormData) {
+  const { profile, supabase } = await requireAdminProfile();
+
+  if (profile.role !== "super_admin") {
+    redirectWithMessage("/admin/settings", "error", "Only super admins can update tournament settings.");
+  }
+
+  try {
+    const tournamentId = getRequiredString(formData, "tournamentId", "Tournament");
+    const name = getRequiredString(formData, "name", "Tournament name");
+    const venue = getRequiredString(formData, "venue", "Venue");
+    const startDate = getRequiredString(formData, "startDate", "Start date");
+    const endDate = getRequiredString(formData, "endDate", "End date");
+    const logoAssetPath = getRequiredString(formData, "logoAssetPath", "Logo path");
+    const contacts = readTournamentContacts(formData);
+
+    const { error: tournamentError } = await supabase.from("tournaments").upsert({
+      id: tournamentId,
+      name,
+      start_date: startDate,
+      end_date: endDate,
+      venue
+    });
+
+    if (tournamentError) {
+      redirectWithMessage("/admin/settings", "error", tournamentError.message);
+    }
+
+    const { error: settingsError } = await supabase.from("tournament_settings").upsert({
+      tournament_id: tournamentId,
+      logo_asset_path: logoAssetPath,
+      contacts_json: contacts
+    });
+
+    if (settingsError) {
+      redirectWithMessage("/admin/settings", "error", settingsError.message);
+    }
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/settings", "error", error.message);
+    }
+
+    throw error;
+  }
+
+  revalidatePublicTournamentPaths();
+  revalidateAdminShellPaths();
+  revalidatePath("/admin/settings");
+
+  redirectWithMessage("/admin/settings", "success", "Tournament settings updated.");
+}
 
 async function deleteRowsByIds(table: string, idColumn: string, ids: string[], supabase: Awaited<ReturnType<typeof requireAdminProfile>>["supabase"]) {
   if (ids.length === 0) {
@@ -102,6 +188,16 @@ export async function performResetTournamentData(formData: FormData) {
 
     if (tournamentError) {
       throw new Error(tournamentError.message);
+    }
+
+    const { error: tournamentSettingsError } = await supabase.from("tournament_settings").upsert({
+      tournament_id: tournamentSeed.id,
+      logo_asset_path: tournamentSeed.logoAssetPath,
+      contacts_json: tournamentSeed.contacts
+    });
+
+    if (tournamentSettingsError) {
+      throw new Error(tournamentSettingsError.message);
     }
 
     const { error: sportsError } = await supabase.from("sports").upsert(

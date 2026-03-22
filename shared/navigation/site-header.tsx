@@ -56,7 +56,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
       <header className={isAdmin ? "site-header site-header-admin" : "site-header"}>
         <div className="site-header-bar">
           <Link href="/" className="brand" aria-label="Go to tournament home" prefetch>
-            <BrandMark />
+            <BrandMark tournament={chrome.tournament} />
             <span className="brand-copy">
               <strong>{chrome.tournament.name}</strong>
               <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Live tournament portal`}</span>

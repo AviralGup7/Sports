@@ -4,6 +4,7 @@ import { generateCompetitionStructure, type NextSlot } from "@/domain/matches";
 import type { SportSlug } from "@/domain/sports/types";
 import { canManageSport, requireAdminProfile } from "@/server/auth";
 
+import { ActionValidationError, getEnumField, getRequiredString } from "./form-validation";
 import {
   revalidateAdminShellPaths,
   revalidatePublicTournamentPaths,
@@ -180,22 +181,32 @@ export async function performGenerateStructure(formData: FormData) {
 
 export async function performUpsertMatch(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
-  const sportId = String(formData.get("sportId") ?? "") as SportSlug;
+  let sportId = "" as SportSlug;
+
+  try {
+    sportId = getRequiredString(formData, "sportId", "Sport") as SportSlug;
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/matches", "error", error.message);
+    }
+
+    throw error;
+  }
 
   if (!canManageSport(profile, sportId)) {
     redirectWithMessage("/admin/matches", "error", "You cannot edit that sport.");
   }
 
   const existingId = toNullableString(formData.get("id"));
-  const round = String(formData.get("round") ?? "").trim();
-  const day = String(formData.get("day") ?? "").trim();
-  const startTime = String(formData.get("startTime") ?? "").trim();
-  const venue = String(formData.get("venue") ?? "").trim();
+  const round = getRequiredString(formData, "round", "Round");
+  const day = getRequiredString(formData, "day", "Day");
+  const startTime = getRequiredString(formData, "startTime", "Start time");
+  const venue = getRequiredString(formData, "venue", "Venue");
   const teamAId = toNullableString(formData.get("teamAId"));
   const teamBId = toNullableString(formData.get("teamBId"));
   const stageId = toNullableString(formData.get("stageId"));
   const groupId = toNullableString(formData.get("groupId"));
-  const status = String(formData.get("status") ?? "scheduled");
+  const status = getEnumField(formData, "status", ["scheduled", "live", "completed", "postponed", "cancelled"] as const, "Status", "scheduled");
   const roundIndex = toNullableNumber(formData.get("roundIndex")) ?? 1;
   const matchNumber = toNullableNumber(formData.get("matchNumber")) ?? 1;
   const winnerToMatchId = toNullableString(formData.get("winnerToMatchId"));
@@ -205,8 +216,28 @@ export async function performUpsertMatch(formData: FormData) {
   const isBye = formData.get("isBye") === "on";
   const matchId = existingId ?? `${sportId}-${slugify(round)}-${day}-${startTime.replace(":", "")}`;
 
-  if (!round || !day || !startTime || !venue) {
-    redirectWithMessage("/admin/matches", "error", "Round, day, time, and venue are required.");
+  if (teamAId && teamBId && teamAId === teamBId) {
+    redirectWithMessage("/admin/matches", "error", "A match cannot assign the same team to both sides.");
+  }
+
+  if (!isBye && ["live", "completed"].includes(status) && (!teamAId || !teamBId)) {
+    redirectWithMessage("/admin/matches", "error", "Live or completed matches need both teams assigned.");
+  }
+
+  const { data: duplicateMatches, error: duplicateError } = await supabase
+    .from("matches")
+    .select("id")
+    .eq("sport_id", sportId)
+    .eq("day", day)
+    .eq("start_time", startTime)
+    .eq("venue", venue);
+
+  if (duplicateError) {
+    redirectWithMessage("/admin/matches", "error", duplicateError.message);
+  }
+
+  if ((duplicateMatches ?? []).some((match) => match.id !== existingId)) {
+    redirectWithMessage("/admin/matches", "error", "Another fixture already exists for that sport, day, time, and venue.");
   }
 
   const { error } = await supabase.from("matches").upsert({
@@ -247,20 +278,31 @@ export async function performUpsertMatch(formData: FormData) {
 
 export async function performSubmitResult(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
-  const matchId = String(formData.get("matchId") ?? "");
-  const sportId = String(formData.get("sportId") ?? "") as SportSlug;
+  let matchId = "";
+  let sportId = "" as SportSlug;
+
+  try {
+    matchId = getRequiredString(formData, "matchId", "Match");
+    sportId = getRequiredString(formData, "sportId", "Sport") as SportSlug;
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/matches", "error", error.message);
+    }
+
+    throw error;
+  }
 
   if (!canManageSport(profile, sportId)) {
     redirectWithMessage("/admin/matches", "error", "You cannot edit that sport.");
   }
 
-  const status = String(formData.get("status") ?? "scheduled");
+  const status = getEnumField(formData, "status", ["scheduled", "live", "completed", "postponed", "cancelled"] as const, "Status", "scheduled");
   const selectedWinnerTeamId = toNullableString(formData.get("winnerTeamId"));
   const teamAScore = toNullableNumber(formData.get("teamAScore"));
   const teamBScore = toNullableNumber(formData.get("teamBScore"));
   const scoreSummary = toNullableString(formData.get("scoreSummary"));
   const note = toNullableString(formData.get("note"));
-  const decisionType = String(formData.get("decisionType") ?? "normal");
+  const decisionType = getEnumField(formData, "decisionType", ["normal", "walkover", "penalties", "retired"] as const, "Decision type", "normal");
 
   const { data: sourceMatch, error: sourceError } = await supabase
     .from("matches")
@@ -302,6 +344,10 @@ export async function performSubmitResult(formData: FormData) {
     inferredWinner !== baseMatch.team_b_id
   ) {
     redirectWithMessage("/admin/matches", "error", "Winner must be one of the assigned teams.");
+  }
+
+  if (status === "completed" && decisionType === "normal" && teamAScore !== null && teamBScore !== null && teamAScore === teamBScore) {
+    redirectWithMessage("/admin/matches", "error", "Normal results cannot finish level. Use penalties or another decision type.");
   }
 
   const { error: matchError } = await supabase.from("matches").update({ status }).eq("id", matchId);

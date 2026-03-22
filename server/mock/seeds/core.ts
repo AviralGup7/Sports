@@ -5,7 +5,13 @@ export const tournamentSeed: Tournament = {
   name: "Inter Cultural Assoc Sports League",
   startDate: "2026-04-02",
   endDate: "2026-04-05",
-  venue: "GYMG"
+  venue: "GYMG",
+  logoAssetPath: "/branding/icasl-logo.png",
+  contacts: [
+    { id: "moksh-goel", name: "Moksh Goel", phone: "+91-9971019074", role: "Tournament Coordinator" },
+    { id: "partho-kumar-das", name: "Partho Kumar Das", phone: "+91-7985898426", role: "Operations Coordinator" },
+    { id: "aarav-saxena", name: "Aarav Saxena", phone: "+91-9818650379", role: "Venue Coordinator" }
+  ]
 };
 
 export const sportsSeed: Sport[] = [

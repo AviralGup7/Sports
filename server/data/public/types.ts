@@ -5,6 +5,13 @@ import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
 import type { Tournament } from "@/domain/tournament/types";
 
+export type DataState = {
+  source: "supabase" | "fallback";
+  label: string;
+  detail: string;
+  generatedAt: string;
+};
+
 export type TournamentStats = {
   sports: number;
   teams: number;
@@ -175,10 +182,12 @@ export type GlobalChromeData = {
   sports: Sport[];
   tickerItems: TickerItem[];
   tickerGroups: TickerGroup[];
+  dataState: DataState;
 };
 
 export type HomePageData = {
   generatedAt: string;
+  dataState: DataState;
   tournament: Tournament;
   sports: Sport[];
   stats: TournamentStats;

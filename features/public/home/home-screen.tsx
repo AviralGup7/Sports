@@ -1,15 +1,15 @@
 import { CSSProperties } from "react";
 import Link from "next/link";
-import Image from "next/image";
 
 import { getTeamAccent } from "@/lib/team-style";
-import leagueLogo from "@/logo/v2.png";
 import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { BracketPreviewCard, CountdownChip, DayNoteBanner, DisclosurePanel, FixtureStrip, FreshnessStamp, MetricTile, NewsBulletin, PodiumCard } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
+import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
+import { HomeContactCard } from "@/features/public/home/components/home-contact-card";
 
 type HomeScreenProps = {
   data: HomePageData;
@@ -27,29 +27,10 @@ export function HomeScreen({ data }: HomeScreenProps) {
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow="Inter Cultural Assoc Sports League"
-            kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | GYMG`}
+            kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
-            badge={
-              <div className="hero-brand-lockup">
-                <div className="hero-brand-image-wrap">
-                  <Image
-                    src={leagueLogo}
-                    alt="Inter Cultural Assoc Sports League logo"
-                    width={220}
-                    height={220}
-                    className="hero-brand-image"
-                    priority
-                    unoptimized
-                    sizes="(max-width: 480px) 100px, (max-width: 860px) 116px, 144px"
-                  />
-                </div>
-                <div className="hero-brand-copy">
-                  <span className="hero-brand-label">Official Crest</span>
-                  <strong>Inter Cultural Assoc Sports League</strong>
-                </div>
-              </div>
-            }
+            badge={<HomeBrandBadge tournament={tournament} />}
             tone={highlightMatch?.urgency === "live" ? "crimson" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
             intensity="premium"
             variant="home-hero"
@@ -166,28 +147,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
               />
             </div>
 
-            <section className="home-contact-card" aria-label="Organising committee contacts">
-              <div className="section-heading">
-                <div>
-                  <p className="eyebrow">Contacts</p>
-                  <h2>Organising committee</h2>
-                </div>
-              </div>
-              <div className="home-contact-grid">
-                <a href="tel:+919971019074" className="home-contact-person">
-                  <span className="home-contact-name">Moksh Goel</span>
-                  <strong>+91-9971019074</strong>
-                </a>
-                <a href="tel:+917985898426" className="home-contact-person">
-                  <span className="home-contact-name">Partho Kumar Das</span>
-                  <strong>+91-7985898426</strong>
-                </a>
-                <a href="tel:+919818650379" className="home-contact-person">
-                  <span className="home-contact-name">Aarav Saxena</span>
-                  <strong>+91-9818650379</strong>
-                </a>
-              </div>
-            </section>
+            <HomeContactCard tournament={tournament} />
           </section>
         </div>
 

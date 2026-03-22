@@ -25,7 +25,7 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
         <section className="site-footer-card">
           <p className="eyebrow">Event</p>
           <div className="footer-brand-lockup">
-            <BrandMark />
+            <BrandMark tournament={chrome.tournament} />
           </div>
           <h2>{chrome.tournament.name}</h2>
           <p>{formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate)} at {chrome.tournament.venue}</p>
@@ -35,6 +35,13 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
           <p className="eyebrow">Organiser</p>
           <h2>Inter Cultural Assoc Sports League Committee</h2>
           <p>Official public portal for fixtures, standings, notices, and match updates during the tournament.</p>
+          <div className="stack-sm">
+            {chrome.tournament.contacts.map((contact) => (
+              <p key={contact.id}>
+                {contact.name}{contact.role ? `, ${contact.role}` : ""}
+              </p>
+            ))}
+          </div>
         </section>
 
         <section className="site-footer-card">
@@ -42,15 +49,11 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
           <h2>Need help?</h2>
           <p>Check the latest notices first, then reach the organising team for event-day queries and coordination support.</p>
           <p>Venue desk: {chrome.tournament.venue}, main entry control booth</p>
-          <p>
-            Moksh Goel: <a href="tel:+919971019074" className="inline-link">+91-9971019074</a>
-          </p>
-          <p>
-            Partho Kumar Das: <a href="tel:+917985898426" className="inline-link">+91-7985898426</a>
-          </p>
-          <p>
-            Aarav Saxena: <a href="tel:+919818650379" className="inline-link">+91-9818650379</a>
-          </p>
+          {chrome.tournament.contacts.map((contact) => (
+            <p key={contact.id}>
+              {contact.name}: <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="inline-link">{contact.phone}</a>
+            </p>
+          ))}
           <div className="site-footer-links">
             <Link href="/announcements" className="inline-link">
               Notices & Alerts

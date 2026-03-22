@@ -51,6 +51,7 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=your_publishable_key
 3. Run the checked-in SQL in Supabase, in this order:
 
 - [`001_v4_schema.sql`](/D:/sports%20plan/supabase/migrations/001_v4_schema.sql)
+- [`002_tournament_settings.sql`](/D:/sports%20plan/supabase/migrations/002_tournament_settings.sql)
 - [`001_demo_tournament.sql`](/D:/sports%20plan/supabase/seeds/001_demo_tournament.sql)
 
 4. Start development:

@@ -8,6 +8,8 @@ test("renders the public broadcast shell", async ({ page }) => {
   await expect(page.getByRole("banner")).toBeVisible();
   await expect(page.getByRole("link", { name: "View Schedule" }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /champions podium/i })).toBeVisible();
+  await expect(page.getByText("Inter Cultural Assoc Sports League").first()).toBeVisible();
+  await expect(page.getByText("GYMG").first()).toBeVisible();
 });
 
 test("renders schedule filters and grouped fixtures", async ({ page }) => {

@@ -1,11 +1,15 @@
-import Image from "next/image";
+import type { Tournament } from "@/domain";
 
-import leagueLogo from "@/logo/v2.png";
+import { LogoImage } from "./logo-image";
 
-export function BrandMark() {
+type BrandMarkProps = {
+  tournament: Tournament;
+};
+
+export function BrandMark({ tournament }: BrandMarkProps) {
   return (
-    <span className="brand-mark" aria-hidden="true">
-      <Image src={leagueLogo} alt="" width={72} height={72} className="brand-mark-svg" unoptimized sizes="72px" />
+    <span className="brand-mark">
+      <LogoImage tournament={tournament} size={72} className="brand-mark-svg" alt="" />
       <span className="brand-mark-word">IASL</span>
     </span>
   );

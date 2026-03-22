@@ -8,6 +8,11 @@ export type SportRow = { id: SportSlug; name: string; color: string; rules_summa
 export type TeamRow = { id: string; name: string; association: string; seed: number; is_active: boolean };
 export type TeamSportRow = { team_id: string; sport_id: SportSlug };
 export type TournamentRow = { id: string; name: string; start_date: string; end_date: string; venue: string };
+export type TournamentSettingsRow = {
+  tournament_id: string;
+  logo_asset_path: string | null;
+  contacts_json: unknown;
+};
 export type StageRow = {
   id: string;
   sport_id: SportSlug;

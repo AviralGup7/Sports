@@ -3,10 +3,12 @@ import type { Profile } from "@/domain/admin/types";
 import type { CompetitionGroup, CompetitionStage, Match } from "@/domain/matches/types";
 import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
+import type { Tournament } from "@/domain/tournament/types";
 import type {
   AthleticsEventBoard,
   BracketPreviewCard,
   BracketTreeData,
+  DataState,
   GroupStandingsCard,
   SportProgressCard,
   StageSummary,
@@ -115,6 +117,8 @@ export type AdminAnnouncementsData = {
 
 export type AdminSettingsData = {
   profile: Profile;
+  tournament: Tournament;
+  dataState: DataState;
   envReady: boolean;
   usingFallbackData: boolean;
   exportedAt: string;

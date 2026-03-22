@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import type { SportSlug } from "@/domain/sports/types";
 import { requireAdminProfile } from "@/server/auth";
 
+import { ActionValidationError, getNumberField, getOptionalString, getRequiredString, getStringList } from "./form-validation";
 import {
   revalidateAdminShellPaths,
   revalidatePublicTournamentPaths,
@@ -13,15 +14,30 @@ import {
 
 export async function performUpsertTeam(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
-  const name = String(formData.get("name") ?? "").trim();
-  const association = String(formData.get("association") ?? "").trim();
-  const seed = Number(formData.get("seed") ?? 0);
-  const sportIds = formData.getAll("sportIds").map((value) => String(value) as SportSlug);
-  const existingId = toNullableString(formData.get("id"));
+  let name = "";
+  let association = "";
+  let seed = 0;
+  let sportIds: SportSlug[] = [];
+  let existingId: string | null = null;
+
+  try {
+    name = getRequiredString(formData, "name", "Team name");
+    association = getRequiredString(formData, "association", "Association");
+    seed = getNumberField(formData, "seed", "Seed", { min: 1 }) ?? 1;
+    sportIds = getStringList(formData, "sportIds").map((value) => value as SportSlug);
+    existingId = getOptionalString(formData, "id");
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/teams", "error", error.message);
+    }
+
+    throw error;
+  }
+
   const teamId = existingId ?? slugify(name);
 
-  if (!name || !association || !seed || sportIds.length === 0) {
-    redirectWithMessage("/admin/teams", "error", "Team name, association, seed, and at least one sport are required.");
+  if (sportIds.length === 0) {
+    redirectWithMessage("/admin/teams", "error", "At least one sport is required.");
   }
 
   if (profile.role !== "super_admin" && sportIds.some((sportId) => !profile.sportIds.includes(sportId))) {
@@ -66,7 +82,17 @@ export async function performUpsertTeam(formData: FormData) {
 
 export async function performArchiveTeam(formData: FormData) {
   const { supabase } = await requireAdminProfile();
-  const id = String(formData.get("id") ?? "");
+  let id = "";
+
+  try {
+    id = getRequiredString(formData, "id", "Team id");
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/teams", "error", error.message);
+    }
+
+    throw error;
+  }
 
   const { error } = await supabase.from("teams").update({ is_active: false }).eq("id", id);
 

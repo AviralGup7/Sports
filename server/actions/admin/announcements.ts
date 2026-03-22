@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { requireAdminProfile } from "@/server/auth";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
+import { ActionValidationError, getBooleanField, getEnumField, getOptionalString, getRequiredString } from "./form-validation";
 import {
   revalidateAdminShellPaths,
   revalidatePublicTournamentPaths,
@@ -14,18 +15,29 @@ import {
 export async function performUpsertAnnouncement(formData: FormData) {
   await requireAdminProfile();
   const supabase = await createSupabaseServerClient();
+  let existingId: string | null = null;
+  let title = "";
+  let body = "";
+  let visibility: "public" | "admin" = "public";
+  let pinned = false;
+  let isPublished = false;
 
-  const existingId = toNullableString(formData.get("id"));
-  const title = String(formData.get("title") ?? "").trim();
-  const body = String(formData.get("body") ?? "").trim();
-  const visibility = String(formData.get("visibility") ?? "public");
-  const pinned = formData.get("pinned") === "on";
-  const isPublished = formData.get("isPublished") === "on";
-  const announcementId = existingId ?? `${slugify(title)}-${Date.now()}`;
+  try {
+    existingId = getOptionalString(formData, "id");
+    title = getRequiredString(formData, "title", "Announcement title");
+    body = getRequiredString(formData, "body", "Announcement body");
+    visibility = getEnumField(formData, "visibility", ["public", "admin"] as const, "Announcement visibility", "public");
+    pinned = getBooleanField(formData, "pinned");
+    isPublished = getBooleanField(formData, "isPublished");
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/announcements", "error", error.message);
+    }
 
-  if (!title || !body) {
-    redirectWithMessage("/admin/announcements", "error", "Announcement title and body are required.");
+    throw error;
   }
+
+  const announcementId = existingId ?? `${slugify(title)}-${Date.now()}`;
 
   const { error } = await supabase.from("announcements").upsert({
     id: announcementId,

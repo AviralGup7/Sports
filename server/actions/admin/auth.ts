@@ -4,11 +4,24 @@ import { redirect } from "next/navigation";
 import { getSafeSupabaseUser } from "@/server/supabase/auth-user";
 import { createSupabaseServerClient } from "@/server/supabase/server";
 
+import { ActionValidationError, getRequiredString } from "./form-validation";
 import { redirectWithMessage } from "./shared";
 
 export async function performAdminLogin(formData: FormData) {
-  const email = String(formData.get("email") ?? "").trim();
-  const password = String(formData.get("password") ?? "");
+  let email = "";
+  let password = "";
+
+  try {
+    email = getRequiredString(formData, "email", "Email");
+    password = getRequiredString(formData, "password", "Password");
+  } catch (error) {
+    if (error instanceof ActionValidationError) {
+      redirectWithMessage("/admin/login", "error", error.message);
+    }
+
+    throw error;
+  }
+
   const supabase = await createSupabaseServerClient();
 
   const { error } = await supabase.auth.signInWithPassword({

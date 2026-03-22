@@ -2,7 +2,7 @@ import type { Announcement } from "@/domain/announcements/types";
 import type { CompetitionGroup, CompetitionStage, Match, MatchResult } from "@/domain/matches/types";
 import type { Sport, SportSlug } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
-import type { Tournament } from "@/domain/tournament/types";
+import type { Tournament, TournamentContact } from "@/domain/tournament/types";
 import { sportOrder } from "@/server/mock/tournament-snapshot";
 import type {
   AnnouncementRow,
@@ -14,16 +14,52 @@ import type {
   StageRow,
   TeamRow,
   TeamSportRow,
+  TournamentSettingsRow,
   TournamentRow
 } from "@/server/data/snapshot/types";
 
-export function mapTournamentRow(row: TournamentRow): Tournament {
+function mapTournamentContacts(value: unknown, fallbackContacts: TournamentContact[]): TournamentContact[] {
+  if (!Array.isArray(value)) {
+    return fallbackContacts;
+  }
+
+  const contacts = value
+    .map((entry, index): TournamentContact | null => {
+      if (!entry || typeof entry !== "object") {
+        return null;
+      }
+
+      const candidate = entry as Record<string, unknown>;
+      const name = typeof candidate.name === "string" ? candidate.name.trim() : "";
+      const phone = typeof candidate.phone === "string" ? candidate.phone.trim() : "";
+      const role = typeof candidate.role === "string" && candidate.role.trim().length > 0 ? candidate.role.trim() : undefined;
+      const id = typeof candidate.id === "string" && candidate.id.trim().length > 0 ? candidate.id.trim() : `contact-${index + 1}`;
+
+      if (!name || !phone) {
+        return null;
+      }
+
+      return {
+        id,
+        name,
+        phone,
+        role
+      };
+    })
+    .filter((contact): contact is TournamentContact => contact !== null);
+
+  return contacts.length > 0 ? contacts : fallbackContacts;
+}
+
+export function mapTournamentRow(row: TournamentRow, settings: TournamentSettingsRow | null, fallbackTournament: Tournament): Tournament {
   return {
     id: row.id,
     name: row.name,
     startDate: row.start_date,
     endDate: row.end_date,
-    venue: row.venue
+    venue: row.venue,
+    logoAssetPath: typeof settings?.logo_asset_path === "string" && settings.logo_asset_path.trim().length > 0 ? settings.logo_asset_path : fallbackTournament.logoAssetPath,
+    contacts: mapTournamentContacts(settings?.contacts_json, fallbackTournament.contacts)
   };
 }
 

@@ -8,6 +8,7 @@ import {
   performRunAdminAssistant,
   performResetTournamentData,
   performSubmitResult,
+  performUpdateTournamentSettings,
   performUpsertAnnouncement,
   performUpsertMatch,
   performUpsertTeam
@@ -47,6 +48,10 @@ export async function upsertAnnouncementAction(formData: FormData) {
 
 export async function resetTournamentDataAction(formData: FormData) {
   return performResetTournamentData(formData);
+}
+
+export async function updateTournamentSettingsAction(formData: FormData) {
+  return performUpdateTournamentSettings(formData);
 }
 
 export async function runAdminAssistantAction(formData: FormData) {

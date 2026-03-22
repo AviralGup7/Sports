@@ -74,6 +74,18 @@ function getGeneratedAt() {
   return new Date().toISOString();
 }
 
+function buildDataState(snapshot: RepositorySnapshot, generatedAt: string) {
+  return {
+    source: snapshot.source,
+    label: snapshot.source === "supabase" ? "Live tournament data" : "Fallback tournament data",
+    detail:
+      snapshot.source === "supabase"
+        ? "The app is reading from Supabase."
+        : "Supabase is unavailable or incomplete, so seeded fallback data is rendering.",
+    generatedAt
+  };
+}
+
 function toMatchDateTime(day: string, time: string) {
   const [hours, minutes] = time.split(":");
   const date = new Date(`${day}T00:00:00`);
@@ -843,12 +855,14 @@ const getGlobalChromeDataCached = cache(
   async (): Promise<GlobalChromeData> => {
     const snapshot = await loadSnapshot();
     const tickerItems = buildTickerItems(snapshot);
+    const generatedAt = getGeneratedAt();
 
     return {
       tournament: snapshot.tournament,
       sports: snapshot.sports,
       tickerItems,
-      tickerGroups: buildTickerGroups(tickerItems)
+      tickerGroups: buildTickerGroups(tickerItems),
+      dataState: buildDataState(snapshot, generatedAt)
     };
   }
 );
@@ -868,6 +882,7 @@ export async function getHomePageData(): Promise<HomePageData> {
 
   return {
     generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     tournament: snapshot.tournament,
     sports: snapshot.sports,
     stats,
@@ -1179,11 +1194,14 @@ export async function getAdminAnnouncementsData(profile: Profile): Promise<Admin
 
 export async function getAdminSettingsData(profile: Profile): Promise<AdminSettingsData> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   return {
     profile,
+    tournament: snapshot.tournament,
+    dataState: buildDataState(snapshot, generatedAt),
     envReady: hasSupabaseEnv(),
     usingFallbackData: snapshot.source === "fallback",
-    exportedAt: new Date().toISOString()
+    exportedAt: generatedAt
   };
 }
 

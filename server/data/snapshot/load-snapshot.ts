@@ -33,6 +33,7 @@ import type {
   StageRow,
   TeamRow,
   TeamSportRow,
+  TournamentSettingsRow,
   TournamentRow
 } from "@/server/data/snapshot/types";
 
@@ -62,6 +63,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
     const [
       preferredTournamentRes,
       fallbackTournamentRes,
+      tournamentSettingsRes,
       sportsRes,
       stagesRes,
       groupsRes,
@@ -73,6 +75,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
     ] = await Promise.all([
       supabase.from("tournaments").select("id, name, start_date, end_date, venue").eq("id", tournamentSeed.id).maybeSingle<TournamentRow>(),
       supabase.from("tournaments").select("id, name, start_date, end_date, venue").order("start_date", { ascending: true }).limit(1).returns<TournamentRow[]>(),
+      supabase.from("tournament_settings").select("tournament_id, logo_asset_path, contacts_json").eq("tournament_id", tournamentSeed.id).maybeSingle<TournamentSettingsRow>(),
       supabase.from("sports").select("id, name, color, rules_summary, format").returns<SportRow[]>(),
       supabase.from("competition_stages").select("id, sport_id, type, label, order_index, advances_count, is_active").returns<StageRow[]>(),
       supabase.from("competition_groups").select("id, stage_id, sport_id, code, order_index").returns<GroupRow[]>(),
@@ -96,6 +99,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
     if (
       preferredTournamentRes.error ||
       fallbackTournamentRes.error ||
+      tournamentSettingsRes.error ||
       sportsRes.error ||
       stagesRes.error ||
       groupsRes.error ||
@@ -110,6 +114,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
         [
           preferredTournamentRes.error?.message,
           fallbackTournamentRes.error?.message,
+          tournamentSettingsRes.error?.message,
           sportsRes.error?.message,
           stagesRes.error?.message,
           groupsRes.error?.message,
@@ -126,7 +131,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
 
     return hydrateSnapshot({
       source: "supabase",
-      tournament: mapTournamentRow(tournamentRow),
+      tournament: mapTournamentRow(tournamentRow, tournamentSettingsRes.data ?? null, tournamentSeed),
       sports: mapSportRows(sportsRes.data),
       stages: mapStageRows(stagesRes.data),
       groups: mapGroupRows(groupsRes.data),

@@ -1,4 +1,4 @@
-import { resetTournamentDataAction } from "@/app/admin/actions";
+import { resetTournamentDataAction, updateTournamentSettingsAction } from "@/app/admin/actions";
 import Link from "next/link";
 
 import type { AdminSettingsData } from "@/server/data/admin/types";
@@ -43,13 +43,12 @@ export function SettingsScreen({ data, message, tone }: SettingsScreenProps) {
                 : "Supabase environment variables are missing. Public fallback data may still render, but admin persistence will not work."}
             </div>
             <div className={data.usingFallbackData ? "status-banner status-banner-alert" : "status-banner status-banner-success"}>
-              {data.usingFallbackData
-                ? "Live data is unavailable right now, so the app is rendering fallback tournament data."
-                : "The app is reading live tournament data from Supabase."}
+              {data.dataState.label}: {data.dataState.detail}
             </div>
             <div className="backup-status-card">
-              <p className="muted">Last export marker</p>
-              <strong>{data.exportedAt}</strong>
+              <p className="muted">Current tournament</p>
+              <strong>{data.tournament.name}</strong>
+              <p className="muted">Venue: {data.tournament.venue}</p>
             </div>
           </div>
         </ControlPanel>
@@ -66,6 +65,73 @@ export function SettingsScreen({ data, message, tone }: SettingsScreenProps) {
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.1}>
+        <ControlPanel eyebrow="Tournament" title="Branding and metadata" description="Keep public and admin surfaces in sync by editing tournament name, venue, dates, logo path, and organizer contacts here.">
+          {data.profile.role === "super_admin" ? (
+            <form action={updateTournamentSettingsAction} className="stack-lg">
+              <input type="hidden" name="tournamentId" value={data.tournament.id} />
+              <div className="form-grid">
+                <label className="field">
+                  <span>Tournament name</span>
+                  <input name="name" defaultValue={data.tournament.name} required />
+                </label>
+                <label className="field">
+                  <span>Venue</span>
+                  <input name="venue" defaultValue={data.tournament.venue} required />
+                </label>
+                <label className="field">
+                  <span>Start date</span>
+                  <input type="date" name="startDate" defaultValue={data.tournament.startDate} required />
+                </label>
+                <label className="field">
+                  <span>End date</span>
+                  <input type="date" name="endDate" defaultValue={data.tournament.endDate} required />
+                </label>
+              </div>
+
+              <label className="field">
+                <span>Public logo path</span>
+                <input name="logoAssetPath" defaultValue={data.tournament.logoAssetPath} required />
+              </label>
+
+              <div className="stack-md">
+                {Array.from({ length: 3 }).map((_, index) => {
+                  const contact = data.tournament.contacts[index];
+                  return (
+                    <div key={`contact-${index}`} className="form-grid">
+                      <label className="field">
+                        <span>Contact name</span>
+                        <input name={`contactName_${index}`} defaultValue={contact?.name ?? ""} />
+                      </label>
+                      <label className="field">
+                        <span>Phone</span>
+                        <input name={`contactPhone_${index}`} defaultValue={contact?.phone ?? ""} />
+                      </label>
+                      <label className="field">
+                        <span>Role</span>
+                        <input name={`contactRole_${index}`} defaultValue={contact?.role ?? ""} />
+                      </label>
+                    </div>
+                  );
+                })}
+              </div>
+
+              <div className="status-banner status-banner-info">
+                Use a stable public asset path such as `/branding/icasl-logo.png` so the same logo can be reused across the app with long-lived caching.
+              </div>
+
+              <div className="form-actions">
+                <SubmitButton className="button" pendingLabel="Saving tournament settings...">
+                  Save tournament settings
+                </SubmitButton>
+              </div>
+            </form>
+          ) : (
+            <div className="status-banner status-banner-info">
+              Tournament metadata edits are restricted to super admins.
+            </div>
+          )}
+        </ControlPanel>
+
         <ControlPanel eyebrow="Operator Guide" title="How to use the control room" description="Use this lane to keep operations safe during the event and between demos.">
           <div className="operator-guide-panel">
             <div className="operator-guide-item">
