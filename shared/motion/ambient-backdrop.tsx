@@ -1,9 +1,14 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { usePathname } from "next/navigation";
 
-import { CyberArenaScene } from "@/shared/motion/cyber-arena-scene";
 import { useUICapability } from "@/shared/motion/ui-capability";
+
+const CyberArenaScene = dynamic(() => import("@/shared/motion/cyber-arena-scene").then((module) => module.CyberArenaScene), {
+  ssr: false,
+  loading: () => null
+});
 
 const scenicRouteMatchers = [/^\/sports\/[^/]+$/];
 

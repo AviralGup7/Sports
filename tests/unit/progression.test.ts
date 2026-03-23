@@ -24,12 +24,11 @@ describe("progression engine", () => {
         result: resultsSeed.find((result) => result.matchId === match.id) ?? null
       }));
     const cards = buildStandingsRows(cricketTeams, cricketMatches, competitionGroupsSeed, "cricket", competitionStagesSeed);
-    const groupA = cards.find((card) => card.group.id === "cricket-group-a");
+    const summary = cards[0];
 
-    expect(groupA?.rows[0].teamId).toBe("andhra-samithi");
-    expect(groupA?.rows[0].qualified).toBe(true);
-    expect(groupA?.rows[1].teamId).toBe("gurjari");
-    expect(groupA?.rows[1].qualified).toBe(true);
+    expect(summary?.label).toBe("Knockout Summary");
+    expect(summary?.rows[0].teamId).toBe("andhra-samithi");
+    expect(summary?.rows[1].teamId).toBe("gurjari");
   });
 
   it("builds winner and loser progression edges for bracket trees", () => {

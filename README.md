@@ -27,11 +27,11 @@ See [`ARCHITECTURE.md`](/D:/sports%20plan/ARCHITECTURE.md) for the boundary rule
 
 ## Match Engine
 
-- Team sports use stage-aware competition data with `competition_stages` and `competition_groups`.
+- Team sports use stage-aware competition data with `competition_stages` and optional `competition_groups`.
 - Matches support winner and loser routing through `winner_to_match_id`, `winner_to_slot`, `loser_to_match_id`, and `loser_to_slot`.
-- Public sport pages expose standings, bracket trees, fixtures, and lineage-aware match views.
+- Public sport pages expose standings summaries, bracket trees, fixtures, and lineage-aware match views.
 - Admin match operations are split into `Builder`, `Live Desk`, and `Bracket Manager` modes.
-- Athletics remains on a separate results-card workflow instead of the winner-tree engine.
+- The public app is currently modeled around knockout-first sport coverage, with local seeded fallback data available when Supabase is incomplete or unavailable.
 
 ## Local Setup
 
@@ -81,6 +81,8 @@ End-to-end runs now use an isolated `.next-e2e` build on port `3100`, so they do
 
 Run `npm run clean` before a fresh build or debugging pass if local logs, screenshots, Playwright output, or Next build folders have piled up.
 
+When searching or reviewing the repo, treat `.next`, `.next-e2e`, `coverage`, and `test-results` as generated output rather than source.
+
 To exercise authenticated admin flows in Playwright, set:
 
 ```bash
@@ -93,3 +95,4 @@ E2E_ADMIN_PASSWORD=your_password
 - Add `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in Vercel.
 - Keep database passwords and service-role credentials out of the repo.
 - Run the V4 migration and seed before expecting hosted public/admin boards to use live staged data.
+- If Supabase is unavailable or partially migrated, the public experience falls back to seeded tournament data instead of hard-failing.

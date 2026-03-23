@@ -12,7 +12,6 @@ import {
   ChampionSpotlight,
   DayNote,
   GlobalChromeData,
-  GroupStandingsCard,
   HeroSignal,
   HighlightMatch,
   MatchPageData,
@@ -362,10 +361,6 @@ function buildSportProgressCards(snapshot: RepositorySnapshot, sportIds?: SportS
 }
 
 function buildBracketPreviewCard(snapshot: RepositorySnapshot, sport: Sport): BracketPreviewCard | null {
-  if (sport.id === "athletics") {
-    return null;
-  }
-
   const sportMatches = getMatchesForSport(snapshot, sport.id);
   const bracket = buildBracketTree(sportMatches, getStagesForSport(snapshot, sport.id));
 
@@ -473,27 +468,27 @@ function buildTeamStandings(snapshot: RepositorySnapshot, team: Team): TeamStand
       continue;
     }
 
-    const rows = buildStandingsRows(
+    const cards = buildStandingsRows(
       snapshot.teams.filter((candidate) => candidate.isActive && candidate.sportIds.includes(sportId)),
       getMatchesForSport(snapshot, sportId),
       getGroupsForSport(snapshot, sportId),
       sportId,
       getStagesForSport(snapshot, sportId)
     );
-    const cards = rows
+    const filteredCards = cards
       .map((card) => ({
         ...card,
         rows: card.rows.filter((row) => row.teamId === team.id)
       }))
       .filter((card) => card.rows.length > 0);
 
-    if (cards.length === 0) {
+    if (filteredCards.length === 0) {
       continue;
     }
 
     snippets.push({
       sport,
-      cards
+      cards: filteredCards
     });
   }
 
@@ -816,7 +811,7 @@ export async function getHomePageData(): Promise<HomePageData> {
 export async function getSchedulePageData(
   day?: string,
   sportId?: SportSlug,
-  stageId?: string,
+  stageIdOrStatus?: string,
   groupId?: string,
   status?: string
 ): Promise<SchedulePageData> {
@@ -824,15 +819,14 @@ export async function getSchedulePageData(
   const generatedAt = getGeneratedAt();
   const days = Array.from(new Set(snapshot.matches.map((match) => match.day))).sort();
   const selectedDay = day && days.includes(day) ? day : days[0];
-  const stages = sportId ? getStagesForSport(snapshot, sportId) : snapshot.stages;
-  const groups = sportId ? getGroupsForSport(snapshot, sportId) : snapshot.groups;
+  const selectedStatus =
+    status ??
+    (stageIdOrStatus && ["scheduled", "live", "completed", "postponed", "cancelled"].includes(stageIdOrStatus) ? stageIdOrStatus : undefined);
   const fixtures = snapshot.matches.filter(
     (match) =>
       match.day === selectedDay &&
       (!sportId || match.sportId === sportId) &&
-      (!stageId || match.stageId === stageId) &&
-      (!groupId || match.groupId === groupId) &&
-      (!status || match.status === status)
+      (!selectedStatus || match.status === selectedStatus)
   );
 
   return {
@@ -840,12 +834,8 @@ export async function getSchedulePageData(
     days,
     selectedDay,
     selectedSport: sportId,
-    selectedStage: stageId,
-    selectedGroup: groupId,
-    selectedStatus: status,
+    selectedStatus,
     sports: snapshot.sports,
-    stages,
-    groups,
     dayNote: buildDayNote(snapshot, selectedDay),
     fixtures,
     scheduleGroups: buildScheduleGroups(fixtures),
@@ -880,12 +870,10 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
     teams,
     matches,
     standings,
-    bracket: sportId === "athletics" ? null : buildBracketTree(matches, stages),
+    bracket: buildBracketTree(matches, stages),
     sportProgressCard: buildSportProgressCards(snapshot, [sportId])[0],
     bracketPreview: buildBracketPreviewCard(snapshot, sport),
-    overviewMatches: matches.slice(0, 6),
-    athleticsMatches: sportId === "athletics" ? matches : [],
-    athleticsBoards: sportId === "athletics" ? buildAthleticsBoards(snapshot) : []
+    overviewMatches: matches.slice(0, 6)
   };
 }
 

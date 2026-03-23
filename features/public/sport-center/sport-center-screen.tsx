@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
-import { AthleticsEventBoard, BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
+import { BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
@@ -37,7 +37,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             title={`${data.sport.name} Centre`}
             description={data.sport.rulesSummary}
             accent={data.sport.color}
-            tone={data.sport.id === "athletics" ? "crimson" : "cyan"}
+            tone="cyan"
             intensity="premium"
             variant="sport-masthead"
             aside={
@@ -46,11 +46,9 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
                 <h2>{liveCount > 0 ? "Live Now" : activeStageLabel}</h2>
                 <strong>{data.teams.length} associations competing</strong>
                 <p>
-                  {data.sport.id === "athletics"
-                    ? "Athletics uses event result cards rather than a knockout bracket."
-                    : liveCount > 0
-                      ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
-                      : "Use the summary below to check standings, fixtures, and the current title picture."}
+                  {liveCount > 0
+                    ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
+                    : "Use the summary below to check standings, fixtures, and the current title picture."}
                 </p>
                 <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
@@ -185,15 +183,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           {data.standings.length > 0 ? (
             <StandingsTable cards={data.standings} />
           ) : (
-            <EmptyState
-              eyebrow="Standings"
-              title={data.sport.id === "athletics" ? "Athletics does not use group standings" : "No standings yet"}
-              description={
-                data.sport.id === "athletics"
-                  ? "Athletics results are shown as event cards rather than a league table."
-                  : "Standings will appear once enough results are recorded in this sport."
-              }
-            />
+            <EmptyState eyebrow="Standings" title="No standings yet" description="Standings will appear once enough results are recorded in this sport." />
           )}
         </MotionIn>
       ) : null}
@@ -209,15 +199,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           {data.bracket ? (
             <BracketTree bracket={data.bracket} />
           ) : (
-            <EmptyState
-              eyebrow="Bracket"
-              title={data.sport.id === "athletics" ? "Athletics has no bracket" : "Bracket will appear when knockout rounds begin"}
-              description={
-                data.sport.id === "athletics"
-                  ? "Use fixtures and event cards to follow athletics."
-                  : "As knockout rounds are seeded, the bracket view will fill in here."
-              }
-            />
+            <EmptyState eyebrow="Bracket" title="Bracket will appear when knockout rounds begin" description="As knockout rounds are seeded, the bracket view will fill in here." />
           )}
         </MotionIn>
       ) : null}
@@ -227,27 +209,19 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <div className="section-heading">
             <div>
               <p className="eyebrow">Fixtures</p>
-              <h2>{data.sport.id === "athletics" ? "Event cards" : "Every match in this sport"}</h2>
+              <h2>Every match in this sport</h2>
             </div>
             <Link href="/schedule" className="inline-link">
               Back to schedule
             </Link>
           </div>
-          {data.sport.id === "athletics" && data.athleticsBoards.length > 0 ? (
-            <div className="stack-lg">
-              {data.athleticsBoards.map((board) => (
-                <AthleticsEventBoard key={board.id} board={board} />
-              ))}
-            </div>
-          ) : (
-            <div className="fixture-stack">
-              {data.matches.length > 0 ? (
-                data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
-              ) : (
-                <EmptyState compact eyebrow="Fixtures" title="No fixtures yet" description="Fixtures for this sport will appear here once the schedule is published." />
-              )}
-            </div>
-          )}
+          <div className="fixture-stack">
+            {data.matches.length > 0 ? (
+              data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
+            ) : (
+              <EmptyState compact eyebrow="Fixtures" title="No fixtures yet" description="Fixtures for this sport will appear here once the schedule is published." />
+            )}
+          </div>
         </MotionIn>
       ) : null}
     </div>

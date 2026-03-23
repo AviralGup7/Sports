@@ -34,7 +34,6 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
             <p className="eyebrow">
               {showSport ? `${sportLabel} | ` : ""}
               {match.stage?.label ?? match.round}
-              {match.group ? ` | ${match.group.code}` : ""}
             </p>
             <h3 className="fixture-teamline">
               <span className="fixture-team-name" style={{ "--team-accent": teamAAccent } as CSSProperties}>

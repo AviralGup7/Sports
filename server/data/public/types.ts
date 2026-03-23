@@ -159,10 +159,13 @@ export type BracketTreeData = {
   }>;
 };
 
-export type GroupStandingsCard = {
-  group: CompetitionGroup;
+export type StandingsCard = {
+  id: string;
+  label: string;
   rows: StandingsRow[];
 };
+
+export type GroupStandingsCard = StandingsCard;
 
 export type AthleticsEventBoard = {
   id: string;
@@ -215,12 +218,8 @@ export type SchedulePageData = {
   days: string[];
   selectedDay: string;
   selectedSport?: string;
-  selectedStage?: string;
-  selectedGroup?: string;
   selectedStatus?: string;
   sports: Sport[];
-  stages: CompetitionStage[];
-  groups: CompetitionGroup[];
   dayNote: DayNote;
   fixtures: Match[];
   scheduleGroups: ScheduleGroup[];
@@ -235,13 +234,11 @@ export type SportPageData = {
   stageSummaries: StageSummary[];
   teams: Team[];
   matches: Match[];
-  standings: GroupStandingsCard[];
+  standings: StandingsCard[];
   bracket: BracketTreeData | null;
   sportProgressCard: SportProgressCard;
   bracketPreview: BracketPreviewCard | null;
   overviewMatches: Match[];
-  athleticsMatches: Match[];
-  athleticsBoards: AthleticsEventBoard[];
 };
 
 export type MatchPageData = {
@@ -261,7 +258,7 @@ export type PublicDataSeedProfile = {
 
 export type StandingsSportCard = {
   sport: Sport;
-  cards: GroupStandingsCard[];
+  cards: StandingsCard[];
   liveMatches: number;
   completedMatches: number;
 };
@@ -289,7 +286,7 @@ export type TeamsPageData = {
 
 export type TeamStandingsSnippet = {
   sport: Sport;
-  cards: GroupStandingsCard[];
+  cards: StandingsCard[];
 };
 
 export type TeamProfilePageData = {

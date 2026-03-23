@@ -9,8 +9,8 @@ import type {
   BracketPreviewCard,
   BracketTreeData,
   DataState,
-  GroupStandingsCard,
   SportProgressCard,
+  StandingsCard,
   StageSummary,
   TournamentStats
 } from "@/server/data/public/types";
@@ -63,7 +63,7 @@ export type BuilderCard = {
   sport: Sport;
   stages: CompetitionStage[];
   groups: CompetitionGroup[];
-  standings: GroupStandingsCard[];
+  standings: StandingsCard[];
   bracket: BracketTreeData | null;
   integrityIssues: IntegrityIssue[];
   teams: Team[];

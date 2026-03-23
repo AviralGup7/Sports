@@ -4,81 +4,37 @@ import { profilesSeed } from "./core";
 
 export const resultsSeed: MatchResult[] = [
   {
-    matchId: "cricket-ga-1",
+    matchId: "cricket-qf-1",
     winnerTeamId: "andhra-samithi",
-    teamAScore: 148,
-    teamBScore: 142,
+    teamAScore: 168,
+    teamBScore: 149,
     decisionType: "normal",
-    scoreSummary: "148/4 vs 142/7",
-    note: "Andhra defended tightly at the death.",
+    scoreSummary: "168/5 vs 149/8",
+    note: "Andhra Samiti defended confidently to open the knockout draw.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-02T12:10:00+05:30"
+    updatedAt: "2026-04-02T12:20:00+05:30"
   },
   {
-    matchId: "cricket-ga-2",
+    matchId: "cricket-qf-2",
     winnerTeamId: "gurjari",
-    teamAScore: 151,
-    teamBScore: 144,
+    teamAScore: 154,
+    teamBScore: 150,
     decisionType: "normal",
-    scoreSummary: "151/5 vs 144/8",
-    note: "Gurjari closed on top after a late batting burst.",
+    scoreSummary: "154/6 vs 150/7",
+    note: "Gurjari closed out a tight chase to book the first semi-final.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-02T15:35:00+05:30"
+    updatedAt: "2026-04-02T16:25:00+05:30"
   },
   {
-    matchId: "cricket-ga-3",
-    winnerTeamId: "andhra-samithi",
-    teamAScore: 133,
-    teamBScore: 129,
-    decisionType: "normal",
-    scoreSummary: "133/7 vs 129/9",
-    note: "A low-scoring win keeps Andhra top of Group A.",
-    updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T11:45:00+05:30"
-  },
-  {
-    matchId: "cricket-ga-4",
-    winnerTeamId: "capitol",
-    teamAScore: 155,
-    teamBScore: 153,
-    decisionType: "normal",
-    scoreSummary: "155/6 vs 153/7",
-    note: "Capitol stayed alive with a chase in the final over.",
-    updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T15:10:00+05:30"
-  },
-  {
-    matchId: "cricket-gb-1",
-    winnerTeamId: "udgam",
-    teamAScore: 139,
-    teamBScore: 141,
-    decisionType: "normal",
-    scoreSummary: "139/8 vs 141/4",
-    note: "Udgam paced the chase expertly.",
-    updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-02T17:40:00+05:30"
-  },
-  {
-    matchId: "cricket-gb-2",
-    winnerTeamId: "madhyansh",
-    teamAScore: 121,
-    teamBScore: 126,
-    decisionType: "normal",
-    scoreSummary: "121/9 vs 126/5",
-    note: "Madhyansh earned the cleaner net run-rate start.",
-    updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-02T20:50:00+05:30"
-  },
-  {
-    matchId: "cricket-gb-3",
+    matchId: "cricket-qf-3",
     winnerTeamId: null,
-    teamAScore: 67,
-    teamBScore: 66,
+    teamAScore: 82,
+    teamBScore: 79,
     decisionType: "normal",
-    scoreSummary: "67/1 vs 66/3",
-    note: "Powerplay underway with Punjab narrowly ahead.",
+    scoreSummary: "82/2 vs 79/4",
+    note: "Punjab Cultural has the edge midway through the chase.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T16:35:00+05:30"
+    updatedAt: "2026-04-03T16:45:00+05:30"
   },
   {
     matchId: "football-qf-1",
@@ -98,7 +54,7 @@ export const resultsSeed: MatchResult[] = [
     teamBScore: 1,
     decisionType: "normal",
     scoreSummary: "1 - 1",
-    note: "Second half in progress.",
+    note: "Second half in progress with both teams pressing.",
     updatedBy: profilesSeed[0].id,
     updatedAt: "2026-04-03T16:55:00+05:30"
   },
@@ -116,56 +72,67 @@ export const resultsSeed: MatchResult[] = [
   {
     matchId: "volleyball-qf-1",
     winnerTeamId: "sangam",
-    teamAScore: 1,
+    teamAScore: 3,
     teamBScore: 0,
-    decisionType: "walkover",
-    scoreSummary: "Bye to semi-final",
-    note: "Top seed Sangam advances on a bracket bye.",
+    decisionType: "normal",
+    scoreSummary: "25-19, 25-22, 25-17",
+    note: "Sangam rolled through in straight sets.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T11:05:00+05:30"
+    updatedAt: "2026-04-03T11:50:00+05:30"
   },
   {
     matchId: "volleyball-qf-2",
-    winnerTeamId: "udgam",
-    teamAScore: 2,
+    winnerTeamId: null,
+    teamAScore: 1,
     teamBScore: 1,
     decisionType: "normal",
-    scoreSummary: "25-21, 18-25, 15-12",
-    note: "Udgam held firm in the decider.",
+    scoreSummary: "25-21, 22-25",
+    note: "Set three is underway in a balanced contest.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T13:25:00+05:30"
+    updatedAt: "2026-04-03T13:12:00+05:30"
   },
   {
-    matchId: "volleyball-sf-1",
-    winnerTeamId: "sangam",
+    matchId: "volleyball-qf-3",
+    winnerTeamId: "marudhara",
     teamAScore: 3,
-    teamBScore: 1,
+    teamBScore: 2,
     decisionType: "normal",
-    scoreSummary: "25-19, 22-25, 25-17, 25-20",
-    note: "Sangam reaches the final with a balanced attack.",
+    scoreSummary: "22-25, 25-21, 21-25, 25-18, 15-11",
+    note: "Marudhara recovered from a set down twice to advance.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-04T17:40:00+05:30"
+    updatedAt: "2026-04-03T15:20:00+05:30"
   },
   {
-    matchId: "athletics-heat-1",
-    winnerTeamId: "pilani-tamil-mandram",
-    teamAScore: 12,
-    teamBScore: 11,
+    matchId: "athletics-qf-1",
+    winnerTeamId: "gurjari",
+    teamAScore: 11,
+    teamBScore: 12,
     decisionType: "normal",
-    scoreSummary: "11.8s vs 12.1s",
-    note: "Pilani Tamil Mandram topped Heat 1.",
+    scoreSummary: "11.62s vs 11.88s",
+    note: "Gurjari qualified cleanly from the first sprint duel.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T16:22:00+05:30"
+    updatedAt: "2026-04-03T09:42:00+05:30"
   },
   {
-    matchId: "athletics-heat-2",
-    winnerTeamId: "utkal-samaj",
-    teamAScore: 12,
+    matchId: "athletics-qf-2",
+    winnerTeamId: "punjab-cultural",
+    teamAScore: 11,
+    teamBScore: 12,
+    decisionType: "normal",
+    scoreSummary: "11.71s vs 11.95s",
+    note: "Punjab Cultural pulled away over the last 20 metres.",
+    updatedBy: profilesSeed[0].id,
+    updatedAt: "2026-04-03T10:28:00+05:30"
+  },
+  {
+    matchId: "athletics-qf-3",
+    winnerTeamId: null,
+    teamAScore: 11,
     teamBScore: 11,
     decisionType: "normal",
-    scoreSummary: "11.9s vs 12.0s",
-    note: "Photo finish separated the field in Heat 2.",
+    scoreSummary: "11.84s vs 11.86s",
+    note: "Photo-finish check pending as the race comes alive.",
     updatedBy: profilesSeed[0].id,
-    updatedAt: "2026-04-03T16:35:00+05:30"
+    updatedAt: "2026-04-03T11:06:00+05:30"
   }
 ];

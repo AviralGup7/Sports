@@ -1,5 +1,6 @@
 export * from "@/shared/motion/ambient-backdrop";
 export * from "@/shared/motion/count-up-value";
+export * from "@/shared/motion/public-motion-shell";
 export * from "@/shared/motion/public-scroll-rig";
 export * from "@/shared/motion/cyber-arena-scene";
 export * from "@/shared/motion/motion-in";

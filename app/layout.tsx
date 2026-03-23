@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
-import { AmbientBackdrop, PublicScrollRig, RouteTransitionLayer, RuntimeCapabilityFlags } from "@/shared/motion";
+import { AmbientBackdrop, PublicMotionShell, RuntimeCapabilityFlags } from "@/shared/motion";
 import { SiteFooter, SiteHeader } from "@/shared/navigation";
 import { getDefaultSiteMetadata } from "@/server/data/public/page-metadata";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
@@ -45,8 +45,7 @@ export default async function RootLayout({
     <html lang="en">
       <body className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
         <RuntimeCapabilityFlags />
-        <PublicScrollRig />
-        <RouteTransitionLayer />
+        <PublicMotionShell />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>

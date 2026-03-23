@@ -55,4 +55,13 @@ test.describe("android public shell", () => {
     await expect(page.locator(".mobile-dock")).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
+
+  test("standings page stays readable on narrow android widths", async ({ page }) => {
+    await page.goto("/standings");
+    await expectHealthyPage(page);
+
+    await expect(page.getByRole("heading", { level: 1, name: "Tournament Tables" })).toBeVisible();
+    await expect(page.locator(".mobile-dock")).toBeVisible();
+    await expectNoHorizontalOverflow(page);
+  });
 });

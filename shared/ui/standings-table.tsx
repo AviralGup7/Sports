@@ -1,11 +1,11 @@
 import { CSSProperties } from "react";
 import Link from "next/link";
 
-import type { GroupStandingsCard } from "@/server/data/public/types";
+import type { StandingsCard } from "@/server/data/public/types";
 import { getTeamAccent } from "@/lib/team-style";
 
 type StandingsTableProps = {
-  cards: GroupStandingsCard[];
+  cards: StandingsCard[];
 };
 
 export function StandingsTable({ cards }: StandingsTableProps) {
@@ -16,11 +16,11 @@ export function StandingsTable({ cards }: StandingsTableProps) {
   return (
     <div className="standings-grid">
       {cards.map((card) => (
-        <section key={card.group.id} className="standings-card">
+        <section key={card.id} className="standings-card">
           <div className="standings-head">
             <div>
               <p className="eyebrow">Standings</p>
-              <h3>{card.group.code}</h3>
+              <h3>{card.label}</h3>
             </div>
           </div>
           <div className="standings-table-shell">
@@ -32,8 +32,6 @@ export function StandingsTable({ cards }: StandingsTableProps) {
                   <th>W</th>
                   <th>D</th>
                   <th>L</th>
-                  <th>Pts</th>
-                  <th>Diff</th>
                 </tr>
               </thead>
               <tbody>
@@ -56,8 +54,6 @@ export function StandingsTable({ cards }: StandingsTableProps) {
                       <td>{row.wins}</td>
                       <td>{row.draws}</td>
                       <td>{row.losses}</td>
-                      <td>{row.points}</td>
-                      <td>{row.scoreDifference}</td>
                     </tr>
                   );
                 })}

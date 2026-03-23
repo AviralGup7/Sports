@@ -19,8 +19,8 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow="Standings"
-            title="League Tables"
-            description="See who is leading each sport, which teams are qualifying, and how the title race is shaping up."
+            title="Tournament Tables"
+            description="See who is leading each sport, how knockout results are stacking up, and where the title race stands."
             compact
             tone="blue"
             intensity="premium"
@@ -81,7 +81,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
           <EmptyState
             eyebrow="Standings"
             title="Standings will appear here"
-            description="Group tables show up once enough results are recorded for a sport."
+            description="Knockout summary tables show up once enough results are recorded for a sport."
           />
         </MotionIn>
       )}

@@ -1,5 +1,6 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -7,7 +8,11 @@ import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 
 import { BrandMark } from "./brand-mark";
-import { LiveTicker } from "./live-ticker";
+
+const LiveTicker = dynamic(() => import("./live-ticker").then((module) => module.LiveTicker), {
+  ssr: false,
+  loading: () => null
+});
 
 type SiteHeaderProps = {
   chrome: GlobalChromeData;
@@ -31,6 +36,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
   const pathname = usePathname() ?? "";
   const isAdmin = pathname.startsWith("/admin");
   const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
+  const dataSourceLabel = chrome.dataState.source === "fallback" ? "Seed data" : "Live data";
   const sportsActive = pathname.startsWith("/sports/") || pathname === "/teams";
   const menuActive = pathname.startsWith("/sports/") || pathname.startsWith("/announcements") || pathname.startsWith("/teams");
   const currentSectionLabel = isAdmin
@@ -66,6 +72,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           <div className="header-status">
             <span className="header-chip">{rangeLabel}</span>
             <span className="header-chip">{chrome.sports.length} sports</span>
+            {!isAdmin ? <span className="header-chip">{dataSourceLabel}</span> : null}
             <span className="header-chip">{currentSectionLabel}</span>
             {!isAdmin ? (
               <Link href="/schedule" className="header-cta">

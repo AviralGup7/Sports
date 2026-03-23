@@ -33,6 +33,7 @@ function formatRelative(generatedAt: string) {
 
 export function FreshnessStamp({ generatedAt, prefix = "Last updated" }: FreshnessStampProps) {
   const [label, setLabel] = useState(() => formatRelative(generatedAt));
+  const absoluteLabel = new Date(generatedAt).toLocaleString();
 
   useEffect(() => {
     setLabel(formatRelative(generatedAt));
@@ -45,5 +46,5 @@ export function FreshnessStamp({ generatedAt, prefix = "Last updated" }: Freshne
     };
   }, [generatedAt]);
 
-  return <p className="freshness-stamp">{prefix} {label}</p>;
+  return <p className="freshness-stamp" title={absoluteLabel}>{prefix} {label}</p>;
 }

@@ -16,7 +16,7 @@ type HomeScreenProps = {
 };
 
 export function HomeScreen({ data }: HomeScreenProps) {
-  const { generatedAt, tournament, sports, stats, dayNote, highlightMatch, nextMatch, heroSignals, featuredMatches, announcements, championSpotlights, bracketPreviewCards } = data;
+  const { generatedAt, tournament, stats, dayNote, highlightMatch, nextMatch, heroSignals, featuredMatches, announcements, championSpotlights, bracketPreviewCards } = data;
   const headlineAnnouncement = announcements[0] ?? null;
   const headlineMatches = featuredMatches.slice(0, 4);
   const liveMetricHref = highlightMatch?.urgency === "live" ? `/matches/${highlightMatch.match.id}` : "/schedule?status=live";
@@ -128,7 +128,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
             </div>
 
             <div className="metric-grid metric-grid-home">
-              <MetricTile label="Sports" value={stats.sports} detail="Every sport running in this tournament" accent="#f59e0b" href="/#sports-spotlight" />
+              <MetricTile label="Sports" value={stats.sports} detail="Every sport running in this tournament" accent="#f59e0b" href="/schedule" />
               <MetricTile label="Active Teams" value={stats.teams} detail="Associations competing across the event" accent="#38bdf8" href="/teams" />
               <MetricTile
                 label="Matches Live"
@@ -199,42 +199,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
                   eyebrow="Champions"
                   title="Podium is waiting"
                   description="Finals and medal moments will fill this section as the tournament progresses."
-                />
-              )}
-            </div>
-          </section>
-        </ScrollStorySection>
-
-        <ScrollStorySection variant="section">
-          <section className="section-shell section-shell-posters" id="sports-spotlight">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Sports Overview</p>
-                <h2>Choose a sport</h2>
-              </div>
-            </div>
-
-            <div className="poster-grid">
-              {sports.length > 0 ? (
-                sports.map((sport) => (
-                  <article key={sport.id} className="sport-poster" style={{ "--sport-accent": sport.color } as CSSProperties}>
-                    <p className="eyebrow">{sport.name}</p>
-                    <h3>{sport.name}</h3>
-                    <p>{sport.rulesSummary}</p>
-                    <div className="sport-poster-meta">
-                      <span>{sport.format}</span>
-                    </div>
-                    <Link href={`/sports/${sport.id}`} className="inline-link">
-                      View {sport.name}
-                    </Link>
-                  </article>
-                ))
-              ) : (
-                <EmptyState
-                  compact
-                  eyebrow="Sports"
-                  title="Sports will appear here"
-                  description="Sport pages show fixtures, standings, and bracket details as the event fills out."
                 />
               )}
             </div>

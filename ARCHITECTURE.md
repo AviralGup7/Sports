@@ -68,10 +68,15 @@ Each route file should do only four things:
 
 ## Match Engine Split
 
-- [`domain/matches/standings.ts`](/D:/sports%20plan/domain/matches/standings.ts) computes group standings.
+- [`domain/matches/standings.ts`](/D:/sports%20plan/domain/matches/standings.ts) computes public standings summaries from current match results.
 - [`domain/matches/progression.ts`](/D:/sports%20plan/domain/matches/progression.ts) handles winner and loser advancement.
 - [`domain/matches/structure-generator.ts`](/D:/sports%20plan/domain/matches/structure-generator.ts) builds stage structures.
 - [`domain/matches/integrity.ts`](/D:/sports%20plan/domain/matches/integrity.ts) reports bracket integrity issues.
+
+## Review Hygiene
+
+- Ignore generated output such as `.next/`, `.next-e2e/`, `coverage/`, and `test-results/` during repo audits unless you are debugging build/test artifacts.
+- Use [`scripts/clean-workspace.mjs`](/D:/sports%20plan/scripts/clean-workspace.mjs) to remove cached build artifacts, screenshots, and local logs before a fresh verification pass.
 
 ## SQL Run Order
 

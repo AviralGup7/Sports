@@ -13,3 +13,12 @@ export async function expectNoHorizontalOverflow(page: Page) {
 
   expect(overflow).toBeLessThanOrEqual(1);
 }
+
+export async function loginAsAdmin(page: Page, email: string, password: string) {
+  await page.goto("/admin/login");
+  await expectHealthyPage(page);
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
+  await page.getByRole("button", { name: /sign in to control room/i }).click();
+  await expect(page).toHaveURL(/\/admin$/);
+}

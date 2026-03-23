@@ -5,7 +5,7 @@ import type { SchedulePageData } from "@/server/data/public/types";
 import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { DayNoteBanner, FixtureStrip, FreshnessStamp, StageTimeline } from "@/shared/ui";
+import { DayNoteBanner, FixtureStrip, FreshnessStamp } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type ScheduleScreenProps = {
@@ -15,9 +15,7 @@ type ScheduleScreenProps = {
 
 export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
   const selectedSportRecord = getSportBySlugFromCollection(data.sports, selectedSport);
-  const hasActiveFilters = Boolean(data.selectedSport || data.selectedStage || data.selectedGroup || data.selectedStatus);
-  const selectedStageLabel = data.selectedStage ? data.stages.find((stage) => stage.id === data.selectedStage)?.label ?? "Selected stage" : "All stages";
-  const selectedGroupLabel = data.selectedGroup ? data.groups.find((group) => group.id === data.selectedGroup)?.code ?? "Selected group" : "All groups";
+  const hasActiveFilters = Boolean(data.selectedSport || data.selectedStatus);
   const selectedStatusLabel = data.selectedStatus ? formatStatusLabel(data.selectedStatus) : "Any status";
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
@@ -25,8 +23,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
     const merged = {
       day: data.selectedDay,
       sport: data.selectedSport,
-      stage: data.selectedStage,
-      group: data.selectedGroup,
       status: data.selectedStatus,
       ...overrides
     };
@@ -49,7 +45,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             eyebrow="Schedule"
             kicker={formatDateLabel(data.selectedDay)}
             title={selectedSportRecord ? `${selectedSportRecord.name} Matches` : "Tournament Schedule"}
-            description="Browse today’s fixtures, narrow by sport or stage, and jump straight into match details."
+            description="Browse today’s knockout fixtures, narrow by sport or status, and jump straight into match details."
             compact
             tone={selectedSportRecord ? "cyan" : "blue"}
             intensity="premium"
@@ -78,7 +74,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
                 </div>
                 <div>
                   <span className="aside-label">Current view</span>
-                  <strong>{selectedStageLabel}</strong>
+                  <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
                 </div>
                 <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
@@ -99,7 +95,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           </div>
           <div className="page-guide-actions">
             {hasActiveFilters ? (
-              <Link href={buildHref({ sport: undefined, stage: undefined, group: undefined, status: undefined })} className="button button-ghost">
+              <Link href={buildHref({ sport: undefined, status: undefined })} className="button button-ghost">
                 Clear filters
               </Link>
             ) : null}
@@ -117,12 +113,12 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           <article className="page-guide-card">
             <p className="eyebrow">Sport</p>
             <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
-            <span>{selectedGroupLabel}</span>
+            <span>Knockout fixtures only</span>
           </article>
           <article className="page-guide-card">
             <p className="eyebrow">Status</p>
             <strong>{selectedStatusLabel}</strong>
-            <span>{selectedStageLabel}</span>
+            <span>{formatDateLabel(data.selectedDay)}</span>
           </article>
         </div>
       </MotionIn>
@@ -142,41 +138,16 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
         <div className="filter-block">
           <p className="eyebrow">Sport</p>
           <div className="chip-row">
-            <Link href={buildHref({ sport: undefined, stage: undefined, group: undefined })} className={!data.selectedSport ? "chip chip-active" : "chip"}>
+            <Link href={buildHref({ sport: undefined })} className={!data.selectedSport ? "chip chip-active" : "chip"}>
               All sports
             </Link>
             {data.sports.map((sport) => (
-              <Link
-                key={sport.id}
-                href={buildHref({ sport: sport.id, stage: undefined, group: undefined })}
-                className={data.selectedSport === sport.id ? "chip chip-active" : "chip"}
-              >
+              <Link key={sport.id} href={buildHref({ sport: sport.id })} className={data.selectedSport === sport.id ? "chip chip-active" : "chip"}>
                 {sport.name}
               </Link>
             ))}
           </div>
         </div>
-
-        <div className="filter-block">
-          <p className="eyebrow">Stage</p>
-          <StageTimeline stages={data.stages} selectedStageId={data.selectedStage} hrefBuilder={(stageId) => buildHref({ stage: stageId, group: undefined })} />
-        </div>
-
-        {data.groups.length > 0 ? (
-          <div className="filter-block">
-            <p className="eyebrow">Group</p>
-            <div className="chip-row">
-              <Link href={buildHref({ group: undefined })} className={!data.selectedGroup ? "chip chip-active" : "chip"}>
-                All groups
-              </Link>
-              {data.groups.map((group) => (
-                <Link key={group.id} href={buildHref({ group: group.id })} className={data.selectedGroup === group.id ? "chip chip-active" : "chip"}>
-                  {group.code}
-                </Link>
-              ))}
-            </div>
-          </div>
-        ) : null}
 
         <div className="filter-block">
           <p className="eyebrow">Status</p>
@@ -204,7 +175,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </div>
             <div className="chip-row">
               {data.sportBlocks.map((block) => (
-                <Link key={`jump-${block.sport.id}`} href={buildHref({ sport: block.sport.id, stage: undefined, group: undefined })} className="chip">
+                <Link key={`jump-${block.sport.id}`} href={buildHref({ sport: block.sport.id })} className="chip">
                   {block.sport.name} {block.visibleCount}
                 </Link>
               ))}
@@ -256,11 +227,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </section>
           ))
         ) : (
-          <EmptyState
-            eyebrow="Schedule"
-            title="No matches match this filter"
-            description="Try another day, sport, stage, or status to see more fixtures."
-          />
+          <EmptyState eyebrow="Schedule" title="No matches match this filter" description="Try another day, sport, or status to see more fixtures." />
         )}
       </MotionIn>
     </div>
