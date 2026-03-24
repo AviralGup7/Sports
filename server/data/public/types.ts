@@ -213,8 +213,15 @@ export type HomePageData = {
   }>;
 };
 
+export type AnnouncementsPageData = {
+  generatedAt: string;
+  dataState: DataState;
+  items: Announcement[];
+};
+
 export type SchedulePageData = {
   generatedAt: string;
+  dataState: DataState;
   days: string[];
   selectedDay: string;
   selectedSport?: string;
@@ -228,6 +235,7 @@ export type SchedulePageData = {
 
 export type SportPageData = {
   generatedAt: string;
+  dataState: DataState;
   sport: Sport;
   stages: CompetitionStage[];
   groups: CompetitionGroup[];
@@ -243,6 +251,7 @@ export type SportPageData = {
 
 export type MatchPageData = {
   generatedAt: string;
+  dataState: DataState;
   match: Match;
   sport: Sport;
   relatedMatches: Match[];
@@ -265,6 +274,7 @@ export type StandingsSportCard = {
 
 export type StandingsPageData = {
   generatedAt: string;
+  dataState: DataState;
   sports: Sport[];
   selectedSport?: string;
   sections: StandingsSportCard[];
@@ -280,6 +290,7 @@ export type TeamListCard = {
 
 export type TeamsPageData = {
   generatedAt: string;
+  dataState: DataState;
   teams: TeamListCard[];
   sports: Sport[];
 };
@@ -291,6 +302,7 @@ export type TeamStandingsSnippet = {
 
 export type TeamProfilePageData = {
   generatedAt: string;
+  dataState: DataState;
   team: Team;
   sports: Sport[];
   liveMatches: Match[];

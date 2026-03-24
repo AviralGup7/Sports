@@ -3,10 +3,10 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import type { SchedulePageData } from "@/server/data/public/types";
 import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
-import { DayNoteBanner, FixtureStrip, FreshnessStamp } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
+import { DayNoteBanner, FixtureStrip, FreshnessStamp } from "@/shared/ui";
 
 type ScheduleScreenProps = {
   data: SchedulePageData;
@@ -45,7 +45,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             eyebrow="Schedule"
             kicker={formatDateLabel(data.selectedDay)}
             title={selectedSportRecord ? `${selectedSportRecord.name} Matches` : "Tournament Schedule"}
-            description="Browse today’s knockout fixtures, narrow by sport or status, and jump straight into match details."
+            description="Browse today's knockout fixtures, narrow by sport or status, and jump straight into match details."
             compact
             tone={selectedSportRecord ? "cyan" : "blue"}
             intensity="premium"
@@ -81,6 +81,10 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             }
           />
         </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       <MotionIn delay={0.06}>
@@ -227,7 +231,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </section>
           ))
         ) : (
-          <EmptyState eyebrow="Schedule" title="No matches match this filter" description="Try another day, sport, or status to see more fixtures." />
+          <EmptyState eyebrow="Schedule" title="No fixtures in this view" description="Try another day, sport, or status to bring more knockout fixtures into view." />
         )}
       </MotionIn>
     </div>

@@ -3,6 +3,7 @@
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useId, useState } from "react";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
@@ -34,6 +35,8 @@ const mobileNav = [
 
 export function SiteHeader({ chrome }: SiteHeaderProps) {
   const pathname = usePathname() ?? "";
+  const [menuOpen, setMenuOpen] = useState(false);
+  const mobileMenuId = useId();
   const isAdmin = pathname.startsWith("/admin");
   const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
   const dataSourceLabel = chrome.dataState.source === "fallback" ? "Seed data" : "Live data";
@@ -45,17 +48,46 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
       ? "Home"
       : pathname.startsWith("/standings")
         ? "Standings"
-      : pathname.startsWith("/schedule")
-        ? "Schedule"
-        : pathname.startsWith("/sports/")
-          ? "Sports"
-          : pathname.startsWith("/teams")
-            ? "Teams"
-          : pathname.startsWith("/matches/")
-            ? "Match Details"
-            : pathname.startsWith("/announcements")
-              ? "Notices"
-              : "Portal";
+        : pathname.startsWith("/schedule")
+          ? "Schedule"
+          : pathname.startsWith("/sports/")
+            ? "Sports"
+            : pathname.startsWith("/teams")
+              ? "Teams"
+              : pathname.startsWith("/matches/")
+                ? "Match Details"
+                : pathname.startsWith("/announcements")
+                  ? "Notices"
+                  : "Portal";
+  const mobileMenuItems = [
+    { href: "/announcements", label: "Notices" },
+    { href: "/teams", label: "Teams" },
+    ...chrome.sports.map((sport) => ({
+      href: `/sports/${sport.id}`,
+      label: sport.name
+    }))
+  ];
+
+  useEffect(() => {
+    setMenuOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!menuOpen) {
+      return;
+    }
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setMenuOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [menuOpen]);
 
   return (
     <>
@@ -140,37 +172,43 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
               item.href === "/"
                 ? pathname === "/"
                 : item.href === "/menu"
-                  ? menuActive
+                  ? menuActive || menuOpen
                   : pathname.startsWith(item.href);
-            const href = item.href === "/menu" ? "#" : item.href;
-            return (
-              item.href === "/menu" ? (
-                <details key={item.label} className="mobile-dock-menu">
-                  <summary className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}>
+
+            if (item.href === "/menu") {
+              return (
+                <div key={item.label} className="mobile-dock-menu">
+                  <button
+                    type="button"
+                    className={active ? "mobile-dock-link mobile-dock-link-active mobile-dock-menu-button" : "mobile-dock-link mobile-dock-menu-button"}
+                    aria-expanded={menuOpen}
+                    aria-controls={mobileMenuId}
+                    aria-label="Open sports and notices menu"
+                    onClick={() => setMenuOpen((current) => !current)}
+                  >
                     <span>{item.label}</span>
-                  </summary>
-                  <div className="mobile-dock-menu-panel">
-                    <Link href="/announcements" className="mobile-dock-menu-link">
-                      Notices
-                    </Link>
-                    {chrome.sports.map((sport) => (
-                      <Link key={sport.id} href={`/sports/${sport.id}`} className="mobile-dock-menu-link">
-                        {sport.name}
+                  </button>
+                  <div id={mobileMenuId} className={menuOpen ? "mobile-dock-menu-panel mobile-dock-menu-panel-open" : "mobile-dock-menu-panel"} hidden={!menuOpen}>
+                    {mobileMenuItems.map((menuItem) => (
+                      <Link key={menuItem.href} href={menuItem.href} className="mobile-dock-menu-link" onClick={() => setMenuOpen(false)}>
+                        {menuItem.label}
                       </Link>
                     ))}
                   </div>
-                </details>
-              ) : (
+                </div>
+              );
+            }
+
+            return (
               <Link
                 key={item.label}
-                href={href}
+                href={item.href}
                 prefetch
                 className={active ? "mobile-dock-link mobile-dock-link-active" : "mobile-dock-link"}
                 aria-current={active ? "page" : undefined}
               >
                 <span>{item.label}</span>
               </Link>
-              )
             );
           })}
         </nav>
@@ -178,4 +216,3 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
     </>
   );
 }
-

@@ -6,10 +6,11 @@ import { getSportPageData } from "../../server/data/public/sport-center-query";
 import { profilesSeed } from "../../server/mock/tournament-snapshot";
 
 describe("route-facing queries", () => {
-  it("ignores obsolete schedule stage/group inputs and still applies status filtering", async () => {
-    const data = await getSchedulePageData("2026-04-03", "football", "deprecated-stage", "deprecated-group", "live");
+  it("applies the minimal schedule query contract and still filters by status", async () => {
+    const data = await getSchedulePageData("2026-04-03", "football", "live");
 
     expect(data.selectedStatus).toBe("live");
+    expect(data.dataState.source).toMatch(/supabase|fallback/);
     expect(data.fixtures.every((match) => match.sportId === "football" && match.status === "live")).toBe(true);
   });
 
@@ -17,6 +18,7 @@ describe("route-facing queries", () => {
     const data = await getSportPageData("athletics");
 
     expect(data).not.toBeNull();
+    expect(data?.dataState.source).toMatch(/supabase|fallback/);
     expect(data?.bracket).not.toBeNull();
     expect(data?.standings.length).toBeGreaterThan(0);
   });

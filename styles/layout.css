@@ -1012,13 +1012,13 @@ html[data-ui-profile="android-mobile"] .filter-rail {
   position: relative;
 }
 
-.mobile-dock-menu summary {
-  list-style: none;
+.mobile-dock-menu-button {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
   cursor: pointer;
-}
-
-.mobile-dock-menu summary::-webkit-details-marker {
-  display: none;
 }
 
 .mobile-dock-menu-panel {
@@ -1033,6 +1033,10 @@ html[data-ui-profile="android-mobile"] .filter-rail {
   border: 1px solid rgba(114, 197, 255, 0.18);
   background: rgba(8, 12, 20, 0.96);
   box-shadow: var(--shadow-panel);
+}
+
+.mobile-dock-menu-panel[hidden] {
+  display: none;
 }
 
 .mobile-dock-menu-link {

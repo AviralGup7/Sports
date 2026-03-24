@@ -9,8 +9,6 @@ type SchedulePageProps = {
   searchParams?: Promise<{
     day?: string;
     sport?: string;
-    stage?: string;
-    group?: string;
     status?: string;
   }>;
 };
@@ -18,7 +16,7 @@ type SchedulePageProps = {
 export default async function SchedulePage({ searchParams }: SchedulePageProps) {
   const params = (await searchParams) ?? {};
   const selectedSport = sportOrder.find((sport) => sport === params.sport);
-  const data = await getSchedulePageData(params.day, selectedSport, params.stage, params.group, params.status);
+  const data = await getSchedulePageData(params.day, selectedSport, params.status);
 
   return <ScheduleScreen data={data} selectedSport={selectedSport} />;
 }
@@ -26,7 +24,7 @@ export default async function SchedulePage({ searchParams }: SchedulePageProps) 
 export async function generateMetadata({ searchParams }: SchedulePageProps): Promise<Metadata> {
   const params = (await searchParams) ?? {};
   const selectedSport = sportOrder.find((sport) => sport === params.sport);
-  const data = await getSchedulePageData(params.day, selectedSport, params.stage, params.group, params.status);
+  const data = await getSchedulePageData(params.day, selectedSport, params.status);
   const title = selectedSport ? `${selectedSport} schedule` : "Tournament schedule";
 
   return buildTournamentPageMetadata(title, `Browse fixtures, filters, and live tournament timings for ${data.selectedDay}.`);

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { getTeamAccent } from "@/lib/team-style";
 import type { TeamProfilePageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { FixtureStrip, FreshnessStamp, StandingsTable } from "@/shared/ui";
 
@@ -55,6 +55,10 @@ export function TeamProfileScreen({ data }: TeamProfileScreenProps) {
             }
           />
         </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       {data.liveMatches.length > 0 ? (
@@ -126,7 +130,7 @@ export function TeamProfileScreen({ data }: TeamProfileScreenProps) {
               </section>
             ))
           ) : (
-            <EmptyState eyebrow="Standings" title="No standings to show yet" description="This team is not currently in a sport with published group standings." />
+            <EmptyState eyebrow="Standings" title="No standings available yet" description="This team's knockout summary tables will appear once results are recorded." />
           )}
         </div>
       </MotionIn>

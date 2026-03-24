@@ -5,7 +5,7 @@ import { getTeamAccent } from "@/lib/team-style";
 import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { BracketPreviewCard, CountdownChip, DayNoteBanner, DisclosurePanel, FixtureStrip, FreshnessStamp, MetricTile, NewsBulletin, PodiumCard } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
@@ -97,6 +97,10 @@ export function HomeScreen({ data }: HomeScreenProps) {
             }
           />
         </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       <MotionIn className="home-essential-grid" delay={0.05}>

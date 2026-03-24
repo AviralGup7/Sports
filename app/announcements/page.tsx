@@ -11,5 +11,5 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function AnnouncementsPage() {
   const data = await getAnnouncementsPageData();
 
-  return <AnnouncementsScreen generatedAt={data.generatedAt} items={data.items} />;
+  return <AnnouncementsScreen data={data} />;
 }

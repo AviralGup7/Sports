@@ -27,7 +27,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
           <div>
             <p className="eyebrow">Admin home</p>
             <h1>Run today from one place</h1>
-            <p className="hero-text">Start with the AI desk, keep an eye on live boards, and jump into notices or matches only when you need a full editor.</p>
+            <p className="hero-text">Start with live boards, keep an eye on notices, and use the AI assistant only when a manual workflow would slow you down.</p>
           </div>
           <div className="operations-hero-side">
             <span className="operations-chip">Live {liveCount}</span>
@@ -62,16 +62,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.04}>
-        <ControlPanel eyebrow="AI Desk" title="Type a task instead of hunting for a form" description="Use one command to write notices, move fixtures, or update match state.">
-          <AdminAiCommandPanel
-            redirectTo="/admin"
-            recentMatches={data.todaysMatches.length > 0 ? data.todaysMatches : data.pendingResults}
-            recentAnnouncements={data.announcements}
-            recentTeams={data.teams}
-          />
-        </ControlPanel>
-
-        <ControlPanel eyebrow="Quick jumps" title="Open the full tool only when needed" description="These links keep the admin side lighter for day-of work.">
+        <ControlPanel eyebrow="Quick jumps" title="Open the right editor fast" description="These links keep event-day operations focused on the core control-room tools.">
           <div className="quick-tile-grid">
             <Link href="/admin/matches?mode=live" className="quick-tile">
               <strong>Matches</strong>
@@ -90,10 +81,19 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
               <span>Handle exports, resets, and deployment readiness.</span>
             </Link>
             <Link href="/admin/assistant" className="quick-tile">
-              <strong>Groq AI desk</strong>
-              <span>Connect your own API key and turn plain language into admin actions.</span>
+              <strong>AI assistant</strong>
+              <span>Optional accelerator for plain-language admin commands once the core workflow is under control.</span>
             </Link>
           </div>
+        </ControlPanel>
+
+        <ControlPanel eyebrow="Optional AI" title="Use AI when it saves time" description="The assistant stays available, but live boards and notices should remain the primary workflow.">
+          <AdminAiCommandPanel
+            redirectTo="/admin"
+            recentMatches={data.todaysMatches.length > 0 ? data.todaysMatches : data.pendingResults}
+            recentAnnouncements={data.announcements}
+            recentTeams={data.teams}
+          />
         </ControlPanel>
       </MotionIn>
 

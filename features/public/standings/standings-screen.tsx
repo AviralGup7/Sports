@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { StandingsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { FreshnessStamp, StandingsTable } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
@@ -40,6 +40,10 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
             }
           />
         </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       <MotionIn className="filter-rail" delay={0.06}>
@@ -80,8 +84,8 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
         <MotionIn className="section-shell" delay={0.08}>
           <EmptyState
             eyebrow="Standings"
-            title="Standings will appear here"
-            description="Knockout summary tables show up once enough results are recorded for a sport."
+            title="No standings available in this view"
+            description="Knockout summary tables appear once enough results are recorded for the selected sport."
           />
         </MotionIn>
       )}

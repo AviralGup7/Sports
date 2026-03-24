@@ -13,6 +13,10 @@ test.describe("android public shell", () => {
     await expect(page.locator(".mobile-dock")).toBeVisible();
     await expect(page.getByRole("link", { name: "View Schedule" }).first()).toBeVisible();
     await expect(page.locator(".broadcast-hero")).toBeVisible();
+    await page.getByRole("button", { name: /open sports and notices menu/i }).click();
+    const mobileMenu = page.locator(".mobile-dock-menu-panel");
+    await expect(mobileMenu.getByRole("link", { name: "Notices", exact: true })).toBeVisible();
+    await expect(mobileMenu.getByRole("link", { name: "Teams", exact: true })).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });
 

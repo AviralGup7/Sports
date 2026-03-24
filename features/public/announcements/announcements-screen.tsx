@@ -1,15 +1,15 @@
-import type { Announcement } from "@/domain/announcements/types";
+import type { AnnouncementsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { FreshnessStamp, NewsBulletin } from "@/shared/ui";
 
 type AnnouncementsScreenProps = {
-  generatedAt: string;
-  items: Announcement[];
+  data: AnnouncementsPageData;
 };
 
-export function AnnouncementsScreen({ generatedAt, items }: AnnouncementsScreenProps) {
+export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
+  const { generatedAt, dataState, items } = data;
   const pinnedItems = items.filter((announcement) => announcement.pinned);
   const feedItems = items.filter((announcement) => !announcement.pinned);
 
@@ -42,6 +42,10 @@ export function AnnouncementsScreen({ generatedAt, items }: AnnouncementsScreenP
         </ScrollStorySection>
       </MotionIn>
 
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={dataState} compact />
+      </MotionIn>
+
       {pinnedItems.length > 0 ? (
         <MotionIn className="section-shell" delay={0.08}>
           <div className="section-heading">
@@ -71,8 +75,8 @@ export function AnnouncementsScreen({ generatedAt, items }: AnnouncementsScreenP
           ) : (
             <EmptyState
               eyebrow="Notices"
-              title="No additional notices yet"
-              description="Pinned updates can still appear above, but there are no extra notices to show right now."
+              title="No extra notices in this feed"
+              description="Pinned updates can still appear above, but there are no additional public notices available right now."
             />
           )}
         </div>

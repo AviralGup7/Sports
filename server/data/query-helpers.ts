@@ -831,6 +831,7 @@ export async function getSchedulePageData(
 
   return {
     generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     days,
     selectedDay,
     selectedSport: sportId,
@@ -860,6 +861,7 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
 
   return {
     generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     sport: {
       ...sport,
       format: getActiveStage(snapshot, sportId)?.label ? `${sport.format} | ${getActiveStage(snapshot, sportId)?.label}` : sport.format
@@ -893,6 +895,7 @@ export async function getMatchPageData(matchId: string): Promise<MatchPageData |
 
   return {
     generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     match,
     sport,
     relatedMatches: buildRelatedMatches(snapshot, match),
@@ -913,17 +916,21 @@ export async function getMatchPageData(matchId: string): Promise<MatchPageData |
 
 export async function getAnnouncementsPageData() {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
   return {
-    generatedAt: getGeneratedAt(),
+    generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     items: getPublicAnnouncements(snapshot)
   };
 }
 
 export async function getStandingsPageData(selectedSport?: SportSlug): Promise<StandingsPageData> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
 
   return {
-    generatedAt: getGeneratedAt(),
+    generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     sports: snapshot.sports,
     selectedSport,
     sections: buildStandingsSections(snapshot, selectedSport)
@@ -932,9 +939,11 @@ export async function getStandingsPageData(selectedSport?: SportSlug): Promise<S
 
 export async function getTeamsPageData(): Promise<TeamsPageData> {
   const snapshot = await loadSnapshot();
+  const generatedAt = getGeneratedAt();
 
   return {
-    generatedAt: getGeneratedAt(),
+    generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     teams: buildTeamListCards(snapshot),
     sports: snapshot.sports
   };
@@ -950,9 +959,11 @@ export async function getTeamProfilePageData(teamId: string): Promise<TeamProfil
 
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
   const matches = getMatchesForTeam(snapshot, team.id);
+  const generatedAt = getGeneratedAt();
 
   return {
-    generatedAt: getGeneratedAt(),
+    generatedAt,
+    dataState: buildDataState(snapshot, generatedAt),
     team,
     sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
     liveMatches: matches.filter((match) => match.status === "live"),

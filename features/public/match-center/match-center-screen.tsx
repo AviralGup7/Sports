@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { MatchPageData } from "@/server/data/public/types";
 import { formatDateTime } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { FixtureStrip, FreshnessStamp, ProgressPathCard, ShareMatchButton, StageBadge } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
@@ -35,6 +35,10 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             Standings
           </Link>
         </div>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       <MotionIn>
@@ -83,7 +87,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
         </article>
         <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Stage</p>
-          <h2>{data.match.group ? `${data.match.group.code}` : data.match.round}</h2>
+          <h2>{data.match.round}</h2>
           <p>
             {data.match.stage?.label ?? "Standalone match"} | {data.match.result?.winner?.name ?? "Winner TBD"}
           </p>

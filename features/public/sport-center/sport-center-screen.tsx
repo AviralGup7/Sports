@@ -6,7 +6,7 @@ import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
 import { BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
-import { EmptyState } from "@/shared/feedback";
+import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type SportCenterScreenProps = {
@@ -55,6 +55,10 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             }
           />
         </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn delay={0.04}>
+        <DataStateBanner state={data.dataState} compact />
       </MotionIn>
 
       <MotionIn className="section-shell page-guide-shell" delay={0.07}>
@@ -165,7 +169,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
                   </article>
                 ))
               ) : (
-                <EmptyState compact eyebrow="Teams" title="No teams assigned yet" description="Association entries will appear here once they are confirmed for this sport." />
+                <EmptyState compact eyebrow="Teams" title="No associations assigned yet" description="Team entries will appear here once organisers publish the roster for this sport." />
               )}
             </div>
           </section>
@@ -183,7 +187,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           {data.standings.length > 0 ? (
             <StandingsTable cards={data.standings} />
           ) : (
-            <EmptyState eyebrow="Standings" title="No standings yet" description="Standings will appear once enough results are recorded in this sport." />
+            <EmptyState eyebrow="Standings" title="No standings available yet" description="Knockout summary tables appear once enough results are recorded in this sport." />
           )}
         </MotionIn>
       ) : null}
@@ -199,7 +203,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           {data.bracket ? (
             <BracketTree bracket={data.bracket} />
           ) : (
-            <EmptyState eyebrow="Bracket" title="Bracket will appear when knockout rounds begin" description="As knockout rounds are seeded, the bracket view will fill in here." />
+            <EmptyState eyebrow="Bracket" title="Bracket is not available yet" description="As knockout rounds are seeded, the bracket view will fill in here." />
           )}
         </MotionIn>
       ) : null}
@@ -219,7 +223,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             {data.matches.length > 0 ? (
               data.matches.map((match) => <FixtureStrip key={match.id} match={match} />)
             ) : (
-              <EmptyState compact eyebrow="Fixtures" title="No fixtures yet" description="Fixtures for this sport will appear here once the schedule is published." />
+              <EmptyState compact eyebrow="Fixtures" title="No fixtures available yet" description="Fixtures for this sport appear here once the schedule is published." />
             )}
           </div>
         </MotionIn>
