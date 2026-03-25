@@ -2,7 +2,7 @@ import type { CompetitionGroup, CompetitionStage, Profile, Sport, SportSlug, Tou
 
 export const tournamentSeed: Tournament = {
   id: "icl-2026",
-  name: "Inter Cultural League",
+  name: "Inter Asscoc Cultural Sports Leage",
   startDate: "2026-04-02",
   endDate: "2026-04-05",
   venue: "GYMG & MedC Grounds",

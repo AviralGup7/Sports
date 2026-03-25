@@ -24,7 +24,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Inter Cultural League"
+            eyebrow="Inter Asscoc Cultural Sports Leage"
             kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
