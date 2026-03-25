@@ -7,8 +7,8 @@ test("renders the public broadcast shell", async ({ page }) => {
 
   await expect(page.getByRole("banner")).toBeVisible();
   await expect(page.getByRole("link", { name: "Schedule" }).first()).toBeVisible();
-  await expect(page.getByRole("heading", { name: /live now and next up/i })).toBeVisible();
   await expect(page.getByRole("heading", { name: /key update and context/i })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /live now and next up/i })).toHaveCount(0);
   await expect(page.getByText("Inter Cultural League").first()).toBeVisible();
   await expect(page.getByText(/Seed data|Live data/).first()).toBeVisible();
   await expect(page.locator("body")).toContainText("GYMG & MedC Grounds | Sponsored by Midtown");
