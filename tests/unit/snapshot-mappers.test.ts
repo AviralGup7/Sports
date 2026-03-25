@@ -8,7 +8,7 @@ describe("snapshot mappers", () => {
     const mapped = mapTournamentRow(
       {
         id: "icl-2026",
-        name: "Inter Asscoc Cultural Sports Leage",
+        name: "Inter-Assoc Cultural Sports League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
         venue: "GYMG & MedC Grounds"
@@ -26,7 +26,7 @@ describe("snapshot mappers", () => {
     const mapped = mapTournamentRow(
       {
         id: "icl-2026",
-        name: "Inter Asscoc Cultural Sports Leage",
+        name: "Inter-Assoc Cultural Sports League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
         venue: "GYMG & MedC Grounds"

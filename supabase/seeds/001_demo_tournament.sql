@@ -6,7 +6,7 @@ delete from public.competition_stages;
 delete from public.team_sports;
 
 insert into public.tournaments (id, name, start_date, end_date, venue)
-values ('icl-2026', 'Inter Asscoc Cultural Sports Leage', '2026-04-02', '2026-04-05', 'GYMG & MedC Grounds')
+values ('icl-2026', 'Inter-Assoc Cultural Sports League', '2026-04-02', '2026-04-05', 'GYMG & MedC Grounds')
 on conflict (id) do update
 set name = excluded.name,
     start_date = excluded.start_date,

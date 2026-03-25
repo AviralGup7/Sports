@@ -31,7 +31,7 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
 
         <section className="site-footer-card">
           <p className="eyebrow">Organiser</p>
-          <h2>Inter Asscoc Cultural Sports Leage Committee</h2>
+          <h2>Inter-Assoc Cultural Sports League Committee</h2>
           <p>Official public portal for fixtures, standings, notices, and match updates during the tournament.</p>
           <div className="stack-sm">
             {chrome.tournament.contacts.map((contact) => (
