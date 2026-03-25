@@ -6,11 +6,11 @@ test("renders the public broadcast shell", async ({ page }) => {
   await expectHealthyPage(page);
 
   await expect(page.getByRole("banner")).toBeVisible();
-  await expect(page.getByRole("link", { name: "View Schedule" }).first()).toBeVisible();
+  await expect(page.getByRole("link", { name: "Schedule" }).first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /champions podium/i })).toBeVisible();
-  await expect(page.getByText("Inter Cultural Assoc Sports League").first()).toBeVisible();
+  await expect(page.getByText("Inter Cultural League").first()).toBeVisible();
   await expect(page.getByText(/Seed data|Live data/).first()).toBeVisible();
-  await expect(page.getByText("GYMG").first()).toBeVisible();
+  await expect(page.getByText("GYMG & MedC Grounds").first()).toBeVisible();
   await expect(page.getByRole("heading", { name: /choose a sport/i })).toHaveCount(0);
 });
 
@@ -42,3 +42,4 @@ test("renders standings and team index routes", async ({ page }) => {
   await expectHealthyPage(page);
   await expect(page.getByRole("heading", { level: 1, name: "Association Grid" })).toBeVisible();
 });
+

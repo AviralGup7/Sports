@@ -1,11 +1,11 @@
 import type { CompetitionGroup, CompetitionStage, Profile, Sport, SportSlug, Tournament } from "@/domain";
 
 export const tournamentSeed: Tournament = {
-  id: "iasl-2026",
-  name: "Inter Cultural Assoc Sports League",
+  id: "icl-2026",
+  name: "Inter Cultural League",
   startDate: "2026-04-02",
   endDate: "2026-04-05",
-  venue: "GYMG",
+  venue: "GYMG & MedC Grounds",
   logoAssetPath: "/branding/icasl-logo.png",
   contacts: [
     { id: "moksh-goel", name: "Moksh Goel", phone: "+91-9971019074", role: "Tournament Coordinator" },

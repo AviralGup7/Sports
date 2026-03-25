@@ -6,7 +6,7 @@ delete from public.competition_stages;
 delete from public.team_sports;
 
 insert into public.tournaments (id, name, start_date, end_date, venue)
-values ('iasl-2026', 'Inter Cultural Assoc Sports League', '2026-04-02', '2026-04-05', 'GYMG')
+values ('icl-2026', 'Inter Cultural League', '2026-04-02', '2026-04-05', 'GYMG & MedC Grounds')
 on conflict (id) do update
 set name = excluded.name,
     start_date = excluded.start_date,
@@ -15,7 +15,7 @@ set name = excluded.name,
 
 insert into public.tournament_settings (tournament_id, logo_asset_path, contacts_json)
 values (
-  'iasl-2026',
+  'icl-2026',
   '/branding/icasl-logo.png',
   '[
     {"id":"moksh-goel","name":"Moksh Goel","phone":"+91-9971019074","role":"Tournament Coordinator"},
@@ -118,37 +118,37 @@ insert into public.matches (
   winner_to_match_id, winner_to_slot, loser_to_match_id, loser_to_slot, is_bye
 )
 values
-  ('cricket-ga-1', 'iasl-2026', 'cricket', 'Group A Match 1', '2026-04-02', '10:00', 'Main Ground', 'andhra-samithi', 'capitol', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 1, null, null, null, null, false),
-  ('cricket-ga-2', 'iasl-2026', 'cricket', 'Group A Match 2', '2026-04-02', '13:00', 'Main Ground', 'gurjari', 'haryana-cultural', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 2, null, null, null, null, false),
-  ('cricket-ga-3', 'iasl-2026', 'cricket', 'Group A Match 3', '2026-04-03', '09:30', 'Main Ground', 'andhra-samithi', 'gurjari', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 3, null, null, null, null, false),
-  ('cricket-ga-4', 'iasl-2026', 'cricket', 'Group A Match 4', '2026-04-03', '13:00', 'Main Ground', 'capitol', 'haryana-cultural', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 4, null, null, null, null, false),
-  ('cricket-gb-1', 'iasl-2026', 'cricket', 'Group B Match 1', '2026-04-02', '16:00', 'Practice Oval', 'punjab-cultural', 'udgam', 'completed', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 1, null, null, null, null, false),
-  ('cricket-gb-2', 'iasl-2026', 'cricket', 'Group B Match 2', '2026-04-02', '19:00', 'Practice Oval', 'kairali', 'madhyansh', 'completed', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 2, null, null, null, null, false),
-  ('cricket-gb-3', 'iasl-2026', 'cricket', 'Group B Match 3', '2026-04-03', '16:00', 'Practice Oval', 'punjab-cultural', 'kairali', 'live', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 3, null, null, null, null, false),
-  ('cricket-gb-4', 'iasl-2026', 'cricket', 'Group B Match 4', '2026-04-03', '20:00', 'Practice Oval', 'udgam', 'madhyansh', 'scheduled', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 4, null, null, null, null, false),
-  ('cricket-sf-1', 'iasl-2026', 'cricket', 'Semi Final 1', '2026-04-04', '18:00', 'Main Ground', 'andhra-samithi', 'madhyansh', 'scheduled', 'cricket-final', 'team_a', 'cricket-knockout-stage', null, 2, 1, 'cricket-final', 'team_a', 'cricket-third', 'team_a', false),
-  ('cricket-sf-2', 'iasl-2026', 'cricket', 'Semi Final 2', '2026-04-04', '21:00', 'Main Ground', 'gurjari', 'udgam', 'scheduled', 'cricket-final', 'team_b', 'cricket-knockout-stage', null, 2, 2, 'cricket-final', 'team_b', 'cricket-third', 'team_b', false),
-  ('cricket-third', 'iasl-2026', 'cricket', 'Third Place', '2026-04-05', '16:00', 'Main Ground', null, null, 'scheduled', null, null, 'cricket-placement-stage', null, 3, 1, null, null, null, null, false),
-  ('cricket-final', 'iasl-2026', 'cricket', 'Grand Final', '2026-04-05', '20:00', 'Main Ground', null, null, 'scheduled', null, null, 'cricket-knockout-stage', null, 3, 1, null, null, null, null, false),
-  ('football-qf-1', 'iasl-2026', 'football', 'Quarter Final 1', '2026-04-03', '15:00', 'Football Turf', 'punjab-cultural', 'kannada-vedike', 'completed', 'football-sf-1', 'team_a', 'football-knockout-stage', null, 1, 1, 'football-sf-1', 'team_a', null, null, false),
-  ('football-qf-2', 'iasl-2026', 'football', 'Quarter Final 2', '2026-04-03', '16:15', 'Football Turf', 'pilani-tamil-mandram', 'maharashtra-mandal', 'live', 'football-sf-1', 'team_b', 'football-knockout-stage', null, 1, 2, 'football-sf-1', 'team_b', null, null, false),
-  ('football-qf-3', 'iasl-2026', 'football', 'Quarter Final 3', '2026-04-03', '17:30', 'Football Turf', 'andhra-samithi', 'capitol', 'completed', 'football-sf-2', 'team_a', 'football-knockout-stage', null, 1, 3, 'football-sf-2', 'team_a', null, null, false),
-  ('football-qf-4', 'iasl-2026', 'football', 'Quarter Final 4', '2026-04-03', '18:45', 'Football Turf', 'maurya-vihar', 'sangam', 'scheduled', 'football-sf-2', 'team_b', 'football-knockout-stage', null, 1, 4, 'football-sf-2', 'team_b', null, null, false),
-  ('football-sf-1', 'iasl-2026', 'football', 'Semi Final 1', '2026-04-04', '16:00', 'Football Turf', 'kannada-vedike', null, 'scheduled', 'football-final', 'team_a', 'football-knockout-stage', null, 2, 1, 'football-final', 'team_a', 'football-third', 'team_a', false),
-  ('football-sf-2', 'iasl-2026', 'football', 'Semi Final 2', '2026-04-04', '18:00', 'Football Turf', 'andhra-samithi', null, 'scheduled', 'football-final', 'team_b', 'football-knockout-stage', null, 2, 2, 'football-final', 'team_b', 'football-third', 'team_b', false),
-  ('football-third', 'iasl-2026', 'football', 'Third Place', '2026-04-05', '15:30', 'Football Turf', null, null, 'scheduled', null, null, 'football-placement-stage', null, 3, 1, null, null, null, null, false),
-  ('football-final', 'iasl-2026', 'football', 'Grand Final', '2026-04-05', '18:30', 'Football Turf', null, null, 'scheduled', null, null, 'football-knockout-stage', null, 3, 1, null, null, null, null, false),
-  ('volleyball-qf-1', 'iasl-2026', 'volleyball', 'Quarter Final 1', '2026-04-03', '11:00', 'Indoor Arena', 'sangam', null, 'completed', 'volleyball-sf-1', 'team_a', 'volleyball-knockout-stage', null, 1, 1, 'volleyball-sf-1', 'team_a', null, null, true),
-  ('volleyball-qf-2', 'iasl-2026', 'volleyball', 'Quarter Final 2', '2026-04-03', '12:30', 'Indoor Arena', 'udgam', 'gurjari', 'completed', 'volleyball-sf-1', 'team_b', 'volleyball-knockout-stage', null, 1, 2, 'volleyball-sf-1', 'team_b', null, null, false),
-  ('volleyball-qf-3', 'iasl-2026', 'volleyball', 'Quarter Final 3', '2026-04-03', '14:00', 'Indoor Arena', 'marudhara', 'andhra-samithi', 'scheduled', 'volleyball-sf-2', 'team_a', 'volleyball-knockout-stage', null, 1, 3, 'volleyball-sf-2', 'team_a', null, null, false),
-  ('volleyball-qf-4', 'iasl-2026', 'volleyball', 'Quarter Final 4', '2026-04-03', '15:30', 'Indoor Arena', 'kannada-vedike', 'maharashtra-mandal', 'postponed', 'volleyball-sf-2', 'team_b', 'volleyball-knockout-stage', null, 1, 4, 'volleyball-sf-2', 'team_b', null, null, false),
-  ('volleyball-sf-1', 'iasl-2026', 'volleyball', 'Semi Final 1', '2026-04-04', '16:30', 'Indoor Arena', 'sangam', 'udgam', 'completed', 'volleyball-final', 'team_a', 'volleyball-knockout-stage', null, 2, 1, 'volleyball-final', 'team_a', 'volleyball-third', 'team_a', false),
-  ('volleyball-sf-2', 'iasl-2026', 'volleyball', 'Semi Final 2', '2026-04-04', '18:00', 'Indoor Arena', null, null, 'postponed', 'volleyball-final', 'team_b', 'volleyball-knockout-stage', null, 2, 2, 'volleyball-final', 'team_b', 'volleyball-third', 'team_b', false),
-  ('volleyball-third', 'iasl-2026', 'volleyball', 'Third Place', '2026-04-05', '14:30', 'Indoor Arena', 'udgam', null, 'scheduled', null, null, 'volleyball-placement-stage', null, 3, 1, null, null, null, null, false),
-  ('volleyball-final', 'iasl-2026', 'volleyball', 'Grand Final', '2026-04-05', '17:00', 'Indoor Arena', 'sangam', null, 'scheduled', null, null, 'volleyball-knockout-stage', null, 3, 1, null, null, null, null, false),
-  ('athletics-heat-1', 'iasl-2026', 'athletics', '100m Heat 1', '2026-04-03', '16:15', 'Track Oval', 'punjab-cultural', 'pilani-tamil-mandram', 'completed', 'athletics-final', 'team_a', 'athletics-results-stage', null, 1, 1, null, null, null, null, false),
-  ('athletics-heat-2', 'iasl-2026', 'athletics', '100m Heat 2', '2026-04-03', '16:30', 'Track Oval', 'gurjari', 'utkal-samaj', 'completed', 'athletics-final', 'team_b', 'athletics-results-stage', null, 1, 2, null, null, null, null, false),
-  ('athletics-final', 'iasl-2026', 'athletics', '100m Final', '2026-04-05', '16:45', 'Track Oval', 'pilani-tamil-mandram', 'utkal-samaj', 'scheduled', null, null, 'athletics-results-stage', null, 2, 1, null, null, null, null, false)
+  ('cricket-ga-1', 'icl-2026', 'cricket', 'Group A Match 1', '2026-04-02', '10:00', 'Main Ground', 'andhra-samithi', 'capitol', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 1, null, null, null, null, false),
+  ('cricket-ga-2', 'icl-2026', 'cricket', 'Group A Match 2', '2026-04-02', '13:00', 'Main Ground', 'gurjari', 'haryana-cultural', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 2, null, null, null, null, false),
+  ('cricket-ga-3', 'icl-2026', 'cricket', 'Group A Match 3', '2026-04-03', '09:30', 'Main Ground', 'andhra-samithi', 'gurjari', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 3, null, null, null, null, false),
+  ('cricket-ga-4', 'icl-2026', 'cricket', 'Group A Match 4', '2026-04-03', '13:00', 'Main Ground', 'capitol', 'haryana-cultural', 'completed', null, null, 'cricket-group-stage', 'cricket-group-a', 1, 4, null, null, null, null, false),
+  ('cricket-gb-1', 'icl-2026', 'cricket', 'Group B Match 1', '2026-04-02', '16:00', 'Practice Oval', 'punjab-cultural', 'udgam', 'completed', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 1, null, null, null, null, false),
+  ('cricket-gb-2', 'icl-2026', 'cricket', 'Group B Match 2', '2026-04-02', '19:00', 'Practice Oval', 'kairali', 'madhyansh', 'completed', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 2, null, null, null, null, false),
+  ('cricket-gb-3', 'icl-2026', 'cricket', 'Group B Match 3', '2026-04-03', '16:00', 'Practice Oval', 'punjab-cultural', 'kairali', 'live', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 3, null, null, null, null, false),
+  ('cricket-gb-4', 'icl-2026', 'cricket', 'Group B Match 4', '2026-04-03', '20:00', 'Practice Oval', 'udgam', 'madhyansh', 'scheduled', null, null, 'cricket-group-stage', 'cricket-group-b', 1, 4, null, null, null, null, false),
+  ('cricket-sf-1', 'icl-2026', 'cricket', 'Semi Final 1', '2026-04-04', '18:00', 'Main Ground', 'andhra-samithi', 'madhyansh', 'scheduled', 'cricket-final', 'team_a', 'cricket-knockout-stage', null, 2, 1, 'cricket-final', 'team_a', 'cricket-third', 'team_a', false),
+  ('cricket-sf-2', 'icl-2026', 'cricket', 'Semi Final 2', '2026-04-04', '21:00', 'Main Ground', 'gurjari', 'udgam', 'scheduled', 'cricket-final', 'team_b', 'cricket-knockout-stage', null, 2, 2, 'cricket-final', 'team_b', 'cricket-third', 'team_b', false),
+  ('cricket-third', 'icl-2026', 'cricket', 'Third Place', '2026-04-05', '16:00', 'Main Ground', null, null, 'scheduled', null, null, 'cricket-placement-stage', null, 3, 1, null, null, null, null, false),
+  ('cricket-final', 'icl-2026', 'cricket', 'Grand Final', '2026-04-05', '20:00', 'Main Ground', null, null, 'scheduled', null, null, 'cricket-knockout-stage', null, 3, 1, null, null, null, null, false),
+  ('football-qf-1', 'icl-2026', 'football', 'Quarter Final 1', '2026-04-03', '15:00', 'Football Turf', 'punjab-cultural', 'kannada-vedike', 'completed', 'football-sf-1', 'team_a', 'football-knockout-stage', null, 1, 1, 'football-sf-1', 'team_a', null, null, false),
+  ('football-qf-2', 'icl-2026', 'football', 'Quarter Final 2', '2026-04-03', '16:15', 'Football Turf', 'pilani-tamil-mandram', 'maharashtra-mandal', 'live', 'football-sf-1', 'team_b', 'football-knockout-stage', null, 1, 2, 'football-sf-1', 'team_b', null, null, false),
+  ('football-qf-3', 'icl-2026', 'football', 'Quarter Final 3', '2026-04-03', '17:30', 'Football Turf', 'andhra-samithi', 'capitol', 'completed', 'football-sf-2', 'team_a', 'football-knockout-stage', null, 1, 3, 'football-sf-2', 'team_a', null, null, false),
+  ('football-qf-4', 'icl-2026', 'football', 'Quarter Final 4', '2026-04-03', '18:45', 'Football Turf', 'maurya-vihar', 'sangam', 'scheduled', 'football-sf-2', 'team_b', 'football-knockout-stage', null, 1, 4, 'football-sf-2', 'team_b', null, null, false),
+  ('football-sf-1', 'icl-2026', 'football', 'Semi Final 1', '2026-04-04', '16:00', 'Football Turf', 'kannada-vedike', null, 'scheduled', 'football-final', 'team_a', 'football-knockout-stage', null, 2, 1, 'football-final', 'team_a', 'football-third', 'team_a', false),
+  ('football-sf-2', 'icl-2026', 'football', 'Semi Final 2', '2026-04-04', '18:00', 'Football Turf', 'andhra-samithi', null, 'scheduled', 'football-final', 'team_b', 'football-knockout-stage', null, 2, 2, 'football-final', 'team_b', 'football-third', 'team_b', false),
+  ('football-third', 'icl-2026', 'football', 'Third Place', '2026-04-05', '15:30', 'Football Turf', null, null, 'scheduled', null, null, 'football-placement-stage', null, 3, 1, null, null, null, null, false),
+  ('football-final', 'icl-2026', 'football', 'Grand Final', '2026-04-05', '18:30', 'Football Turf', null, null, 'scheduled', null, null, 'football-knockout-stage', null, 3, 1, null, null, null, null, false),
+  ('volleyball-qf-1', 'icl-2026', 'volleyball', 'Quarter Final 1', '2026-04-03', '11:00', 'Indoor Arena', 'sangam', null, 'completed', 'volleyball-sf-1', 'team_a', 'volleyball-knockout-stage', null, 1, 1, 'volleyball-sf-1', 'team_a', null, null, true),
+  ('volleyball-qf-2', 'icl-2026', 'volleyball', 'Quarter Final 2', '2026-04-03', '12:30', 'Indoor Arena', 'udgam', 'gurjari', 'completed', 'volleyball-sf-1', 'team_b', 'volleyball-knockout-stage', null, 1, 2, 'volleyball-sf-1', 'team_b', null, null, false),
+  ('volleyball-qf-3', 'icl-2026', 'volleyball', 'Quarter Final 3', '2026-04-03', '14:00', 'Indoor Arena', 'marudhara', 'andhra-samithi', 'scheduled', 'volleyball-sf-2', 'team_a', 'volleyball-knockout-stage', null, 1, 3, 'volleyball-sf-2', 'team_a', null, null, false),
+  ('volleyball-qf-4', 'icl-2026', 'volleyball', 'Quarter Final 4', '2026-04-03', '15:30', 'Indoor Arena', 'kannada-vedike', 'maharashtra-mandal', 'postponed', 'volleyball-sf-2', 'team_b', 'volleyball-knockout-stage', null, 1, 4, 'volleyball-sf-2', 'team_b', null, null, false),
+  ('volleyball-sf-1', 'icl-2026', 'volleyball', 'Semi Final 1', '2026-04-04', '16:30', 'Indoor Arena', 'sangam', 'udgam', 'completed', 'volleyball-final', 'team_a', 'volleyball-knockout-stage', null, 2, 1, 'volleyball-final', 'team_a', 'volleyball-third', 'team_a', false),
+  ('volleyball-sf-2', 'icl-2026', 'volleyball', 'Semi Final 2', '2026-04-04', '18:00', 'Indoor Arena', null, null, 'postponed', 'volleyball-final', 'team_b', 'volleyball-knockout-stage', null, 2, 2, 'volleyball-final', 'team_b', 'volleyball-third', 'team_b', false),
+  ('volleyball-third', 'icl-2026', 'volleyball', 'Third Place', '2026-04-05', '14:30', 'Indoor Arena', 'udgam', null, 'scheduled', null, null, 'volleyball-placement-stage', null, 3, 1, null, null, null, null, false),
+  ('volleyball-final', 'icl-2026', 'volleyball', 'Grand Final', '2026-04-05', '17:00', 'Indoor Arena', 'sangam', null, 'scheduled', null, null, 'volleyball-knockout-stage', null, 3, 1, null, null, null, null, false),
+  ('athletics-heat-1', 'icl-2026', 'athletics', '100m Heat 1', '2026-04-03', '16:15', 'Track Oval', 'punjab-cultural', 'pilani-tamil-mandram', 'completed', 'athletics-final', 'team_a', 'athletics-results-stage', null, 1, 1, null, null, null, null, false),
+  ('athletics-heat-2', 'icl-2026', 'athletics', '100m Heat 2', '2026-04-03', '16:30', 'Track Oval', 'gurjari', 'utkal-samaj', 'completed', 'athletics-final', 'team_b', 'athletics-results-stage', null, 1, 2, null, null, null, null, false),
+  ('athletics-final', 'icl-2026', 'athletics', '100m Final', '2026-04-05', '16:45', 'Track Oval', 'pilani-tamil-mandram', 'utkal-samaj', 'scheduled', null, null, 'athletics-results-stage', null, 2, 1, null, null, null, null, false)
 on conflict (id) do update
 set tournament_id = excluded.tournament_id,
     sport_id = excluded.sport_id,
@@ -211,3 +211,4 @@ set title = excluded.title,
     pinned = excluded.pinned,
     published_at = excluded.published_at,
     is_published = excluded.is_published;
+

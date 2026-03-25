@@ -1,6 +1,4 @@
 "use client";
-
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
@@ -33,7 +31,7 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
 
         <section className="site-footer-card">
           <p className="eyebrow">Organiser</p>
-          <h2>Inter Cultural Assoc Sports League Committee</h2>
+          <h2>Inter Cultural League Committee</h2>
           <p>Official public portal for fixtures, standings, notices, and match updates during the tournament.</p>
           <div className="stack-sm">
             {chrome.tournament.contacts.map((contact) => (
@@ -48,20 +46,11 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
           <p className="eyebrow">Queries</p>
           <h2>Need help?</h2>
           <p>Check the latest notices first, then reach the organising team for event-day queries and coordination support.</p>
-          <p>Venue desk: {chrome.tournament.venue}, main entry control booth</p>
           {chrome.tournament.contacts.map((contact) => (
             <p key={contact.id}>
               {contact.name}: <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="inline-link">{contact.phone}</a>
             </p>
           ))}
-          <div className="site-footer-links">
-            <Link href="/announcements" className="inline-link">
-              Notices & Alerts
-            </Link>
-            <Link href="/schedule" className="inline-link">
-              View Schedule
-            </Link>
-          </div>
         </section>
       </div>
     </footer>

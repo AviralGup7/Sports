@@ -10,7 +10,7 @@ export function BrandMark({ tournament }: BrandMarkProps) {
   return (
     <span className="brand-mark">
       <LogoImage tournament={tournament} size={72} className="brand-mark-svg" alt="" />
-      <span className="brand-mark-word">IASL</span>
+      <span className="brand-mark-word">ICL</span>
     </span>
   );
 }

@@ -97,7 +97,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             <BrandMark tournament={chrome.tournament} />
             <span className="brand-copy">
               <strong>{chrome.tournament.name}</strong>
-              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Live tournament portal`}</span>
+              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Sponsored by Midtown`}</span>
             </span>
           </Link>
 
@@ -106,11 +106,6 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             <span className="header-chip">{chrome.sports.length} sports</span>
             {!isAdmin ? <span className="header-chip">{dataSourceLabel}</span> : null}
             <span className="header-chip">{currentSectionLabel}</span>
-            {!isAdmin ? (
-              <Link href="/schedule" className="header-cta">
-                View Schedule
-              </Link>
-            ) : null}
           </div>
         </div>
 

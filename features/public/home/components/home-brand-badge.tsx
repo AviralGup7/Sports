@@ -17,7 +17,6 @@ export function HomeBrandBadge({ tournament }: HomeBrandBadgeProps) {
         />
       </div>
       <div className="hero-brand-copy">
-        <span className="hero-brand-label">Official Crest</span>
         <strong>{tournament.name}</strong>
       </div>
     </div>

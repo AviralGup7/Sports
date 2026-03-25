@@ -26,7 +26,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Inter Cultural Assoc Sports League"
+            eyebrow="Inter Cultural League"
             kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
@@ -34,16 +34,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
             tone={highlightMatch?.urgency === "live" ? "crimson" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
             intensity="premium"
             variant="home-hero"
-            actions={
-              <>
-                <Link href="/schedule" className="button">
-                  View Schedule
-                </Link>
-                <Link href="/announcements" className="button button-ghost">
-                  Notices & Alerts
-                </Link>
-              </>
-            }
             signals={heroSignals.map((signal) => (
               <Link key={signal.id} href={signal.href ?? "/"} className={`hero-signal hero-signal-${signal.tone}`}>
                 <span>{signal.label}</span>
@@ -111,9 +101,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
                 <p className="eyebrow">Today</p>
                 <h2>Follow the tournament in one glance</h2>
               </div>
-              <Link href="/schedule" className="inline-link">
-                Open full schedule
-              </Link>
             </div>
 
             <DayNoteBanner note={dayNote} />
@@ -161,9 +148,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
               <p className="eyebrow">Latest Notice</p>
               <h2>Important update</h2>
             </div>
-            <Link href="/announcements" className="inline-link">
-              See all notices
-            </Link>
           </div>
 
           {headlineAnnouncement ? (

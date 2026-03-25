@@ -11,7 +11,7 @@ test.describe("android public shell", () => {
     await expectHealthyPage(page);
 
     await expect(page.locator(".mobile-dock")).toBeVisible();
-    await expect(page.getByRole("link", { name: "View Schedule" }).first()).toBeVisible();
+    await expect(page.getByRole("link", { name: "Schedule" }).first()).toBeVisible();
     await expect(page.locator(".broadcast-hero")).toBeVisible();
     await page.getByRole("button", { name: /open sports and notices menu/i }).click();
     const mobileMenu = page.locator(".mobile-dock-menu-panel");
@@ -69,3 +69,4 @@ test.describe("android public shell", () => {
     await expectNoHorizontalOverflow(page);
   });
 });
+

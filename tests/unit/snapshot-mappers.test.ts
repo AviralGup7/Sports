@@ -7,11 +7,11 @@ describe("snapshot mappers", () => {
   it("falls back to seeded branding settings when no settings row exists", () => {
     const mapped = mapTournamentRow(
       {
-        id: "iasl-2026",
-        name: "Inter Cultural Assoc Sports League",
+        id: "icl-2026",
+        name: "Inter Cultural League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
-        venue: "GYMG"
+        venue: "GYMG & MedC Grounds"
       },
       null,
       tournamentSeed
@@ -25,14 +25,14 @@ describe("snapshot mappers", () => {
   it("uses persisted settings when they are available", () => {
     const mapped = mapTournamentRow(
       {
-        id: "iasl-2026",
-        name: "Inter Cultural Assoc Sports League",
+        id: "icl-2026",
+        name: "Inter Cultural League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
-        venue: "GYMG"
+        venue: "GYMG & MedC Grounds"
       },
       {
-        tournament_id: "iasl-2026",
+        tournament_id: "icl-2026",
         logo_asset_path: "/branding/custom-logo.png",
         contacts_json: [{ id: "ops", name: "Ops Lead", phone: "+91-1111111111", role: "Ops" }]
       },

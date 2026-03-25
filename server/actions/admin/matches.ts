@@ -123,7 +123,7 @@ export async function performGenerateStructure(formData: FormData) {
 
   const generatedMatches = generated.matches.map((match) => ({
     id: match.id,
-    tournament_id: "iasl-2026",
+    tournament_id: "icl-2026",
     sport_id: sportId,
     round: match.round,
     day: match.day,
@@ -242,7 +242,7 @@ export async function performUpsertMatch(formData: FormData) {
 
   const { error } = await supabase.from("matches").upsert({
     id: matchId,
-    tournament_id: "iasl-2026",
+    tournament_id: "icl-2026",
     sport_id: sportId,
     round,
     day,
@@ -411,6 +411,7 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
+
 
 
 

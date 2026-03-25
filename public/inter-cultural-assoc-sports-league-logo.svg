@@ -34,10 +34,10 @@
   <circle cx="512" cy="512" r="345" stroke="#6FCFFF" stroke-opacity="0.35" stroke-width="4"/>
   <circle cx="512" cy="512" r="316" stroke="url(#goldRing)" stroke-width="8"/>
   <text fill="#C8F2FF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" letter-spacing="5">
-    <textPath href="#topArc" startOffset="50%" text-anchor="middle">INTER CULTURAL ASSOCIATION</textPath>
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">INTER CULTURAL</textPath>
   </text>
   <text fill="#C8F2FF" font-family="Arial, Helvetica, sans-serif" font-size="54" font-weight="700" letter-spacing="5">
-    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">SPORTS LEAGUE</textPath>
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">LEAGUE</textPath>
   </text>
   <ellipse cx="540" cy="680" rx="198" ry="76" fill="#0D2236" stroke="url(#goldRing)" stroke-width="5"/>
   <path d="M358 696C412 662 480 645 560 645C625 645 690 658 740 686" stroke="#7DDCFF" stroke-width="4" stroke-linecap="round"/>
@@ -72,3 +72,5 @@
   <path d="M480 736H542M498 706V754M524 706V754" stroke="#9BC7F8" stroke-width="4"/>
   <text x="512" y="666" fill="#E9F8FF" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="700" text-anchor="middle">BITS PILANI</text>
 </svg>
+
+
