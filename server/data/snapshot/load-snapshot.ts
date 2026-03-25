@@ -51,6 +51,15 @@ function getFallbackSnapshot() {
   });
 }
 
+function isMissingOptionalResource(error: { code?: string; message?: string } | null | undefined) {
+  if (!error) {
+    return false;
+  }
+
+  const message = error.message?.toLowerCase() ?? "";
+  return error.code === "PGRST205" || message.includes("could not find the table") || message.includes("does not exist");
+}
+
 export async function loadSnapshot(): Promise<RepositorySnapshot> {
   noStore();
 
@@ -95,11 +104,22 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
     ]);
 
     const tournamentRow = preferredTournamentRes.data ?? fallbackTournamentRes.data?.[0] ?? null;
+    const tournamentSettingsError = isMissingOptionalResource(tournamentSettingsRes.error) ? null : tournamentSettingsRes.error;
+    const resolvedTournament = preferredTournamentRes.data
+      ? mapTournamentRow(preferredTournamentRes.data, tournamentSettingsError ? null : tournamentSettingsRes.data ?? null, tournamentSeed)
+      : tournamentRow
+        ? {
+            ...mapTournamentRow(tournamentRow, tournamentSettingsError ? null : tournamentSettingsRes.data ?? null, tournamentSeed),
+            id: tournamentSeed.id,
+            name: tournamentSeed.name,
+            venue: tournamentSeed.venue
+          }
+        : null;
 
     if (
       preferredTournamentRes.error ||
       fallbackTournamentRes.error ||
-      tournamentSettingsRes.error ||
+      tournamentSettingsError ||
       sportsRes.error ||
       stagesRes.error ||
       groupsRes.error ||
@@ -108,13 +128,13 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
       matchesRes.error ||
       resultsRes.error ||
       announcementsRes.error ||
-      !tournamentRow
+      !resolvedTournament
     ) {
       throw new Error(
         [
           preferredTournamentRes.error?.message,
           fallbackTournamentRes.error?.message,
-          tournamentSettingsRes.error?.message,
+          tournamentSettingsError?.message,
           sportsRes.error?.message,
           stagesRes.error?.message,
           groupsRes.error?.message,
@@ -131,7 +151,7 @@ export async function loadSnapshot(): Promise<RepositorySnapshot> {
 
     return hydrateSnapshot({
       source: "supabase",
-      tournament: mapTournamentRow(tournamentRow, tournamentSettingsRes.data ?? null, tournamentSeed),
+      tournament: resolvedTournament,
       sports: mapSportRows(sportsRes.data),
       stages: mapStageRows(stagesRes.data),
       groups: mapGroupRows(groupsRes.data),

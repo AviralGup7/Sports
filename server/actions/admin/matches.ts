@@ -38,8 +38,27 @@ function getLoserTeamId(teamAId: string | null, teamBId: string | null, winnerTe
   return null;
 }
 
+async function getTournamentWriteId(supabase: Awaited<ReturnType<typeof requireAdminProfile>>["supabase"]) {
+  const preferredTournamentId = "icl-2026";
+  const { data: preferredTournament } = await supabase.from("tournaments").select("id").eq("id", preferredTournamentId).maybeSingle<{ id: string }>();
+
+  if (preferredTournament?.id) {
+    return preferredTournament.id;
+  }
+
+  const { data: fallbackTournament } = await supabase
+    .from("tournaments")
+    .select("id")
+    .order("start_date", { ascending: true })
+    .limit(1)
+    .returns<{ id: string }[]>();
+
+  return fallbackTournament?.[0]?.id ?? preferredTournamentId;
+}
+
 export async function performGenerateStructure(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
+  const tournamentId = await getTournamentWriteId(supabase);
   const sportId = String(formData.get("sportId") ?? "") as SportSlug;
   const format = String(formData.get("format") ?? "knockout") as "knockout" | "group-knockout";
   const groupsCount = toNullableNumber(formData.get("groupsCount")) ?? 2;
@@ -123,7 +142,7 @@ export async function performGenerateStructure(formData: FormData) {
 
   const generatedMatches = generated.matches.map((match) => ({
     id: match.id,
-    tournament_id: "icl-2026",
+    tournament_id: tournamentId,
     sport_id: sportId,
     round: match.round,
     day: match.day,
@@ -181,6 +200,7 @@ export async function performGenerateStructure(formData: FormData) {
 
 export async function performUpsertMatch(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
+  const tournamentId = await getTournamentWriteId(supabase);
   let sportId = "" as SportSlug;
 
   try {
@@ -242,7 +262,7 @@ export async function performUpsertMatch(formData: FormData) {
 
   const { error } = await supabase.from("matches").upsert({
     id: matchId,
-    tournament_id: "icl-2026",
+    tournament_id: tournamentId,
     sport_id: sportId,
     round,
     day,
