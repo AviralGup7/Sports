@@ -11,7 +11,8 @@ type AnnouncementsScreenProps = {
 export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
   const { generatedAt, dataState, items } = data;
   const pinnedItems = items.filter((announcement) => announcement.pinned);
-  const feedItems = items.filter((announcement) => !announcement.pinned);
+  const leadItem = pinnedItems[0] ?? items[0] ?? null;
+  const feedItems = items.filter((announcement) => announcement.id !== leadItem?.id);
 
   return (
     <div className="stack-xl">
@@ -28,11 +29,11 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
             aside={
               <div className="hero-aside-list hero-aside-list-cyber">
                 <div>
-                  <span className="aside-label">Pinned notices</span>
-                  <strong>{pinnedItems.length}</strong>
+                  <span className="aside-label">Lead story</span>
+                  <strong>{leadItem ? "Ready" : "Waiting"}</strong>
                 </div>
                 <div>
-                  <span className="aside-label">All notices</span>
+                  <span className="aside-label">More notices</span>
                   <strong>{feedItems.length}</strong>
                 </div>
                 <FreshnessStamp generatedAt={generatedAt} />
@@ -42,31 +43,54 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={dataState} compact />
-      </MotionIn>
-
-      {pinnedItems.length > 0 ? (
-        <MotionIn className="section-shell" delay={0.08}>
+      {leadItem ? (
+        <MotionIn className="section-shell" delay={0.06}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Latest Notice</p>
-              <h2>Pinned updates</h2>
+              <p className="eyebrow">Lead Story</p>
+              <h2>Read this notice first</h2>
             </div>
           </div>
-          <div className="news-grid">
-            {pinnedItems.map((announcement) => (
-              <NewsBulletin key={announcement.id} announcement={announcement} pinnedHero />
-            ))}
+          <div className="home-news-grid">
+            <div className="news-grid news-grid-headline">
+              <NewsBulletin announcement={leadItem} pinnedHero={leadItem.pinned} />
+            </div>
+            <div className="home-news-aside">
+              <article className="home-summary-card">
+                <p className="eyebrow">Freshness</p>
+                <h3>Publishing status</h3>
+                <DataStateBanner state={dataState} compact />
+                <FreshnessStamp generatedAt={generatedAt} />
+              </article>
+
+              <article className="home-summary-card">
+                <p className="eyebrow">Noticeboard</p>
+                <h3>What is in the feed</h3>
+                <div className="home-kpi-list">
+                  <span>
+                    <strong>{pinnedItems.length}</strong>
+                    Pinned updates
+                  </span>
+                  <span>
+                    <strong>{items.length}</strong>
+                    Total notices
+                  </span>
+                  <span>
+                    <strong>{feedItems.length}</strong>
+                    Remaining in feed
+                  </span>
+                </div>
+              </article>
+            </div>
           </div>
         </MotionIn>
       ) : null}
 
-      <MotionIn className="section-shell" delay={0.12}>
+      <MotionIn className="section-shell" delay={0.1}>
         <div className="section-heading">
           <div>
-            <p className="eyebrow">Notices</p>
-            <h2>All updates</h2>
+            <p className="eyebrow">Feed</p>
+            <h2>More notices</h2>
           </div>
         </div>
         <div className="news-feed">

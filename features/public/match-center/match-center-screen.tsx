@@ -24,24 +24,6 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
   return (
     <div className="stack-xl">
       <MotionIn>
-        <div className="chip-row">
-          <Link href={`/sports/${data.sport.id}`} className="chip">
-            Back to {data.sport.name}
-          </Link>
-          <Link href={`/schedule?sport=${data.sport.id}`} className="chip">
-            {data.sport.name} schedule
-          </Link>
-          <Link href="/standings" className="chip">
-            Standings
-          </Link>
-        </div>
-      </MotionIn>
-
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={data.dataState} compact />
-      </MotionIn>
-
-      <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? data.match.round}`}
@@ -53,6 +35,9 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             variant={data.match.winnerToMatchId || data.match.loserToMatchId ? "bracket-showcase" : "sport-masthead"}
             actions={
               <>
+                <Link href={`/sports/${data.sport.id}`} className="button button-ghost">
+                  Back to {data.sport.name}
+                </Link>
                 <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
                   {data.sport.name} schedule
                 </Link>
@@ -69,7 +54,8 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
                 />
                 <h2>{data.match.result?.winner?.name ?? "TBD"}</h2>
                 <strong>{data.match.result?.scoreSummary ?? "Result Pending"}</strong>
-                <p>{data.match.result?.note ?? "Key updates and score changes will appear here once the match is underway."}</p>
+                <p>{data.match.result?.note ?? progressionSummary}</p>
+                <DataStateBanner state={data.dataState} compact />
                 <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
@@ -77,26 +63,21 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn className="detail-grid" delay={0.08}>
+      <MotionIn className="detail-grid detail-grid-compact" delay={0.08}>
         <article className="detail-card detail-card-cyber">
-          <p className="eyebrow">Match</p>
-          <h2>{data.match.isBye ? "Bye" : data.match.status}</h2>
+          <p className="eyebrow">Matchday</p>
+          <h2>{data.match.stage?.label ?? data.match.round}</h2>
           <p>
             {data.match.venue} | {formatDateTime(data.match.day, data.match.startTime)}
           </p>
         </article>
-        <article className="detail-card detail-card-cyber">
-          <p className="eyebrow">Stage</p>
-          <h2>{data.match.round}</h2>
-          <p>
-            {data.match.stage?.label ?? "Standalone match"} | {data.match.result?.winner?.name ?? "Winner TBD"}
-          </p>
-        </article>
-        <article className="detail-card detail-card-cyber">
-          <p className="eyebrow">Bracket Path</p>
-          <h2>{primaryTargetMatch?.round ?? "Standalone fixture"}</h2>
-          <p>{progressionSummary}</p>
-        </article>
+        {primaryTargetMatch || data.match.winnerToMatchId || data.match.loserToMatchId ? (
+          <article className="detail-card detail-card-cyber">
+            <p className="eyebrow">Bracket Path</p>
+            <h2>{primaryTargetMatch?.round ?? "Linked fixture"}</h2>
+            <p>{progressionSummary}</p>
+          </article>
+        ) : null}
       </MotionIn>
 
       {data.lineage.length > 0 ? (

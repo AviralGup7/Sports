@@ -330,12 +330,12 @@ html {
 
 .ticker-shell {
   position: relative;
-  gap: 1rem;
+  gap: 0.7rem;
 }
 
 .ticker-window {
   position: relative;
-  border-radius: 22px;
+  border-radius: 20px;
   background: linear-gradient(180deg, rgba(8, 12, 22, 0.92), rgba(7, 12, 20, 0.76));
   border: 1px solid rgba(114, 197, 255, 0.14);
 }
@@ -343,7 +343,7 @@ html {
 .ticker-groups {
   display: flex;
   gap: 0.55rem;
-  padding: 0.7rem 0.8rem 0;
+  padding: 0.55rem 0.7rem 0;
 }
 
 .ticker-group {
@@ -376,7 +376,7 @@ html {
 
 .ticker-track {
   gap: 0.9rem;
-  padding: 0.8rem;
+  padding: 0.65rem 0.7rem;
   will-change: transform;
 }
 
@@ -384,6 +384,7 @@ html {
   border: 1px solid rgba(255, 255, 255, 0.06);
   background: linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02));
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  padding: 0.6rem 0.8rem;
 }
 
 .broadcast-hero,

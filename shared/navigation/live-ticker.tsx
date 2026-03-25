@@ -58,14 +58,15 @@ export function LiveTicker({ items, groups = [] }: LiveTickerProps) {
   }
 
   const steppedItem = items[steppedIndex] ?? items[0];
+  const visibleGroups = groups.slice(0, 2);
 
   return (
     <div className="ticker-shell" aria-label="Live scores and match alerts">
       <div className="ticker-label">Live Scores</div>
       <div className="ticker-window">
-        {groups.length > 0 ? (
+        {visibleGroups.length > 0 ? (
           <div className="ticker-groups" aria-hidden="true">
-            {groups.map((group) => (
+            {visibleGroups.map((group) => (
               <span key={group.id} className={`ticker-group ticker-group-${group.tone}`}>
                 {group.label}
               </span>

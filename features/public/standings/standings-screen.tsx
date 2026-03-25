@@ -11,6 +11,7 @@ type StandingsScreenProps = {
 };
 
 export function StandingsScreen({ data }: StandingsScreenProps) {
+  const selectedSportRecord = data.sports.find((sport) => sport.id === data.selectedSport);
   const buildHref = (sport?: string) => (sport ? `/standings?sport=${sport}` : "/standings");
 
   return (
@@ -20,7 +21,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
           <BroadcastHero
             eyebrow="Standings"
             title="Tournament Tables"
-            description="See who is leading each sport, how knockout results are stacking up, and where the title race stands."
+            description="Use this page as the quickest reference for who is leading, who has results in, and which sports still need separation."
             compact
             tone="blue"
             intensity="premium"
@@ -33,7 +34,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
                 </div>
                 <div>
                   <span className="aside-label">Active filter</span>
-                  <strong>{data.selectedSport ?? "All sports"}</strong>
+                  <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
                 </div>
                 <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
@@ -42,11 +43,28 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={data.dataState} compact />
-      </MotionIn>
+      <MotionIn className="filter-rail filter-rail-sticky" delay={0.06}>
+        <div className="filter-rail-summary">
+          <div>
+            <p className="eyebrow">Reference view</p>
+            <h2>{selectedSportRecord?.name ?? "All sports"} standings</h2>
+            <p className="muted">
+              {data.sections.length} table section{data.sections.length === 1 ? "" : "s"} ready to browse. Pick a sport to remove extra scanning.
+            </p>
+          </div>
+          <div className="page-guide-actions">
+            <Link href="/schedule" className="button button-ghost">
+              Open schedule
+            </Link>
+          </div>
+        </div>
 
-      <MotionIn className="filter-rail" delay={0.06}>
+        <div className="filter-rail-meta">
+          <span className="pill">{data.sections.length} sections</span>
+          <span className="pill">{selectedSportRecord?.name ?? "All sports"}</span>
+          <DataStateBanner state={data.dataState} compact />
+        </div>
+
         <div className="filter-block">
           <p className="eyebrow">Sport</p>
           <div className="chip-row">
@@ -69,6 +87,9 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
               <div>
                 <p className="eyebrow">{section.sport.name}</p>
                 <h2>{section.liveMatches > 0 ? "Live standings" : "Current table"}</h2>
+                <p className="muted">
+                  {section.completedMatches} result{section.completedMatches === 1 ? "" : "s"} recorded{section.liveMatches > 0 ? `, ${section.liveMatches} live now.` : "."}
+                </p>
               </div>
               <div className="page-guide-actions">
                 <span className="pill">{section.completedMatches} results in</span>

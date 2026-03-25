@@ -83,19 +83,18 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={data.dataState} compact />
-      </MotionIn>
-
       <MotionIn delay={0.06}>
         <DayNoteBanner note={data.dayNote} />
       </MotionIn>
 
-      <MotionIn className="section-shell page-guide-shell" delay={0.07}>
-        <div className="section-heading">
+      <MotionIn className="filter-rail filter-rail-sticky" delay={0.07}>
+        <div className="filter-rail-summary">
           <div>
-            <p className="eyebrow">Filter Snapshot</p>
-            <h2>What this schedule is showing</h2>
+            <p className="eyebrow">Current view</p>
+            <h2>{selectedSportRecord?.name ?? "All sports"} schedule</h2>
+            <p className="muted">
+              {data.fixtures.length} fixture{data.fixtures.length === 1 ? "" : "s"} on {formatDateLabel(data.selectedDay)}. Status: {selectedStatusLabel}.
+            </p>
           </div>
           <div className="page-guide-actions">
             {hasActiveFilters ? (
@@ -108,26 +107,14 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </Link>
           </div>
         </div>
-        <div className="page-guide-grid">
-          <article className="page-guide-card">
-            <p className="eyebrow">Matches</p>
-            <strong>{data.fixtures.length}</strong>
-            <span>Fixtures matching your current filters</span>
-          </article>
-          <article className="page-guide-card">
-            <p className="eyebrow">Sport</p>
-            <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
-            <span>Knockout fixtures only</span>
-          </article>
-          <article className="page-guide-card">
-            <p className="eyebrow">Status</p>
-            <strong>{selectedStatusLabel}</strong>
-            <span>{formatDateLabel(data.selectedDay)}</span>
-          </article>
-        </div>
-      </MotionIn>
 
-      <MotionIn className="filter-rail" delay={0.08}>
+        <div className="filter-rail-meta">
+          <span className="pill">{data.fixtures.length} matches</span>
+          <span className="pill">{selectedSportRecord?.name ?? "All sports"}</span>
+          <span className="pill">{selectedStatusLabel}</span>
+          <DataStateBanner state={data.dataState} compact />
+        </div>
+
         <div className="filter-block">
           <p className="eyebrow">Day</p>
           <div className="chip-row">
@@ -169,24 +156,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
       </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.12}>
-        {!selectedSport && data.sportBlocks.length > 0 ? (
-          <section className="section-shell">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Quick Jump</p>
-                <h2>Sports on this day</h2>
-              </div>
-            </div>
-            <div className="chip-row">
-              {data.sportBlocks.map((block) => (
-                <Link key={`jump-${block.sport.id}`} href={buildHref({ sport: block.sport.id })} className="chip">
-                  {block.sport.name} {block.visibleCount}
-                </Link>
-              ))}
-            </div>
-          </section>
-        ) : null}
-
         {!selectedSport && data.sportBlocks.length > 0 ? (
           data.sportBlocks.map((block) => (
             <section key={block.sport.id} className="section-shell schedule-sport-block">

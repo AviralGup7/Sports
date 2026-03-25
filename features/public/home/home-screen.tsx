@@ -6,7 +6,7 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { DataStateBanner, EmptyState } from "@/shared/feedback";
-import { BracketPreviewCard, CountdownChip, DayNoteBanner, DisclosurePanel, FixtureStrip, FreshnessStamp, MetricTile, NewsBulletin, PodiumCard } from "@/shared/ui";
+import { BracketPreviewCard, CountdownChip, DayNoteBanner, FixtureStrip, FreshnessStamp, NewsBulletin, PodiumCard, SportProgressCard } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
 import { HomeContactCard } from "@/features/public/home/components/home-contact-card";
@@ -16,9 +16,11 @@ type HomeScreenProps = {
 };
 
 export function HomeScreen({ data }: HomeScreenProps) {
-  const { generatedAt, tournament, stats, dayNote, highlightMatch, nextMatch, heroSignals, featuredMatches, announcements, championSpotlights, bracketPreviewCards } = data;
+  const { generatedAt, tournament, stats, dayNote, highlightMatch, nextMatch, heroSignals, featuredMatches, announcements, championSpotlights, bracketPreviewCards, sportProgressCards } = data;
   const headlineAnnouncement = announcements[0] ?? null;
   const headlineMatches = featuredMatches.slice(0, 4);
+  const keySignals = heroSignals.slice(0, 3);
+  const exploreCards = sportProgressCards.slice(0, 4);
   const liveMetricHref = highlightMatch?.urgency === "live" ? `/matches/${highlightMatch.match.id}` : "/schedule?status=live";
 
   return (
@@ -34,7 +36,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
             tone={highlightMatch?.urgency === "live" ? "crimson" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
             intensity="premium"
             variant="home-hero"
-            signals={heroSignals.map((signal) => (
+            signals={keySignals.map((signal) => (
               <Link key={signal.id} href={signal.href ?? "/"} className={`hero-signal hero-signal-${signal.tone}`}>
                 <span>{signal.label}</span>
                 <strong>{signal.value}</strong>
@@ -89,83 +91,186 @@ export function HomeScreen({ data }: HomeScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={data.dataState} compact />
-      </MotionIn>
+      <MotionIn delay={0.05}>
+        <section className="section-shell section-shell-broadcast section-shell-home-command">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Live Desk</p>
+              <h2>Live now and next up</h2>
+            </div>
+            <Link href={liveMetricHref} className="inline-link">
+              Follow live scores
+            </Link>
+          </div>
 
-      <MotionIn className="home-essential-grid" delay={0.05}>
-        <div className="stack-lg">
-          <section className="section-shell section-shell-broadcast section-shell-home-essentials">
-            <div className="section-heading">
-              <div>
-                <p className="eyebrow">Today</p>
-                <h2>Follow the tournament in one glance</h2>
+          <div className="home-command-grid">
+            <div className="stack-lg">
+              <DayNoteBanner note={dayNote} />
+
+              <div className="fixture-stack fixture-stack-home">
+                {headlineMatches.length > 0 ? (
+                  headlineMatches.map((match) => <FixtureStrip key={match.id} match={match} showSport />)
+                ) : (
+                  <EmptyState
+                    compact
+                    eyebrow="Matches"
+                    title="No matches to show yet"
+                    description="Featured fixtures will appear here as soon as the schedule is published."
+                  />
+                )}
               </div>
             </div>
 
-            <DayNoteBanner note={dayNote} />
+            <div className="home-command-aside">
+              <article className="home-summary-card">
+                <p className="eyebrow">Snapshot</p>
+                <h3>What matters right now</h3>
+                <div className="home-summary-grid">
+                  <div>
+                    <span>Live matches</span>
+                    <strong>{stats.liveMatches}</strong>
+                  </div>
+                  <div>
+                    <span>Upcoming</span>
+                    <strong>{Math.max(stats.matches - stats.completedMatches - stats.liveMatches, 0)}</strong>
+                  </div>
+                  <div>
+                    <span>Results in</span>
+                    <strong>{stats.completedMatches}</strong>
+                  </div>
+                  <div>
+                    <span>Teams active</span>
+                    <strong>{stats.teams}</strong>
+                  </div>
+                </div>
+              </article>
 
-            <div className="fixture-stack fixture-stack-home">
-              {headlineMatches.length > 0 ? (
-                headlineMatches.map((match) => <FixtureStrip key={match.id} match={match} showSport />)
+              <article className="home-summary-card">
+                <p className="eyebrow">Freshness</p>
+                <h3>Live data context</h3>
+                <DataStateBanner state={data.dataState} compact />
+                {nextMatch ? <CountdownChip startsAt={nextMatch.startsAt} /> : null}
+                <FreshnessStamp generatedAt={generatedAt} />
+              </article>
+
+              <article className="home-summary-card">
+                <p className="eyebrow">Explore</p>
+                <h3>Jump to the right view</h3>
+                <div className="home-link-stack">
+                  <Link href="/schedule" className="inline-link">
+                    Full schedule
+                  </Link>
+                  <Link href="/standings" className="inline-link">
+                    Tournament standings
+                  </Link>
+                  <Link href="/announcements" className="inline-link">
+                    Notice board
+                  </Link>
+                </div>
+              </article>
+            </div>
+          </div>
+        </section>
+      </MotionIn>
+
+      <MotionIn delay={0.08}>
+        <section className="section-shell section-shell-newsdesk">
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Lead Notice</p>
+              <h2>Key update and context</h2>
+            </div>
+            <Link href="/announcements" className="inline-link">
+              All notices
+            </Link>
+          </div>
+
+          <div className="home-news-grid">
+            <div className="news-grid news-grid-headline">
+              {headlineAnnouncement ? (
+                <NewsBulletin announcement={headlineAnnouncement} pinnedHero={headlineAnnouncement.pinned} />
               ) : (
                 <EmptyState
                   compact
-                  eyebrow="Matches"
-                  title="No matches to show yet"
-                  description="Featured fixtures will appear here as soon as the schedule is published."
+                  eyebrow="Notices"
+                  title="No notices yet"
+                  description="Important updates from organisers will appear here once they are published."
                 />
               )}
             </div>
 
-            <div className="metric-grid metric-grid-home">
-              <MetricTile label="Sports" value={stats.sports} detail="Every sport running in this tournament" accent="#f59e0b" href="/schedule" />
-              <MetricTile label="Active Teams" value={stats.teams} detail="Associations competing across the event" accent="#38bdf8" href="/teams" />
-              <MetricTile
-                label="Matches Live"
-                value={stats.liveMatches}
-                detail={stats.liveMatches > 0 ? "Scores updating right now" : "No live matches at the moment"}
-                accent="#ff476e"
-                pulse={stats.liveMatches > 0}
-                href={liveMetricHref}
-              />
-              <MetricTile
-                label="Results In"
-                value={`${stats.completedMatches} of ${stats.matches}`}
-                detail="Completed fixtures recorded so far"
-                accent="#fb7185"
-                href="/standings"
-              />
-            </div>
+            <div className="home-news-aside">
+              <article className="home-summary-card">
+                <p className="eyebrow">Tournament status</p>
+                <h3>One-line context</h3>
+                <p className="muted">
+                  {stats.liveMatches > 0
+                    ? `${stats.liveMatches} live match${stats.liveMatches === 1 ? "" : "es"} are updating right now across ${stats.sports} sports.`
+                    : `No matches are live right now. The portal is tracking ${stats.matches} fixtures across ${stats.sports} sports.`}
+                </p>
+              </article>
 
-            <HomeContactCard tournament={tournament} />
-          </section>
-        </div>
-
-        <section className="section-shell section-shell-newsdesk section-shell-home-headline">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow">Latest Notice</p>
-              <h2>Important update</h2>
+              <article className="home-summary-card">
+                <p className="eyebrow">At a glance</p>
+                <h3>Current tournament numbers</h3>
+                <div className="home-kpi-list">
+                  <span>
+                    <strong>{stats.sports}</strong>
+                    Sports running
+                  </span>
+                  <span>
+                    <strong>{stats.announcements}</strong>
+                    Public notices
+                  </span>
+                  <span>
+                    <strong>{stats.completedMatches}</strong>
+                    Results recorded
+                  </span>
+                </div>
+              </article>
             </div>
           </div>
-
-          {headlineAnnouncement ? (
-            <div className="news-grid news-grid-headline">
-              <NewsBulletin announcement={headlineAnnouncement} pinnedHero={headlineAnnouncement.pinned} />
-            </div>
-          ) : (
-            <EmptyState
-              compact
-              eyebrow="Notices"
-              title="No notices yet"
-              description="Important updates from organisers will appear here once they are published."
-            />
-          )}
         </section>
       </MotionIn>
 
-      <MotionIn className="stack-xl" delay={0.12}>
+      <MotionIn className="stack-lg" delay={0.12}>
+        <ScrollStorySection variant="section">
+          <section className="section-shell">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Explore</p>
+                <h2>Sports, standings, and knockout races</h2>
+              </div>
+              <Link href="/sports/cricket" className="inline-link">
+                Open sports centre
+              </Link>
+            </div>
+
+            <div className="sport-progress-grid">
+              {exploreCards.length > 0 ? (
+                exploreCards.map((card) => <SportProgressCard key={card.sport.id} card={card} />)
+              ) : (
+                <EmptyState
+                  compact
+                  eyebrow="Sports"
+                  title="Sport progress will appear soon"
+                  description="As fixtures and results settle in, each sport summary will show up here."
+                />
+              )}
+            </div>
+            <div className="spacer-sm" />
+            <div className="bracket-preview-grid">
+              {bracketPreviewCards.length > 0 ? (
+                bracketPreviewCards.map((card) => <BracketPreviewCard key={card.sport.id} card={card} />)
+              ) : (
+                <EmptyState compact eyebrow="Bracket" title="Bracket previews will appear soon" description="Knockout views show up here once those rounds begin." />
+              )}
+            </div>
+          </section>
+        </ScrollStorySection>
+      </MotionIn>
+
+      <MotionIn className="home-secondary-grid" delay={0.16}>
         <ScrollStorySection variant="section">
           <section className="section-shell section-shell-podium">
             <div className="section-heading">
@@ -193,22 +298,16 @@ export function HomeScreen({ data }: HomeScreenProps) {
           </section>
         </ScrollStorySection>
 
-        <ScrollStorySection variant="bracket">
-          <section className="section-shell section-shell-bracket-preview">
-            <DisclosurePanel
-              eyebrow="Knockout race"
-              title="Follow knockout brackets"
-              meta={bracketPreviewCards.length > 0 ? `${bracketPreviewCards.length} sports with bracket views` : "Bracket views appear as knockout rounds fill in"}
-              className="section-disclosure"
-            >
-              <div className="bracket-preview-grid">
-                {bracketPreviewCards.length > 0 ? (
-                  bracketPreviewCards.map((card) => <BracketPreviewCard key={card.sport.id} card={card} />)
-                ) : (
-                  <EmptyState compact eyebrow="Bracket" title="Bracket previews will appear soon" description="Knockout views show up here once those rounds begin." />
-                )}
+        <ScrollStorySection variant="section">
+          <section className="section-shell section-shell-home-support">
+            <div className="section-heading">
+              <div>
+                <p className="eyebrow">Support</p>
+                <h2>Tournament help and venue info</h2>
               </div>
-            </DisclosurePanel>
+            </div>
+
+            <HomeContactCard tournament={tournament} />
           </section>
         </ScrollStorySection>
       </MotionIn>

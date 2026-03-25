@@ -57,15 +57,16 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn delay={0.04}>
-        <DataStateBanner state={data.dataState} compact />
-      </MotionIn>
-
-      <MotionIn className="section-shell page-guide-shell" delay={0.07}>
-        <div className="section-heading">
+      <MotionIn className="filter-rail sport-center-rail filter-rail-sticky" delay={0.07}>
+        <div className="filter-rail-summary">
           <div>
             <p className="eyebrow">Sport Snapshot</p>
-            <h2>Read this sport quickly</h2>
+            <h2>{activeStageLabel}</h2>
+            <p className="muted">
+              {liveCount > 0
+                ? `${liveCount} match${liveCount === 1 ? "" : "es"} live right now, ${completedCount} result${completedCount === 1 ? "" : "s"} already in.`
+                : `${completedCount} result${completedCount === 1 ? "" : "s"} recorded so far across ${data.teams.length} associations.`}
+            </p>
           </div>
           <div className="page-guide-actions">
             <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
@@ -76,26 +77,14 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             </Link>
           </div>
         </div>
-        <div className="page-guide-grid">
-          <article className="page-guide-card">
-            <p className="eyebrow">Matches live</p>
-            <strong>{liveCount}</strong>
-            <span>{liveCount > 0 ? "Scores updating right now" : "Waiting for the next whistle"}</span>
-          </article>
-          <article className="page-guide-card">
-            <p className="eyebrow">Teams</p>
-            <strong>{data.teams.length}</strong>
-            <span>Associations entered in this sport</span>
-          </article>
-          <article className="page-guide-card">
-            <p className="eyebrow">Results in</p>
-            <strong>{completedCount}</strong>
-            <span>{activeStageLabel}</span>
-          </article>
-        </div>
-      </MotionIn>
 
-      <MotionIn className="filter-rail sport-center-rail" delay={0.08}>
+        <div className="filter-rail-meta">
+          <span className="pill">{liveCount} live</span>
+          <span className="pill">{data.teams.length} teams</span>
+          <span className="pill">{completedCount} results</span>
+          <DataStateBanner state={data.dataState} compact />
+        </div>
+
         <div className="filter-block">
           <p className="eyebrow">View</p>
           <div className="chip-row">
