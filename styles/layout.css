@@ -450,6 +450,14 @@ html {
   pointer-events: none;
 }
 
+.broadcast-hero-scene {
+  background:
+    radial-gradient(circle at 18% 20%, rgba(50, 230, 255, 0.12), transparent 24%),
+    radial-gradient(circle at 82% 18%, rgba(255, 180, 77, 0.1), transparent 22%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.015), transparent 55%);
+  opacity: 0.9;
+}
+
 .broadcast-hero-shine {
   background:
     linear-gradient(112deg, transparent 15%, rgba(255, 255, 255, 0.08) 19%, transparent 28%),
@@ -914,8 +922,6 @@ html {
 
 .scroll-story-section {
   position: relative;
-  transform: translateZ(0);
-  will-change: transform, opacity;
 }
 
 @keyframes signal-sweep {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { useReducedMotion } from "framer-motion";
 import type { PostFxQuality, SceneMode, SceneQuality, ScrollMode } from "@/shared/motion/scene-config";
 
 export type UIMobileProfile = "desktop" | "mobile" | "android-mobile";
@@ -109,9 +108,33 @@ function sameCapability(left: UICapability, right: UICapability) {
 }
 
 export function useUICapability() {
-  const reducedMotion = useReducedMotion();
-  const prefersReducedMotion = Boolean(reducedMotion);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [capability, setCapability] = useState<UICapability>(() => getServerSafeCapability(prefersReducedMotion));
+
+  useEffect(() => {
+    if (typeof window === "undefined") {
+      return;
+    }
+
+    const media = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const apply = () => {
+      setPrefersReducedMotion(media.matches);
+    };
+
+    apply();
+
+    if (typeof media.addEventListener === "function") {
+      media.addEventListener("change", apply);
+      return () => {
+        media.removeEventListener("change", apply);
+      };
+    }
+
+    media.addListener(apply);
+    return () => {
+      media.removeListener(apply);
+    };
+  }, []);
 
   useEffect(() => {
     const apply = () => {

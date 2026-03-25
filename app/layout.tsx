@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
-import { AmbientBackdrop, PublicMotionShell, RuntimeCapabilityFlags } from "@/shared/motion";
+import { PublicMotionShell, RuntimeCapabilityFlags } from "@/shared/motion";
 import { SiteFooter, SiteHeader } from "@/shared/navigation";
 import { getDefaultSiteMetadata } from "@/server/data/public/page-metadata";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
@@ -50,7 +50,6 @@ export default async function RootLayout({
           Skip to main content
         </a>
         <div className="broadcast-backdrop">
-          <AmbientBackdrop />
           <div className="bg-grid" />
           <div className="bg-beam bg-beam-one" />
           <div className="bg-beam bg-beam-two" />

@@ -1,7 +1,6 @@
 import { CSSProperties, ReactNode } from "react";
 
 import type { HeroSceneVariant } from "@/shared/motion";
-import { BroadcastHeroScene } from "@/shared/layout/broadcast-hero-scene";
 
 type BroadcastHeroProps = {
   badge?: ReactNode;
@@ -36,7 +35,7 @@ export function BroadcastHero({
 }: BroadcastHeroProps) {
   return (
     <section className={compact ? "broadcast-hero broadcast-hero-compact" : "broadcast-hero"} data-variant={variant}>
-      <BroadcastHeroScene tone={tone} intensity={intensity} variant={variant} />
+      <div className="broadcast-hero-scene" data-tone={tone} data-intensity={intensity} data-variant={variant} aria-hidden="true" />
       <div className="broadcast-hero-shine" aria-hidden="true" />
       <div className="broadcast-hero-main">
         {badge ? <div className="hero-badge-slot">{badge}</div> : null}
