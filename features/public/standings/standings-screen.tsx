@@ -93,7 +93,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
               </div>
               <div className="page-guide-actions">
                 <span className="pill">{section.completedMatches} results in</span>
-                <Link href={`/sports/${section.sport.id}?tab=standings`} className="inline-link">
+                <Link href={`/sports/${section.sport.id}?tab=standings#sport-standings`} className="inline-link">
                   Open {section.sport.name}
                 </Link>
               </div>

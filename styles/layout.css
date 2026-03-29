@@ -112,6 +112,10 @@
   margin-top: 0.9rem;
 }
 
+.section-anchor-target {
+  scroll-margin-top: calc(var(--ticker-stack-offset) + 1.5rem);
+}
+
 .site-footer-sponsors {
   margin-top: 1rem;
 }

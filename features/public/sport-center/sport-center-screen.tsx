@@ -8,6 +8,7 @@ import { BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportPro
 import { BroadcastHero } from "@/shared/layout";
 import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
+import { SportTabScroll } from "@/features/public/sport-center/components/sport-tab-scroll";
 
 type SportCenterScreenProps = {
   sportSlug: SportSlug;
@@ -19,7 +20,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
   const liveCount = data.matches.filter((match) => match.status === "live").length;
   const completedCount = data.matches.filter((match) => match.status === "completed").length;
   const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Current stage";
-  const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
+  const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}${tab === "standings" ? "#sport-standings" : ""}`;
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "standings", label: "Standings" },
@@ -29,6 +30,8 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
 
   return (
     <div className="stack-xl">
+      <SportTabScroll targetId={selectedTab === "standings" ? "sport-standings" : undefined} />
+
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
@@ -166,7 +169,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "standings" ? (
-        <MotionIn className="section-shell" delay={0.14}>
+        <MotionIn id="sport-standings" className="section-shell section-anchor-target" delay={0.14}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Standings</p>
