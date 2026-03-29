@@ -35,6 +35,7 @@
 @media (max-width: 920px) {
   .site-header-bar,
   .section-heading,
+  .sponsor-showcase-head,
   .control-panel-head,
   .match-ops-head,
   .operations-hero,
@@ -73,6 +74,12 @@
   }
 
   .quick-tile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 700px) {
+  .sponsor-showcase-grid {
     grid-template-columns: 1fr;
   }
 }

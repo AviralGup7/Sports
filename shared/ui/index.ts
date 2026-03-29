@@ -14,6 +14,7 @@ export * from "@/shared/ui/podium-card";
 export * from "@/shared/ui/progress-path-card";
 export * from "@/shared/ui/share-match-button";
 export * from "@/shared/ui/sport-progress-card";
+export * from "@/shared/ui/sponsor-showcase";
 export * from "@/shared/ui/stage-badge";
 export * from "@/shared/ui/stage-summary-rail";
 export * from "@/shared/ui/stage-timeline";

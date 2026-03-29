@@ -3,6 +3,7 @@ import { usePathname } from "next/navigation";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
+import { SponsorShowcase } from "@/shared/ui";
 
 import { BrandMark } from "./brand-mark";
 
@@ -53,6 +54,15 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
           ))}
         </section>
       </div>
+
+      <section className="site-footer-card site-footer-sponsors">
+        <SponsorShowcase
+          compact
+          eyebrow="Partners"
+          title="Proudly backed by our sponsors"
+          description="Featured across the tournament portal and event-day touchpoints."
+        />
+      </section>
     </footer>
   );
 }
