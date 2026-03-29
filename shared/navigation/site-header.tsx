@@ -97,7 +97,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           <Link href="/" className="brand" aria-label="Go to tournament home" prefetch>
             <BrandMark tournament={chrome.tournament} />
             <span className="brand-copy">
-              <strong>{isHome ? "ICSL Portal" : chrome.tournament.name}</strong>
+              <strong>{isHome ? "ICL Portal" : chrome.tournament.name}</strong>
               <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Sponsored by Midtown`}</span>
             </span>
           </Link>
