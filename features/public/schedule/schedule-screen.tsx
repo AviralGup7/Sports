@@ -87,7 +87,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
         <DayNoteBanner note={data.dayNote} />
       </MotionIn>
 
-      <MotionIn className="filter-rail filter-rail-sticky" delay={0.07}>
+      <MotionIn className="filter-rail schedule-filter-rail" delay={0.07}>
         <div className="filter-rail-summary">
           <div>
             <p className="eyebrow">Current view</p>
