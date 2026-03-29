@@ -45,7 +45,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
               </>
             }
             aside={
-              <div className="score-spotlight score-spotlight-tight">
+              <div className="score-spotlight score-spotlight-tight sticky-card">
                 <p className="eyebrow">Match status</p>
                 <StageBadge
                   status={data.match.status}
