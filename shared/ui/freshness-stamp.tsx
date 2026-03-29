@@ -31,9 +31,19 @@ function formatRelative(generatedAt: string) {
   return `${diffHours} hours ago`;
 }
 
+function formatAbsolute(generatedAt: string) {
+  return new Intl.DateTimeFormat("en-IN", {
+    month: "short",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    timeZone: "Asia/Kolkata"
+  }).format(new Date(generatedAt));
+}
+
 export function FreshnessStamp({ generatedAt, prefix = "Last updated" }: FreshnessStampProps) {
-  const [label, setLabel] = useState(() => formatRelative(generatedAt));
-  const absoluteLabel = new Date(generatedAt).toLocaleString();
+  const [label, setLabel] = useState("recently");
+  const absoluteLabel = formatAbsolute(generatedAt);
 
   useEffect(() => {
     setLabel(formatRelative(generatedAt));
