@@ -43,7 +43,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn className="filter-rail filter-rail-sticky" delay={0.06}>
+      <MotionIn className="filter-rail sticky-filter-card" delay={0.06}>
         <div className="filter-rail-summary">
           <div>
             <p className="eyebrow">Reference view</p>
