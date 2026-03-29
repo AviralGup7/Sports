@@ -1,6 +1,6 @@
 import { cache } from "react";
 
-import { createSupabaseServerClient } from "@/server/supabase/server";
+import { createSupabaseDataClient } from "@/server/supabase/data";
 import {
   announcementsSeed,
   competitionGroupsSeed,
@@ -77,7 +77,7 @@ async function fetchSnapshot(): Promise<RepositorySnapshot> {
   }
 
   try {
-    const supabase = await createSupabaseServerClient();
+    const supabase = createSupabaseDataClient();
     const [
       preferredTournamentRes,
       fallbackTournamentRes,
