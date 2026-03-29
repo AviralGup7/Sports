@@ -38,6 +38,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
   const [menuOpen, setMenuOpen] = useState(false);
   const mobileMenuId = useId();
   const isAdmin = pathname.startsWith("/admin");
+  const isHome = pathname === "/";
   const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
   const dataSourceLabel = chrome.dataState.source === "fallback" ? "Seed data" : "Live data";
   const sportsActive = pathname.startsWith("/sports/") || pathname === "/teams";
@@ -96,7 +97,7 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           <Link href="/" className="brand" aria-label="Go to tournament home" prefetch>
             <BrandMark tournament={chrome.tournament} />
             <span className="brand-copy">
-              <strong>{chrome.tournament.name}</strong>
+              <strong>{isHome ? "ICSL Portal" : chrome.tournament.name}</strong>
               <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Sponsored by Midtown`}</span>
             </span>
           </Link>

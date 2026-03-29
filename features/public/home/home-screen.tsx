@@ -6,7 +6,7 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { CountdownChip, FreshnessStamp, NewsBulletin, SponsorShowcase } from "@/shared/ui";
+import { CountdownChip, FreshnessStamp, NewsBulletin } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
 
@@ -24,7 +24,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow="Inter-Assoc Cultural Sports League"
+            eyebrow="Official tournament portal"
             kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
             description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
@@ -85,12 +85,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
             }
           />
         </ScrollStorySection>
-      </MotionIn>
-
-      <MotionIn delay={0.03}>
-        <section className="section-shell sponsor-section">
-          <SponsorShowcase />
-        </section>
       </MotionIn>
 
       <MotionIn delay={0.05}>
