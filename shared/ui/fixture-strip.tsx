@@ -13,9 +13,10 @@ type FixtureStripProps = {
   showSport?: boolean;
   compact?: boolean;
   admin?: boolean;
+  emphasizeTeamSpacing?: boolean;
 };
 
-export function FixtureStrip({ match, showSport = false, compact = false, admin = false }: FixtureStripProps) {
+export function FixtureStrip({ match, showSport = false, compact = false, admin = false, emphasizeTeamSpacing = false }: FixtureStripProps) {
   const sportLabel = match.sportId.charAt(0).toUpperCase() + match.sportId.slice(1);
   const teamAAccent = getTeamAccent(match.teamA);
   const teamBAccent = getTeamAccent(match.teamB);
@@ -36,14 +37,20 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
               {match.stage?.label ?? match.round}
             </p>
             <h3 className="fixture-teamline">
-              <span className="fixture-team-name" style={{ "--team-accent": teamAAccent } as CSSProperties}>
+              <span
+                className={emphasizeTeamSpacing ? "fixture-team-name fixture-team-name-spaced" : "fixture-team-name"}
+                style={{ "--team-accent": teamAAccent } as CSSProperties}
+              >
                 <i className="fixture-team-badge" aria-hidden="true">
                   {getTeamInitials(match.teamA)}
                 </i>
                 <b>{match.teamA?.name ?? "TBD"}</b>
               </span>
               <span>vs</span>
-              <span className="fixture-team-name" style={{ "--team-accent": teamBAccent } as CSSProperties}>
+              <span
+                className={emphasizeTeamSpacing ? "fixture-team-name fixture-team-name-spaced" : "fixture-team-name"}
+                style={{ "--team-accent": teamBAccent } as CSSProperties}
+              >
                 <i className="fixture-team-badge" aria-hidden="true">
                   {getTeamInitials(match.teamB)}
                 </i>

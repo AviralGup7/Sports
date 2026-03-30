@@ -12,6 +12,20 @@
   box-shadow: var(--shadow);
 }
 
+.site-header-sponsor {
+  margin-bottom: 0.8rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 16px;
+  border: 1px solid rgba(245, 158, 11, 0.22);
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.16), rgba(249, 115, 22, 0.06));
+  color: #ffe3a3;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.78rem;
+  letter-spacing: 0.12em;
+  text-align: center;
+  text-transform: uppercase;
+}
+
 .site-header-admin {
   background: rgba(8, 12, 20, 0.88);
 }
@@ -108,11 +122,12 @@
 
 .hero-brand-lockup {
   display: inline-grid;
-  grid-template-columns: minmax(7.5rem, 9rem) minmax(0, 1fr);
+  grid-template-columns: minmax(6rem, 7rem);
   align-items: center;
-  gap: 1.15rem;
-  width: min(100%, 34rem);
-  padding: 1rem 1.1rem;
+  justify-items: center;
+  gap: 0;
+  width: fit-content;
+  padding: 0.8rem;
   border-radius: 1.55rem;
   border: 1px solid rgba(143, 247, 255, 0.22);
   background:
@@ -127,10 +142,10 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: clamp(7.5rem, 15vw, 9rem);
+  width: clamp(6rem, 12vw, 7rem);
   aspect-ratio: 1;
-  padding: 0.35rem;
-  border-radius: 1.6rem;
+  padding: 0.25rem;
+  border-radius: 1.3rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
     radial-gradient(circle at center, rgba(42, 126, 211, 0.28), rgba(5, 10, 18, 0.08) 72%),
@@ -358,6 +373,10 @@
   font-size: 0.8rem;
   text-transform: uppercase;
   letter-spacing: 0.12em;
+}
+
+.fixture-team-name-spaced {
+  gap: 0.9rem;
 }
 
 .ticker-window {
@@ -2387,6 +2406,11 @@ html[data-ui-profile="android-mobile"] .bracket-tree-node {
   .ticker-label,
   .nav-dropdown {
     display: none !important;
+  }
+
+  .site-header-sponsor {
+    margin-bottom: 0.65rem;
+    font-size: 0.72rem;
   }
 
   .header-cta,

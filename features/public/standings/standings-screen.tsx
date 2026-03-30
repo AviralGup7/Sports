@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { StandingsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { FreshnessStamp, StandingsTable } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
@@ -44,27 +44,6 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
       </MotionIn>
 
       <MotionIn className="filter-rail sticky-filter-card" delay={0.06}>
-        <div className="filter-rail-summary">
-          <div>
-            <p className="eyebrow">Reference view</p>
-            <h2>{selectedSportRecord?.name ?? "All sports"} standings</h2>
-            <p className="muted">
-              {data.sections.length} table section{data.sections.length === 1 ? "" : "s"} ready to browse. Pick a sport to remove extra scanning.
-            </p>
-          </div>
-          <div className="page-guide-actions">
-            <Link href="/schedule" className="button button-ghost">
-              Open schedule
-            </Link>
-          </div>
-        </div>
-
-        <div className="filter-rail-meta">
-          <span className="pill">{data.sections.length} sections</span>
-          <span className="pill">{selectedSportRecord?.name ?? "All sports"}</span>
-          <DataStateBanner state={data.dataState} compact />
-        </div>
-
         <div className="filter-block">
           <p className="eyebrow">Sport</p>
           <div className="chip-row">

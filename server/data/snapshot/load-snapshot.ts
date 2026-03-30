@@ -1,5 +1,3 @@
-import { cache } from "react";
-
 import { createSupabaseDataClient } from "@/server/supabase/data";
 import {
   announcementsSeed,
@@ -177,9 +175,7 @@ async function fetchSnapshot(): Promise<RepositorySnapshot> {
   }
 }
 
-const loadSnapshotCached = cache(fetchSnapshot);
-
 export async function loadSnapshot(): Promise<RepositorySnapshot> {
-  return loadSnapshotCached();
+  return fetchSnapshot();
 }
 

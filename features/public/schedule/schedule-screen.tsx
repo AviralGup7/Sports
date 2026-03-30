@@ -6,7 +6,7 @@ import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from
 import { DataStateBanner, EmptyState } from "@/shared/feedback";
 import { BroadcastHero } from "@/shared/layout";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { DayNoteBanner, FixtureStrip, FreshnessStamp } from "@/shared/ui";
+import { FixtureStrip, FreshnessStamp } from "@/shared/ui";
 
 type ScheduleScreenProps = {
   data: SchedulePageData;
@@ -81,10 +81,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             }
           />
         </ScrollStorySection>
-      </MotionIn>
-
-      <MotionIn delay={0.06}>
-        <DayNoteBanner note={data.dayNote} />
       </MotionIn>
 
       <MotionIn className="filter-rail schedule-filter-rail" delay={0.07}>
@@ -176,7 +172,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
                     </div>
                     <div className="timeline-stack">
                       {group.matches.map((match) => (
-                        <FixtureStrip key={match.id} match={match} />
+                        <FixtureStrip key={match.id} match={match} emphasizeTeamSpacing />
                       ))}
                     </div>
                   </section>
@@ -194,7 +190,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
               </div>
               <div className="timeline-stack">
                 {group.matches.map((match) => (
-                  <FixtureStrip key={match.id} match={match} showSport={!selectedSport} />
+                  <FixtureStrip key={match.id} match={match} showSport={!selectedSport} emphasizeTeamSpacing={!selectedSport} />
                 ))}
               </div>
             </section>

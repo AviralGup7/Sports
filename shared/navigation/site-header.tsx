@@ -93,12 +93,13 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
   return (
     <>
       <header className={isAdmin ? "site-header site-header-admin" : "site-header"}>
+        {!isAdmin ? <div className="site-header-sponsor">Sponsored by Midtown and Dark Park</div> : null}
         <div className="site-header-bar">
           <Link href="/" className="brand" aria-label="Go to tournament home" prefetch>
             <BrandMark tournament={chrome.tournament} />
             <span className="brand-copy">
               <strong>{isHome ? "ICL Portal" : chrome.tournament.name}</strong>
-              <span>{isAdmin ? "Backstage control feed" : `${chrome.tournament.venue} | Sponsored by Midtown`}</span>
+              <span>{isAdmin ? "Backstage control feed" : chrome.tournament.venue}</span>
             </span>
           </Link>
 

@@ -3,11 +3,14 @@ import { Bebas_Neue, JetBrains_Mono, Manrope } from "next/font/google";
 import { ReactNode } from "react";
 
 import { PublicMotionShell, RuntimeCapabilityFlags } from "@/shared/motion";
+import { LiveScoreRefresh } from "@/shared/navigation/live-score-refresh";
 import { SiteFooter, SiteHeader } from "@/shared/navigation";
 import { getDefaultSiteMetadata } from "@/server/data/public/page-metadata";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
 import "./globals.css";
+
+export const revalidate = 0;
 
 const headingFont = Bebas_Neue({
   subsets: ["latin"],
@@ -46,6 +49,7 @@ export default async function RootLayout({
       <body className={`${headingFont.variable} ${bodyFont.variable} ${monoFont.variable}`}>
         <RuntimeCapabilityFlags />
         <PublicMotionShell />
+        <LiveScoreRefresh />
         <a href="#main-content" className="skip-link">
           Skip to main content
         </a>
