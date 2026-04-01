@@ -53,7 +53,7 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
           <EmptyState
             eyebrow="Standings"
             title="No standings available in this view"
-            description="Knockout summary tables appear once enough results are recorded for the selected sport."
+            description="Tournament tables appear once enough results are recorded for the selected sport."
           />
         </MotionIn>
       )}

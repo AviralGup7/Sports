@@ -19,7 +19,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
       ? `Winner moves into ${data.match.winnerToSlot} of ${data.winnerTargetMatch.round}.`
       : data.loserTargetMatch
         ? `Loser moves into ${data.match.loserToSlot} of ${data.loserTargetMatch.round}.`
-        : "This match does not feed into another bracket fixture.";
+        : "This match does not feed into another knockout fixture.";
 
   return (
     <div className="stack-xl">
@@ -71,7 +71,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
         </article>
         {primaryTargetMatch || data.match.winnerToMatchId || data.match.loserToMatchId ? (
           <article className="detail-card detail-card-cyber">
-            <p className="eyebrow">Bracket Path</p>
+            <p className="eyebrow">Knockout Path</p>
             <h2>{primaryTargetMatch?.round ?? "Linked fixture"}</h2>
             <p>{progressionSummary}</p>
           </article>

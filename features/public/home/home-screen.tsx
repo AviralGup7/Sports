@@ -69,7 +69,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
                       Match Details
                     </Link>
                     <Link href={`/sports/${highlightMatch.sport.id}?tab=bracket`} className="inline-link">
-                      View Bracket
+                      View Knockouts
                     </Link>
                   </div>
                 </div>

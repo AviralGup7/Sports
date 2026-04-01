@@ -20,21 +20,21 @@ export const sportsSeed: Sport[] = [
     name: "Cricket",
     color: "#f59e0b",
     rulesSummary: "14-team knockout across 2 April to 5 April. Opening day uses 90-minute slots, then the bracket rolls through 105-minute matches with short buffers.",
-    format: "15 teams, knockout bracket"
+    format: "15 teams, knockout"
   },
   {
     id: "football",
     name: "Football",
     color: "#22c55e",
     rulesSummary: "11-team knockout scheduled inside the 8 PM to midnight window from 3 April to 5 April with 45-minute matches and rolling buffers.",
-    format: "12 teams, knockout bracket"
+    format: "12 teams, knockout"
   },
   {
     id: "volleyball",
     name: "Volleyball",
     color: "#38bdf8",
     rulesSummary: "10-team knockout using one court and one live volleyball match at a time from 3 April to 5 April.",
-    format: "11 teams, knockout bracket"
+    format: "11 teams, knockout"
   },
   {
     id: "athletics",
@@ -57,8 +57,8 @@ export const profilesSeed: Profile[] = [
 
 export const competitionStagesSeed: CompetitionStage[] = [
   { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Knockout", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Cup", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Championship Ladder", orderIndex: 1, advancesCount: 1, isActive: true },
+  { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Knockout", orderIndex: 1, advancesCount: 1, isActive: true },
+  { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Knockout", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "athletics-results-stage", sportId: "athletics", type: "knockout", label: "Elimination", orderIndex: 1, advancesCount: 1, isActive: true }
 ];
 

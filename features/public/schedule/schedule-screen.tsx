@@ -79,7 +79,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             </section>
           ))
         ) : (
-          <EmptyState eyebrow="Schedule" title="No fixtures in this view" description="Try another day, sport, or status to bring more knockout fixtures into view." />
+          <EmptyState eyebrow="Schedule" title="No fixtures in this view" description="Try another day, sport, or status to bring more fixtures into view." />
         )}
       </MotionIn>
     </div>

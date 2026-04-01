@@ -195,13 +195,13 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
             <strong>{selectedNode.match.teamB?.name ?? "TBD"}</strong>
           </div>
           <p className="bracket-focus-meta">
-            {selectedNode.match.stage?.label ?? "Bracket match"} | {selectedNode.match.venue}
+            {selectedNode.match.stage?.label ?? "Knockout match"} | {selectedNode.match.venue}
           </p>
           <p className="bracket-focus-summary">
             {selectedNode.match.result?.scoreSummary ??
               (selectedNode.match.status === "live"
                 ? "This match is currently live."
-                : "Waiting for a result and bracket update.")}
+                : "Waiting for a result and knockout update.")}
           </p>
           <div className="bracket-focus-route-grid">
             <div>

@@ -36,9 +36,9 @@ set logo_asset_path = excluded.logo_asset_path,
 
 insert into public.sports (id, name, color, rules_summary, format)
 values
-  ('cricket', 'Cricket', '#f59e0b', '14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.', '15 teams, knockout bracket'),
-  ('football', 'Football', '#22c55e', '11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.', '12 teams, knockout bracket'),
-  ('volleyball', 'Volleyball', '#38bdf8', '10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.', '11 teams, knockout bracket'),
+  ('cricket', 'Cricket', '#f59e0b', '14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.', '15 teams, knockout'),
+  ('football', 'Football', '#22c55e', '11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.', '12 teams, knockout'),
+  ('volleyball', 'Volleyball', '#38bdf8', '10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.', '11 teams, knockout'),
   ('athletics', 'Athletics', '#fb7185', 'Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.', '13 associations, elimination runs')
 on conflict (id) do update
 set name = excluded.name,
@@ -91,8 +91,8 @@ on conflict do nothing;
 insert into public.competition_stages (id, sport_id, type, label, order_index, advances_count, is_active)
 values
   ('cricket-knockout-stage', 'cricket', 'knockout', 'Knockout', 1, 1, true),
-  ('football-knockout-stage', 'football', 'knockout', 'Cup', 1, 1, true),
-  ('volleyball-knockout-stage', 'volleyball', 'knockout', 'Championship Ladder', 1, 1, true),
+  ('football-knockout-stage', 'football', 'knockout', 'Knockout', 1, 1, true),
+  ('volleyball-knockout-stage', 'volleyball', 'knockout', 'Knockout', 1, 1, true),
   ('athletics-results-stage', 'athletics', 'knockout', 'Elimination', 1, 1, true)
 on conflict (id) do update
 set sport_id = excluded.sport_id,

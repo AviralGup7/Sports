@@ -380,7 +380,7 @@ function buildSportProgressCards(snapshot: RepositorySnapshot, sportIds?: SportS
     const pendingMatches = matches.length - completedMatches - liveMatches;
     const finalsPending = matches.filter((match) => isTitleFinalRound(match.round) && match.status !== "completed").length;
     const completionPercent = matches.length > 0 ? Math.round((completedMatches / matches.length) * 100) : 0;
-    const activeStageLabel = getActiveStage(snapshot, sport.id)?.label ?? "Structure open";
+    const activeStageLabel = getActiveStage(snapshot, sport.id)?.label ?? "Current stage";
 
     return {
       sport,
@@ -422,7 +422,7 @@ function buildBracketPreviewCard(snapshot: RepositorySnapshot, sport: Sport): Br
 
   return {
     sport,
-    stageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Bracket",
+    stageLabel: getActiveStage(snapshot, sport.id)?.label ?? "Knockout",
     championLabel: championMatch?.result?.winner?.name ?? "Champion pending",
     href: `/sports/${sport.id}?tab=bracket`,
     rounds
@@ -651,7 +651,7 @@ function buildBracketTree(matches: Match[], _stages: CompetitionStage[]): Bracke
         columnId: key,
         match,
         title: `${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"}`,
-        subtitle: `${match.stage?.label ?? "Bracket match"} | ${match.venue}`,
+        subtitle: `${match.stage?.label ?? "Knockout match"} | ${match.venue}`,
         state: mapNodeState(match),
         isHighlighted: match.status === "live" || Boolean(match.result?.winnerTeamId)
       }))
@@ -912,8 +912,7 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
     generatedAt,
     dataState: buildDataState(snapshot, generatedAt),
     sport: {
-      ...sport,
-      format: getActiveStage(snapshot, sportId)?.label ? `${sport.format} | ${getActiveStage(snapshot, sportId)?.label}` : sport.format
+      ...sport
     },
     stages,
     stageSummaries: buildStageSummaries(snapshot, sportId),

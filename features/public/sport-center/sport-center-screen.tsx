@@ -23,7 +23,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "standings", label: "Standings" },
-    { id: "bracket", label: "Bracket" },
+    { id: "bracket", label: "Knockouts" },
     { id: "fixtures", label: "Fixtures" }
   ];
 
@@ -162,7 +162,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           {data.standings.length > 0 ? (
             <StandingsTable cards={data.standings} />
           ) : (
-            <EmptyState eyebrow="Standings" title="No standings available yet" description="Knockout summary tables appear once enough results are recorded in this sport." />
+                <EmptyState eyebrow="Standings" title="No standings available yet" description="Tournament tables appear once enough results are recorded in this sport." />
           )}
         </MotionIn>
       ) : null}
@@ -171,14 +171,14 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <MotionIn className="section-shell section-shell-bracket" delay={0.14}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Bracket</p>
-              <h2>Knockout view</h2>
+              <p className="eyebrow">Knockouts</p>
+              <h2>Knockout path</h2>
             </div>
           </div>
           {data.bracket ? (
             <BracketTree bracket={data.bracket} />
           ) : (
-            <EmptyState eyebrow="Bracket" title="Bracket is not available yet" description="As knockout rounds are seeded, the bracket view will fill in here." />
+            <EmptyState eyebrow="Knockouts" title="Knockout view is not available yet" description="As knockout rounds are seeded, the knockout view will fill in here." />
           )}
         </MotionIn>
       ) : null}
