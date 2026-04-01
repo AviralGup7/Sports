@@ -4,9 +4,9 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
-import { BracketPreviewCard, BracketTree, FixtureStrip, FreshnessStamp, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
+import { BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { SportTabScroll } from "@/features/public/sport-center/components/sport-tab-scroll";
 
@@ -53,7 +53,6 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
                     ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
                     : "Use the summary below to check standings, fixtures, and the current title picture."}
                 </p>
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
@@ -85,7 +84,6 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <span className="pill">{liveCount} live</span>
           <span className="pill">{data.teams.length} teams</span>
           <span className="pill">{completedCount} results</span>
-          <DataStateBanner state={data.dataState} compact />
         </div>
 
         <div className="filter-block">

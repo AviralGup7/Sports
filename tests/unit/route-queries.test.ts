@@ -14,14 +14,12 @@ describe("route-facing queries", () => {
     expect(data.fixtures.every((match) => match.sportId === "football" && match.status === "live")).toBe(true);
   });
 
-  it("returns athletics heat cards without forcing a knockout table", async () => {
+  it("returns an empty sport page cleanly when no future fixtures are published yet", async () => {
     const data = await getSportPageData("athletics");
 
     expect(data).not.toBeNull();
     expect(data?.dataState.source).toMatch(/supabase|fallback/);
-    expect(data?.matches.length).toBeGreaterThan(0);
-    expect(data?.standings.length).toBe(0);
-    expect(data?.stageSummaries[0]?.stage.label).toBe("Heat and Finals Cards");
+    expect(data?.matches.length).toBe(0);
   });
 
   it("builds admin matches data with visible builder cards and quick-result candidates", async () => {

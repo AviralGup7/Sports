@@ -6,7 +6,7 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { CountdownChip, FreshnessStamp, NewsBulletin } from "@/shared/ui";
+import { CountdownChip, NewsBulletin } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
 
@@ -15,7 +15,7 @@ type HomeScreenProps = {
 };
 
 export function HomeScreen({ data }: HomeScreenProps) {
-  const { generatedAt, tournament, highlightMatch, nextMatch, heroSignals, announcements } = data;
+  const { tournament, highlightMatch, nextMatch, heroSignals, announcements } = data;
   const headlineAnnouncement = announcements[0] ?? null;
   const keySignals = heroSignals.slice(0, 3);
 
@@ -64,7 +64,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
                   <p>{highlightMatch.headline}</p>
                   <strong>{highlightMatch.summary}</strong>
                   {nextMatch ? <CountdownChip startsAt={nextMatch.startsAt} /> : null}
-                  <FreshnessStamp generatedAt={generatedAt} />
                   <div className="spotlight-actions">
                     <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
                       Match Details
@@ -79,7 +78,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
                   <p className="eyebrow">Featured Match</p>
                   <h2>No match featured yet</h2>
                   <p>As soon as fixtures are confirmed, the biggest live or upcoming match will appear here.</p>
-                  <FreshnessStamp generatedAt={generatedAt} />
                 </div>
               )
             }
@@ -96,7 +94,6 @@ export function HomeScreen({ data }: HomeScreenProps) {
             </div>
             <div className="home-inline-meta">
               {nextMatch ? <CountdownChip startsAt={nextMatch.startsAt} /> : null}
-              <FreshnessStamp generatedAt={generatedAt} />
               <Link href="/announcements" className="inline-link">
                 All notices
               </Link>

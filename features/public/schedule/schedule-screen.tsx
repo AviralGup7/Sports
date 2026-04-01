@@ -3,10 +3,10 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import type { SchedulePageData } from "@/server/data/public/types";
 import { formatDateLabel, formatStatusLabel, getSportBySlugFromCollection } from "@/server/data/formatters";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { BroadcastHero } from "@/shared/layout";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { FixtureStrip, FreshnessStamp } from "@/shared/ui";
+import { FixtureStrip } from "@/shared/ui";
 
 type ScheduleScreenProps = {
   data: SchedulePageData;
@@ -45,7 +45,7 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
             eyebrow="Schedule"
             kicker={formatDateLabel(data.selectedDay)}
             title={selectedSportRecord ? `${selectedSportRecord.name} Matches` : "Tournament Schedule"}
-            description="Browse today's knockout fixtures, narrow by sport or status, and jump straight into match details."
+            description="Browse the published fixtures and jump straight into match details."
             compact
             tone={selectedSportRecord ? "cyan" : "blue"}
             intensity="premium"
@@ -76,7 +76,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
                   <span className="aside-label">Current view</span>
                   <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
                 </div>
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
@@ -108,7 +107,6 @@ export function ScheduleScreen({ data, selectedSport }: ScheduleScreenProps) {
           <span className="pill">{data.fixtures.length} matches</span>
           <span className="pill">{selectedSportRecord?.name ?? "All sports"}</span>
           <span className="pill">{selectedStatusLabel}</span>
-          <DataStateBanner state={data.dataState} compact />
         </div>
 
         <div className="filter-block">

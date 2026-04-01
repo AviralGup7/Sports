@@ -3,8 +3,8 @@ import Link from "next/link";
 import type { MatchPageData } from "@/server/data/public/types";
 import { formatDateTime } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
-import { FixtureStrip, FreshnessStamp, ProgressPathCard, ShareMatchButton, StageBadge } from "@/shared/ui";
+import { EmptyState } from "@/shared/feedback";
+import { FixtureStrip, ProgressPathCard, ShareMatchButton, StageBadge } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type MatchCenterScreenProps = {
@@ -55,8 +55,6 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
                 <h2>{data.match.result?.winner?.name ?? "TBD"}</h2>
                 <strong>{data.match.result?.scoreSummary ?? "Result Pending"}</strong>
                 <p>{data.match.result?.note ?? progressionSummary}</p>
-                <DataStateBanner state={data.dataState} compact />
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />

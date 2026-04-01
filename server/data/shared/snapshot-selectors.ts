@@ -7,22 +7,22 @@ import { formatDateLabel } from "@/server/data/formatters";
 const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   "2026-04-02": {
     title: "Opening day",
-    detail: "Cricket Round 1 opens with Matches 1 to 3 across the full 6 PM to midnight block.",
+    detail: "Cricket owns the full 6 PM to midnight circuit with four 90-minute knockout slots.",
     tone: "info"
   },
   "2026-04-03": {
-    title: "Football launch night",
-    detail: "Athletics Heat A and the first volleyball tie start the evening before Football Matches 1 to 4 take over the late block.",
+    title: "Knockout crossover night",
+    detail: "Cricket, football, volleyball, and athletics all start overlapping, but the schedule is staggered to reduce same-association clashes.",
     tone: "alert"
   },
   "2026-04-04": {
-    title: "Carry-forward day",
-    detail: "Athletics Heat B, Volleyball Match 2, late football quarter-finals, and Cricket Match 4 keep the bracket pressure building.",
+    title: "Quarterfinal pressure",
+    detail: "Cricket and football quarterfinals stack into the late window while athletics and volleyball keep advancing the elimination ladder.",
     tone: "alert"
   },
   "2026-04-05": {
     title: "Finals day",
-    detail: "Athletics runs its final ladder, football crowns a champion, and cricket plus volleyball still need overflow capacity to finish cleanly.",
+    detail: "Athletics closes first, then the late knockout slate pushes cricket, football, and volleyball toward their championship finish.",
     tone: "success"
   }
 };

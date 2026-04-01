@@ -1,15 +1,15 @@
 import type { AnnouncementsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { FreshnessStamp, NewsBulletin } from "@/shared/ui";
+import { NewsBulletin } from "@/shared/ui";
 
 type AnnouncementsScreenProps = {
   data: AnnouncementsPageData;
 };
 
 export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
-  const { generatedAt, dataState, items } = data;
+  const { items } = data;
   const pinnedItems = items.filter((announcement) => announcement.pinned);
   const leadItem = pinnedItems[0] ?? items[0] ?? null;
   const feedItems = items.filter((announcement) => announcement.id !== leadItem?.id);
@@ -36,7 +36,6 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
                   <span className="aside-label">More notices</span>
                   <strong>{feedItems.length}</strong>
                 </div>
-                <FreshnessStamp generatedAt={generatedAt} />
               </div>
             }
           />
@@ -56,13 +55,6 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
               <NewsBulletin announcement={leadItem} pinnedHero={leadItem.pinned} />
             </div>
             <div className="home-news-aside">
-              <article className="home-summary-card">
-                <p className="eyebrow">Freshness</p>
-                <h3>Publishing status</h3>
-                <DataStateBanner state={dataState} compact />
-                <FreshnessStamp generatedAt={generatedAt} />
-              </article>
-
               <article className="home-summary-card">
                 <p className="eyebrow">Noticeboard</p>
                 <h3>What is in the feed</h3>

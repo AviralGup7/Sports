@@ -49,7 +49,7 @@ set name = excluded.name,
 insert into public.teams (id, name, association, seed, is_active)
 values
   ('andhra-samithi', 'Andhra Samithi', 'Andhra Samithi', 1, true),
-  ('capitol', 'CAPITOL', 'Capitol', 2, true),
+  ('capitol', 'Capitol', 'Capitol', 2, true),
   ('gurjari', 'GUJARAT TITANS', 'Gurjari', 3, true),
   ('haryana-cultural', 'HCA', 'Haryana Cultural Association', 4, true),
   ('punjab-cultural', 'PCA', 'Punjab Cultural Association', 5, true),
@@ -58,7 +58,7 @@ values
   ('kairali', 'Abrahaminde Sandhadhikal', 'Kairali', 8, true),
   ('kannada-vedike', 'Royal Challengers KV', 'Kannada Vedike', 9, true),
   ('pilani-tamil-mandram', 'PTM', 'Pilani Tamil Mandram', 10, true),
-  ('madhyansh', 'Tigers of M.P', 'Madhyansh', 11, true),
+  ('madhyansh', 'Tigers of MP', 'Madhyansh', 11, true),
   ('maurya-vihar', 'MV7', 'Maurya Vihar', 12, true),
   ('marudhara', 'Marudhara', 'Marudhara', 13, true),
   ('moruchhaya', 'Moruchhaya', 'Moruchhaya', 14, true),
@@ -108,10 +108,10 @@ insert into public.matches (
   winner_to_match_id, winner_to_slot, loser_to_match_id, loser_to_slot, is_bye
 )
 values
-  ('cricket-r1-1', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '18:00', 'Main Cricket Ground', 'kairali', 'marudhara', 'scheduled', 'cricket-qf-4', 'team_a', 'cricket-knockout-stage', null, 1, 1, 'cricket-qf-4', 'team_a', null, null, false),
-  ('cricket-r1-2', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '20:00', 'Main Cricket Ground', 'andhra-samithi', 'moruchhaya', 'scheduled', 'cricket-qf-4', 'team_b', 'cricket-knockout-stage', null, 1, 2, 'cricket-qf-4', 'team_b', null, null, false),
-  ('cricket-r1-3', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '22:00', 'Main Cricket Ground', 'punjab-cultural', 'udgam', 'scheduled', 'cricket-qf-3', 'team_a', 'cricket-knockout-stage', null, 1, 3, 'cricket-qf-3', 'team_a', null, null, false),
-  ('cricket-r1-4', 'icl-2026', 'cricket', 'Round 1', '2026-04-04', '22:00', 'Main Cricket Ground', 'haryana-cultural', 'maharashtra-mandal', 'scheduled', 'cricket-qf-3', 'team_b', 'cricket-knockout-stage', null, 1, 4, 'cricket-qf-3', 'team_b', null, null, false),
+  ('cricket-r1-1', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '18:00', 'Main Cricket Ground', 'haryana-cultural', 'marudhara', 'scheduled', 'cricket-qf-4', 'team_a', 'cricket-knockout-stage', null, 1, 1, 'cricket-qf-4', 'team_a', null, null, false),
+  ('cricket-r1-2', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '19:30', 'Main Cricket Ground', 'madhyansh', 'maurya-vihar', 'scheduled', 'cricket-qf-4', 'team_b', 'cricket-knockout-stage', null, 1, 2, 'cricket-qf-4', 'team_b', null, null, false),
+  ('cricket-r1-3', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '21:00', 'Main Cricket Ground', 'maharashtra-mandal', 'sangam', 'scheduled', 'cricket-qf-3', 'team_a', 'cricket-knockout-stage', null, 1, 3, 'cricket-qf-3', 'team_a', null, null, false),
+  ('cricket-r1-4', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '22:30', 'Main Cricket Ground', 'andhra-samithi', 'capitol', 'scheduled', 'cricket-qf-3', 'team_b', 'cricket-knockout-stage', null, 1, 4, 'cricket-qf-3', 'team_b', null, null, false),
   ('cricket-r1-5', 'icl-2026', 'cricket', 'Round 1', '2026-04-05', '20:00', 'Main Cricket Ground', 'gurjari', 'maurya-vihar', 'scheduled', 'cricket-qf-2', 'team_b', 'cricket-knockout-stage', null, 1, 5, 'cricket-qf-2', 'team_b', null, null, false),
   ('cricket-r1-6', 'icl-2026', 'cricket', 'Round 1', '2026-04-05', '22:00', 'Main Cricket Ground', 'pilani-tamil-mandram', 'capitol', 'scheduled', 'cricket-qf-1', 'team_b', 'cricket-knockout-stage', null, 1, 6, 'cricket-qf-1', 'team_b', null, null, false),
   ('cricket-qf-1', 'icl-2026', 'cricket', 'Quarterfinals', '2026-04-05', '20:00', 'Overflow Cricket Slot A', 'kannada-vedike', null, 'scheduled', 'cricket-sf-1', 'team_a', 'cricket-knockout-stage', null, 2, 7, 'cricket-sf-1', 'team_a', null, null, false),
@@ -169,9 +169,7 @@ set tournament_id = excluded.tournament_id,
 
 insert into public.announcements (id, title, body, visibility, pinned, published_at, is_published)
 values
-  ('notice-brackets-apr-1', 'Updated knockout brackets published', 'Association overlap is allowed in this version. The scheduling check now only avoids the same player being forced into two live matches at the same time. Cricket, football, volleyball, and athletics have been rebuilt on that basis using the exact registered association list.', 'public', true, '2026-04-01T18:30:00.000Z', true),
-  ('notice-timing-apr-1', 'Best-fit timing plan for 2 April to 5 April', '2 April: Cricket Matches 1 to 3 run from 6 PM to midnight. 3 April: Athletics Heat A and Volleyball Match 1 run from 6 PM to 8 PM, then Football Matches 1 to 4 run from 8 PM to midnight. 4 April: Athletics Heat B and Volleyball Match 2 run from 6 PM to 8 PM, then Football Matches 5 to 7 plus Cricket Match 4 run from 8 PM to midnight. 5 April: Athletics final ladder and Volleyball Matches 3 to 4 run from 6 PM to 8 PM, then Football semis and final plus Cricket Matches 5 to 7 fill the 8 PM to midnight block.', 'public', false, '2026-04-01T18:35:00.000Z', true),
-  ('notice-capacity-apr-1', 'Capacity warning remains active', 'Football fits the current evening window, and athletics fits as heats. Cricket is still short by 1 slot if only one ground is used. Volleyball is still short by 3 slots if only one court is used. Overflow placeholders on the site mark the exact places where an extra cricket slot, three extra volleyball slots, or a second court are still required.', 'public', true, '2026-04-01T18:40:00.000Z', true)
+  ('notice-fixtures-apr-2', '2 April fixtures', '6:00 PM to 7:30 PM: HCA vs Marudhara. 7:30 PM to 9:00 PM: Tigers of MP vs MV7. 9:00 PM to 10:30 PM: Maharashtra Mandal vs Sangam. 10:30 PM to 12:00 AM: Andhra Samithi vs Capitol.', 'public', true, '2026-04-01T18:30:00.000Z', true)
 on conflict (id) do update
 set title = excluded.title,
     body = excluded.body,

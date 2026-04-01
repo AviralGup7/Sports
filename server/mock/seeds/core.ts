@@ -19,29 +19,29 @@ export const sportsSeed: Sport[] = [
     id: "cricket",
     name: "Cricket",
     color: "#f59e0b",
-    rulesSummary: "14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.",
-    format: "14 teams, Round 1 plus quarter-finals, semis, and final"
+    rulesSummary: "14-team knockout across 2 April to 5 April. Opening day uses 90-minute slots, then the bracket rolls through 105-minute matches with short buffers.",
+    format: "14 teams, single-elimination knockout"
   },
   {
     id: "football",
     name: "Football",
     color: "#22c55e",
-    rulesSummary: "11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.",
-    format: "11 teams, Round 1 plus quarter-finals, semis, and final"
+    rulesSummary: "11-team knockout scheduled inside the 8 PM to midnight window from 3 April to 5 April with 45-minute matches and rolling buffers.",
+    format: "11 teams, single-elimination knockout"
   },
   {
     id: "volleyball",
     name: "Volleyball",
     color: "#38bdf8",
-    rulesSummary: "10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.",
-    format: "10 teams, Round 1 plus quarter-finals, semis, and final"
+    rulesSummary: "10-team knockout using one court and one live volleyball match at a time from 3 April to 5 April.",
+    format: "10 teams, single-elimination knockout"
   },
   {
     id: "athletics",
     name: "Athletics",
     color: "#fb7185",
-    rulesSummary: "Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.",
-    format: "14 entries, 2 heats into a three-step final ladder"
+    rulesSummary: "Athletics runs as elimination races between 6 PM and 8 PM from 3 April to 5 April, with at most 8 associations in one run and the top half advancing each round.",
+    format: "13 associations, elimination runs with advancing cut lines"
   }
 ];
 
@@ -59,7 +59,7 @@ export const competitionStagesSeed: CompetitionStage[] = [
   { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Knockout Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Cup Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Championship Ladder", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "athletics-results-stage", sportId: "athletics", type: "group", label: "Heat and Finals Cards", orderIndex: 1, advancesCount: 0, isActive: true }
+  { id: "athletics-results-stage", sportId: "athletics", type: "knockout", label: "Elimination Runs", orderIndex: 1, advancesCount: 1, isActive: true }
 ];
 
 export const competitionGroupsSeed: CompetitionGroup[] = [];
