@@ -24,8 +24,8 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow="Teams"
-            title={selectedSportRecord ? `${selectedSportRecord.name} Associations` : "Association Grid"}
-            description="Browse participating associations, filter by sport, and jump into the teams that matter for the current bracket picture."
+            title={selectedSportRecord ? `${selectedSportRecord.name} Association Profiles` : "Association Profiles"}
+            description="Browse participating associations and jump straight into the team profiles that matter for the current tournament picture."
             compact
             tone="amber"
             intensity="premium"

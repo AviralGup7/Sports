@@ -8,7 +8,6 @@ import { BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, Stage
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { SportTabScroll } from "@/features/public/sport-center/components/sport-tab-scroll";
 
 type SportCenterScreenProps = {
   sportSlug: SportSlug;
@@ -20,7 +19,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
   const liveCount = data.matches.filter((match) => match.status === "live").length;
   const completedCount = data.matches.filter((match) => match.status === "completed").length;
   const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Current stage";
-  const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}${tab === "standings" ? "#sport-standings" : ""}`;
+  const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
   const tabs = [
     { id: "overview", label: "Overview" },
     { id: "standings", label: "Standings" },
@@ -30,8 +29,6 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
 
   return (
     <div className="stack-xl">
-      <SportTabScroll targetId={selectedTab === "standings" ? "sport-standings" : undefined} />
-
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
@@ -59,10 +56,10 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn className="filter-rail sport-center-rail filter-rail-sticky" delay={0.07}>
-        <div className="filter-rail-summary">
+      <MotionIn className="section-shell" delay={0.07}>
+        <div className="section-heading">
           <div>
-            <p className="eyebrow">Sport Snapshot</p>
+            <p className="eyebrow">Sport</p>
             <h2>{activeStageLabel}</h2>
             <p className="muted">
               {liveCount > 0
@@ -71,29 +68,17 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             </p>
           </div>
           <div className="page-guide-actions">
+            {tabs.map((tab) => (
+              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "button" : "button button-ghost"}>
+                {tab.label}
+              </Link>
+            ))}
             <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
               View schedule
             </Link>
             <Link href="/standings" className="button button-ghost">
               All standings
             </Link>
-          </div>
-        </div>
-
-        <div className="filter-rail-meta">
-          <span className="pill">{liveCount} live</span>
-          <span className="pill">{data.teams.length} teams</span>
-          <span className="pill">{completedCount} results</span>
-        </div>
-
-        <div className="filter-block">
-          <p className="eyebrow">View</p>
-          <div className="chip-row">
-            {tabs.map((tab) => (
-              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "chip chip-active" : "chip"}>
-                {tab.label}
-              </Link>
-            ))}
           </div>
         </div>
       </MotionIn>

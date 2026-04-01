@@ -36,10 +36,10 @@ set logo_asset_path = excluded.logo_asset_path,
 
 insert into public.sports (id, name, color, rules_summary, format)
 values
-  ('cricket', 'Cricket', '#f59e0b', '14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.', '14 teams, Round 1 plus quarter-finals, semis, and final'),
-  ('football', 'Football', '#22c55e', '11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.', '11 teams, Round 1 plus quarter-finals, semis, and final'),
-  ('volleyball', 'Volleyball', '#38bdf8', '10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.', '10 teams, Round 1 plus quarter-finals, semis, and final'),
-  ('athletics', 'Athletics', '#fb7185', 'Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.', '14 entries, 2 heats into a three-step final ladder')
+  ('cricket', 'Cricket', '#f59e0b', '14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.', '15 teams, knockout bracket'),
+  ('football', 'Football', '#22c55e', '11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.', '12 teams, knockout bracket'),
+  ('volleyball', 'Volleyball', '#38bdf8', '10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.', '11 teams, knockout bracket'),
+  ('athletics', 'Athletics', '#fb7185', 'Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.', '13 associations, elimination runs')
 on conflict (id) do update
 set name = excluded.name,
     color = excluded.color,

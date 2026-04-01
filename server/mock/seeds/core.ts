@@ -20,28 +20,28 @@ export const sportsSeed: Sport[] = [
     name: "Cricket",
     color: "#f59e0b",
     rulesSummary: "14-team knockout across 2 April to 5 April. Opening day uses 90-minute slots, then the bracket rolls through 105-minute matches with short buffers.",
-    format: "14 teams, single-elimination knockout"
+    format: "15 teams, knockout bracket"
   },
   {
     id: "football",
     name: "Football",
     color: "#22c55e",
     rulesSummary: "11-team knockout scheduled inside the 8 PM to midnight window from 3 April to 5 April with 45-minute matches and rolling buffers.",
-    format: "11 teams, single-elimination knockout"
+    format: "12 teams, knockout bracket"
   },
   {
     id: "volleyball",
     name: "Volleyball",
     color: "#38bdf8",
     rulesSummary: "10-team knockout using one court and one live volleyball match at a time from 3 April to 5 April.",
-    format: "10 teams, single-elimination knockout"
+    format: "11 teams, knockout bracket"
   },
   {
     id: "athletics",
     name: "Athletics",
     color: "#fb7185",
     rulesSummary: "Athletics runs as elimination races between 6 PM and 8 PM from 3 April to 5 April, with at most 8 associations in one run and the top half advancing each round.",
-    format: "13 associations, elimination runs with advancing cut lines"
+    format: "13 associations, elimination runs"
   }
 ];
 
