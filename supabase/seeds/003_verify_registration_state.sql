@@ -51,3 +51,21 @@ left join public.match_results mr on mr.match_id = m.id
 where m.status in ('live', 'completed')
 order by m.day desc, m.start_time desc
 limit 20;
+
+-- 5) April 2 fixture check (requested update)
+select
+  m.id,
+  m.day,
+  m.start_time,
+  m.round,
+  ta.name as team_a,
+  tb.name as team_b,
+  m.status,
+  m.venue
+from public.matches m
+left join public.teams ta on ta.id = m.team_a_id
+left join public.teams tb on tb.id = m.team_b_id
+where m.day = '2026-04-02'
+  and m.sport_id = 'cricket'
+  and m.start_time in ('06:00', '07:30', '09:00', '10:30')
+order by m.start_time;
