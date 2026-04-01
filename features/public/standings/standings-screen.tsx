@@ -3,7 +3,7 @@ import Link from "next/link";
 import type { StandingsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FreshnessStamp, StandingsTable } from "@/shared/ui";
+import { StandingsTable } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type StandingsScreenProps = {
@@ -36,7 +36,6 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
                   <span className="aside-label">Active filter</span>
                   <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
                 </div>
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />

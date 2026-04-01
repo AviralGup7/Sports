@@ -52,11 +52,25 @@ import { loadSnapshot, type RepositorySnapshot } from "@/server/data/snapshot";
 import { buildDataState, getGeneratedAt } from "@/server/data/shared/query-state";
 import { buildDayNote, getActiveStage, getGroupsForSport, getMatchesForSport, getPublicAnnouncements, getStagesForSport, getTournamentStatsFromSnapshot } from "@/server/data/shared/snapshot-selectors";
 
+const IST_OFFSET = "+05:30";
+
 function toMatchDateTime(day: string, time: string) {
-  const [hours, minutes] = time.split(":");
-  const date = new Date(`${day}T00:00:00`);
-  date.setHours(Number(hours), Number(minutes), 0, 0);
-  return date;
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+function getTodayInKolkata() {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: "Asia/Kolkata",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit"
+  }).formatToParts(new Date());
+
+  const year = parts.find((part) => part.type === "year")?.value ?? "0000";
+  const month = parts.find((part) => part.type === "month")?.value ?? "01";
+  const day = parts.find((part) => part.type === "day")?.value ?? "01";
+
+  return `${year}-${month}-${day}`;
 }
 
 
@@ -818,7 +832,8 @@ export async function getSchedulePageData(
   const snapshot = await loadSnapshot();
   const generatedAt = getGeneratedAt();
   const days = Array.from(new Set(snapshot.matches.map((match) => match.day))).sort();
-  const selectedDay = day && days.includes(day) ? day : days[0];
+  const today = getTodayInKolkata();
+  const selectedDay = day && days.includes(day) ? day : days.includes(today) ? today : days[0];
   const selectedStatus =
     status ??
     (stageIdOrStatus && ["scheduled", "live", "completed", "postponed", "cancelled"].includes(stageIdOrStatus) ? stageIdOrStatus : undefined);

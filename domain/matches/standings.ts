@@ -93,7 +93,7 @@ export function buildStandingsRows(
     }
   }
 
-  const ranked = sortStandingsRows(Array.from(rows.values()).filter((row) => row.played > 0)).map((row) => ({
+  const ranked = sortStandingsRows(Array.from(rows.values())).map((row) => ({
     ...row,
     qualified: false
   }));
