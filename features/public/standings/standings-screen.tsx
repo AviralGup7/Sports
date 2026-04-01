@@ -11,7 +11,6 @@ type StandingsScreenProps = {
 };
 
 export function StandingsScreen({ data }: StandingsScreenProps) {
-  const selectedSportRecord = data.sports.find((sport) => sport.id === data.selectedSport);
   const buildHref = (sport?: string) => (sport ? `/standings?sport=${sport}` : "/standings");
 
   return (
@@ -26,18 +25,6 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
             tone="blue"
             intensity="premium"
             variant="schedule-command"
-            aside={
-              <div className="hero-aside-list hero-aside-list-cyber">
-                <div>
-                  <span className="aside-label">Sports tracked</span>
-                  <strong>{data.sections.length}</strong>
-                </div>
-                <div>
-                  <span className="aside-label">Active filter</span>
-                  <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
-                </div>
-              </div>
-            }
           />
         </ScrollStorySection>
       </MotionIn>

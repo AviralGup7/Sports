@@ -26,18 +26,6 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
             tone="crimson"
             intensity="premium"
             variant="newsroom-story"
-            aside={
-              <div className="hero-aside-list hero-aside-list-cyber">
-                <div>
-                  <span className="aside-label">Main notice</span>
-                  <strong>{leadItem ? "Ready" : "Waiting"}</strong>
-                </div>
-                <div>
-                  <span className="aside-label">More notices</span>
-                  <strong>{feedItems.length}</strong>
-                </div>
-              </div>
-            }
           />
         </ScrollStorySection>
       </MotionIn>
@@ -50,30 +38,8 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
               <h2>Read this first</h2>
             </div>
           </div>
-          <div className="home-news-grid">
-            <div className="news-grid news-grid-headline">
-              <NewsBulletin announcement={leadItem} pinnedHero={leadItem.pinned} />
-            </div>
-            <div className="home-news-aside">
-              <article className="home-summary-card">
-                <p className="eyebrow">Noticeboard</p>
-                <h3>What is in the feed</h3>
-                <div className="home-kpi-list">
-                  <span>
-                    <strong>{pinnedItems.length}</strong>
-                    Pinned updates
-                  </span>
-                  <span>
-                    <strong>{items.length}</strong>
-                    Total notices
-                  </span>
-                  <span>
-                    <strong>{feedItems.length}</strong>
-                    Remaining in feed
-                  </span>
-                </div>
-              </article>
-            </div>
+          <div className="news-grid news-grid-headline">
+            <NewsBulletin announcement={leadItem} pinnedHero={leadItem.pinned} />
           </div>
         </MotionIn>
       ) : null}
