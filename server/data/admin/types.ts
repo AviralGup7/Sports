@@ -1,6 +1,6 @@
 import type { Announcement } from "@/domain/announcements/types";
 import type { Profile } from "@/domain/admin/types";
-import type { CompetitionGroup, CompetitionStage, Match } from "@/domain/matches/types";
+import type { CompetitionStage, Match } from "@/domain/matches/types";
 import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
 import type { Tournament } from "@/domain/tournament/types";
@@ -62,7 +62,6 @@ export type AdminDashboardData = {
 export type BuilderCard = {
   sport: Sport;
   stages: CompetitionStage[];
-  groups: CompetitionGroup[];
   standings: StandingsCard[];
   bracket: BracketTreeData | null;
   integrityIssues: IntegrityIssue[];
@@ -98,7 +97,6 @@ export type AdminMatchesData = {
   profile: Profile;
   sports: Sport[];
   stages: CompetitionStage[];
-  groups: CompetitionGroup[];
   teams: Team[];
   matches: Match[];
   days: string[];

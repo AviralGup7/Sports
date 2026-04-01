@@ -157,7 +157,7 @@ export function SettingsScreen({ data, message, tone }: SettingsScreenProps) {
                 <input name="confirmation" placeholder="RESET TOURNAMENT" required />
               </label>
               <div className="status-banner status-banner-alert">
-                This action clears current teams, fixtures, results, stages, groups, and announcements before restoring the seeded tournament baseline.
+                This action clears current teams, fixtures, results, stages, and announcements before restoring the seeded tournament baseline.
               </div>
               <div className="form-actions">
                 <SubmitButton className="button button-danger" pendingLabel="Resetting tournament...">

@@ -1,5 +1,5 @@
 import type { Announcement } from "@/domain/announcements/types";
-import type { CompetitionGroup, CompetitionStage, Match, MatchProgressionEdge, StandingsRow } from "@/domain/matches/types";
+import type { CompetitionStage, Match, MatchProgressionEdge, StandingsRow } from "@/domain/matches/types";
 import type { Profile } from "@/domain/admin/types";
 import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
@@ -91,7 +91,6 @@ export type StageSummary = {
   completedMatches: number;
   liveMatches: number;
   pendingMatches: number;
-  groups: CompetitionGroup[];
 };
 
 export type SportProgressCard = {
@@ -238,7 +237,6 @@ export type SportPageData = {
   dataState: DataState;
   sport: Sport;
   stages: CompetitionStage[];
-  groups: CompetitionGroup[];
   stageSummaries: StageSummary[];
   teams: Team[];
   matches: Match[];

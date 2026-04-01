@@ -1,4 +1,4 @@
-import type { CompetitionGroup, CompetitionStage } from "@/domain/matches/types";
+import type { CompetitionStage } from "@/domain/matches/types";
 import type { Sport } from "@/domain/sports/types";
 import type { Team } from "@/domain/teams/types";
 
@@ -8,12 +8,11 @@ import { FormCluster } from "@/shared/ui";
 type AdminMatchCreatePanelProps = {
   sports: Sport[];
   stages: CompetitionStage[];
-  groups: CompetitionGroup[];
   teams: Team[];
   action: (formData: FormData) => void | Promise<void>;
 };
 
-export function AdminMatchCreatePanel({ sports, stages, groups, teams, action }: AdminMatchCreatePanelProps) {
+export function AdminMatchCreatePanel({ sports, stages, teams, action }: AdminMatchCreatePanelProps) {
   return (
     <ControlPanel eyebrow="Create Fixture" title="New board" description="Set stage, lineage, sides, and fallback progression before the match goes live.">
       <form action={action} className="stack-lg">
@@ -39,17 +38,6 @@ export function AdminMatchCreatePanel({ sports, stages, groups, teams, action }:
                 {stages.map((stage) => (
                   <option key={stage.id} value={stage.id}>
                     {stage.label}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="field">
-              <span>Group</span>
-              <select name="groupId" defaultValue="">
-                <option value="">No group</option>
-                {groups.map((group) => (
-                  <option key={group.id} value={group.id}>
-                    {group.code}
                   </option>
                 ))}
               </select>
@@ -157,4 +145,3 @@ export function AdminMatchCreatePanel({ sports, stages, groups, teams, action }:
     </ControlPanel>
   );
 }
-

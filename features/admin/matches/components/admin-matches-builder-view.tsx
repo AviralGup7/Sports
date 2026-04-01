@@ -15,7 +15,7 @@ type AdminMatchesBuilderViewProps = {
 export function AdminMatchesBuilderView({ data, selectedSport, visibleBuilderCards }: AdminMatchesBuilderViewProps) {
   return (
     <div className="stack-lg">
-      <ControlPanel eyebrow="Fixture Builder" title="Generate stage structures" description="Seed a clean knockout or group-plus-knockout scaffold from active team seeds, then refine the boards below.">
+      <ControlPanel eyebrow="Fixture Builder" title="Generate stage structures" description="Seed a clean knockout scaffold from active team seeds, then refine the boards below.">
         <FixtureGenerationPanel sports={data.sports} teams={data.teams} action={generateStructureAction} />
       </ControlPanel>
 

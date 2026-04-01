@@ -59,7 +59,7 @@ export const competitionStagesSeed: CompetitionStage[] = [
   { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Knockout", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Cup", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Championship Ladder", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "athletics-results-stage", sportId: "athletics", type: "knockout", label: "Elimination Runs", orderIndex: 1, advancesCount: 1, isActive: true }
+  { id: "athletics-results-stage", sportId: "athletics", type: "knockout", label: "Elimination", orderIndex: 1, advancesCount: 1, isActive: true }
 ];
 
 export const competitionGroupsSeed: CompetitionGroup[] = [];

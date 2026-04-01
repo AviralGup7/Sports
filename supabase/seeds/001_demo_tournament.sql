@@ -93,7 +93,7 @@ values
   ('cricket-knockout-stage', 'cricket', 'knockout', 'Knockout', 1, 1, true),
   ('football-knockout-stage', 'football', 'knockout', 'Cup', 1, 1, true),
   ('volleyball-knockout-stage', 'volleyball', 'knockout', 'Championship Ladder', 1, 1, true),
-  ('athletics-results-stage', 'athletics', 'group', 'Heat and Finals Cards', 1, 0, true)
+  ('athletics-results-stage', 'athletics', 'knockout', 'Elimination', 1, 1, true)
 on conflict (id) do update
 set sport_id = excluded.sport_id,
     type = excluded.type,

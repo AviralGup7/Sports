@@ -7,7 +7,7 @@ import type { SportSlug } from "../sports/types";
 import type { Team } from "../teams/types";
 import { applyWinnerAdvancement } from "./progression";
 
-export type StructureFormat = "knockout" | "group-knockout";
+export type StructureFormat = "knockout";
 
 export type GeneratedCompetitionStructure = {
   stages: CompetitionStage[];
@@ -43,73 +43,6 @@ function createMatch(input: Partial<Match> & Pick<Match, "id" | "sportId" | "rou
     teamB: input.teamB ?? null,
     result: input.result ?? null
   };
-}
-
-function createSerpentineGroups(teams: Team[], groupsCount: number) {
-  const buckets = Array.from({ length: groupsCount }, () => [] as Team[]);
-  if (buckets.length === 0) {
-    return buckets;
-  }
-
-  let index = 0;
-  let direction = 1;
-
-  for (const team of teams) {
-    buckets[index].push(team);
-
-    if (direction === 1 && index === groupsCount - 1) {
-      direction = -1;
-    } else if (direction === -1 && index === 0) {
-      direction = 1;
-    } else {
-      index += direction;
-    }
-  }
-
-  return buckets;
-}
-
-function buildRoundRobinMatches(sportId: SportSlug, stage: CompetitionStage, groups: CompetitionGroup[], teamBuckets: Team[][]) {
-  const matches: Match[] = [];
-  const dayCycle = ["2026-04-02", "2026-04-03"];
-  const timeCycle = ["09:00", "11:30", "14:00", "16:30", "19:00"];
-
-  groups.forEach((group, groupIndex) => {
-    const members = teamBuckets[groupIndex] ?? [];
-    let matchNumber = 1;
-
-    for (let teamAIndex = 0; teamAIndex < members.length; teamAIndex += 1) {
-      for (let teamBIndex = teamAIndex + 1; teamBIndex < members.length; teamBIndex += 1) {
-        const timeIndex = (matchNumber - 1) % timeCycle.length;
-        const dayIndex = Math.floor((matchNumber - 1) / timeCycle.length) % dayCycle.length;
-        const teamA = members[teamAIndex] ?? null;
-        const teamB = members[teamBIndex] ?? null;
-
-        matches.push(
-          createMatch({
-            id: `${group.id}-match-${matchNumber}`,
-            sportId,
-            round: `${group.code} Match ${matchNumber}`,
-            day: dayCycle[dayIndex],
-            startTime: timeCycle[timeIndex],
-            venue: `${sportId} Group Court ${groupIndex + 1}`,
-            stageId: stage.id,
-            groupId: group.id,
-            roundIndex: 1,
-            matchNumber,
-            teamAId: teamA?.id ?? null,
-            teamBId: teamB?.id ?? null,
-            teamA,
-            teamB
-          })
-        );
-
-        matchNumber += 1;
-      }
-    }
-  });
-
-  return matches;
 }
 
 function buildKnockoutMatches(sportId: SportSlug, stage: CompetitionStage, placementStage: CompetitionStage, seededTeams: Team[]) {
@@ -262,7 +195,6 @@ export function generateCompetitionStructure(
   sportId: SportSlug,
   options: {
     format: StructureFormat;
-    groupsCount?: number;
     knockoutSize?: number;
   }
 ): GeneratedCompetitionStructure {
@@ -277,7 +209,7 @@ export function generateCompetitionStructure(
     sportId,
     type: "knockout",
     label: "Generated Knockout",
-    orderIndex: options.format === "group-knockout" ? 2 : 1,
+    orderIndex: 1,
     advancesCount: 1,
     isActive: true
   };
@@ -286,93 +218,10 @@ export function generateCompetitionStructure(
     sportId,
     type: "placement",
     label: "Generated Third Place",
-    orderIndex: options.format === "group-knockout" ? 3 : 2,
+    orderIndex: 2,
     advancesCount: 0,
     isActive: true
   };
-
-  if (options.format === "group-knockout") {
-    const groupsCount = Math.max(2, Math.min(options.groupsCount ?? 2, 4));
-    const groupStage: CompetitionStage = {
-      id: `${sportId}-builder-group`,
-      sportId,
-      type: "group",
-      label: "Generated Groups",
-      orderIndex: 1,
-      advancesCount: Math.max(1, Math.floor((options.knockoutSize ?? 4) / groupsCount)),
-      isActive: true
-    };
-    const groups = Array.from({ length: groupsCount }, (_, index) => ({
-      id: `${sportId}-generated-group-${String.fromCharCode(97 + index)}`,
-      stageId: groupStage.id,
-      sportId,
-      code: `Group ${String.fromCharCode(65 + index)}`,
-      orderIndex: index + 1
-    }));
-    const groupTeamBuckets = createSerpentineGroups(seededTeams, groupsCount);
-    const groupMatches = buildRoundRobinMatches(sportId, groupStage, groups, groupTeamBuckets);
-
-    const knockoutMatches = [
-      createMatch({
-        id: `${sportId}-generated-sf-1`,
-        sportId,
-        round: "Semi Final 1",
-        day: "2026-04-04",
-        startTime: "17:00",
-        venue: `${sportId} Arena`,
-        stageId: knockoutStage.id,
-        roundIndex: 2,
-        matchNumber: 1,
-        winnerToMatchId: `${sportId}-generated-final`,
-        winnerToSlot: "team_a",
-        loserToMatchId: `${sportId}-generated-third`,
-        loserToSlot: "team_a"
-      }),
-      createMatch({
-        id: `${sportId}-generated-sf-2`,
-        sportId,
-        round: "Semi Final 2",
-        day: "2026-04-04",
-        startTime: "20:00",
-        venue: `${sportId} Arena`,
-        stageId: knockoutStage.id,
-        roundIndex: 2,
-        matchNumber: 2,
-        winnerToMatchId: `${sportId}-generated-final`,
-        winnerToSlot: "team_b",
-        loserToMatchId: `${sportId}-generated-third`,
-        loserToSlot: "team_b"
-      }),
-      createMatch({
-        id: `${sportId}-generated-third`,
-        sportId,
-        round: "Third Place",
-        day: "2026-04-05",
-        startTime: "15:00",
-        venue: `${sportId} Arena`,
-        stageId: placementStage.id,
-        roundIndex: 3,
-        matchNumber: 1
-      }),
-      createMatch({
-        id: `${sportId}-generated-final`,
-        sportId,
-        round: "Grand Final",
-        day: "2026-04-05",
-        startTime: "19:00",
-        venue: `${sportId} Arena`,
-        stageId: knockoutStage.id,
-        roundIndex: 3,
-        matchNumber: 1
-      })
-    ];
-
-    return {
-      stages: [groupStage, knockoutStage, placementStage],
-      groups,
-      matches: groupMatches.concat(knockoutMatches)
-    };
-  }
 
   return {
     stages: [knockoutStage, placementStage],

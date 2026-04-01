@@ -2,7 +2,7 @@ import { buildStandingsRows } from "@/domain/matches";
 import type { Sport, SportSlug, Team } from "@/domain";
 import type { RepositorySnapshot } from "@/server/data/snapshot";
 import type { StandingsSportCard, TeamListCard, TeamStandingsSnippet } from "@/server/data/public/types";
-import { getGroupsForSport, getMatchesForSport, getStagesForSport } from "@/server/data/shared/snapshot-selectors";
+import { getMatchesForSport, getStagesForSport } from "@/server/data/shared/snapshot-selectors";
 
 function getMatchesForTeam(snapshot: RepositorySnapshot, teamId: string) {
   return snapshot.matches
@@ -17,9 +17,8 @@ export function buildStandingsSections(snapshot: RepositorySnapshot, selectedSpo
   for (const sport of sports) {
     const teams = snapshot.teams.filter((team) => team.isActive && team.sportIds.includes(sport.id));
     const matches = getMatchesForSport(snapshot, sport.id);
-    const groups = getGroupsForSport(snapshot, sport.id);
     const stages = getStagesForSport(snapshot, sport.id);
-    const cards = buildStandingsRows(teams, matches, groups, sport.id, stages);
+    const cards = buildStandingsRows(teams, matches, [], sport.id, stages);
 
     if (cards.length === 0) {
       continue;
@@ -66,7 +65,7 @@ export function buildTeamStandings(snapshot: RepositorySnapshot, team: Team): Te
     const cards = buildStandingsRows(
       snapshot.teams.filter((candidate) => candidate.isActive && candidate.sportIds.includes(sportId)),
       getMatchesForSport(snapshot, sportId),
-      getGroupsForSport(snapshot, sportId),
+      [],
       sportId,
       getStagesForSport(snapshot, sportId)
     );

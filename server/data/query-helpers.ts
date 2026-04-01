@@ -50,7 +50,7 @@ import { formatDateLabel, formatDateTime, formatTimeLabel } from "@/server/data/
 import { buildIntegrityIssues, buildProgressionEdges, buildStandingsRows } from "@/domain/matches";
 import { loadSnapshot, type RepositorySnapshot } from "@/server/data/snapshot";
 import { buildDataState, getGeneratedAt } from "@/server/data/shared/query-state";
-import { buildDayNote, getActiveStage, getGroupsForSport, getMatchesForSport, getPublicAnnouncements, getStagesForSport, getTournamentStatsFromSnapshot } from "@/server/data/shared/snapshot-selectors";
+import { buildDayNote, getActiveStage, getMatchesForSport, getPublicAnnouncements, getStagesForSport, getTournamentStatsFromSnapshot } from "@/server/data/shared/snapshot-selectors";
 
 const IST_OFFSET = "+05:30";
 const DEFAULT_LIVE_WINDOW_MINUTES = 90;
@@ -364,8 +364,7 @@ function buildStageSummaries(snapshot: RepositorySnapshot, sportId?: SportSlug):
       totalMatches: matches.length,
       completedMatches: matches.filter((match) => match.status === "completed").length,
       liveMatches: matches.filter((match) => isLiveNow(match, now)).length,
-      pendingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed").length,
-      groups: snapshot.groups.filter((group) => group.stageId === stage.id)
+      pendingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed").length
     };
   });
 }
@@ -487,9 +486,8 @@ function buildStandingsSections(snapshot: RepositorySnapshot, selectedSport?: Sp
   for (const sport of sports) {
     const teams = snapshot.teams.filter((team) => team.isActive && team.sportIds.includes(sport.id));
     const matches = getMatchesForSport(snapshot, sport.id);
-    const groups = getGroupsForSport(snapshot, sport.id);
     const stages = getStagesForSport(snapshot, sport.id);
-    const cards = buildStandingsRows(teams, matches, groups, sport.id, stages);
+    const cards = buildStandingsRows(teams, matches, [], sport.id, stages);
 
     if (cards.length === 0) {
       continue;
@@ -518,7 +516,7 @@ function buildTeamStandings(snapshot: RepositorySnapshot, team: Team): TeamStand
     const cards = buildStandingsRows(
       snapshot.teams.filter((candidate) => candidate.isActive && candidate.sportIds.includes(sportId)),
       getMatchesForSport(snapshot, sportId),
-      getGroupsForSport(snapshot, sportId),
+      [],
       sportId,
       getStagesForSport(snapshot, sportId)
     );
@@ -571,7 +569,7 @@ function buildQuickResultCandidates(matches: Match[]) {
       id: `${match.id}-quick`,
       matchId: match.id,
       sportId: match.sportId,
-      matchLabel: `${match.stage?.label ?? match.round}${match.group ? ` | ${match.group.code}` : ""}`,
+      matchLabel: match.stage?.label ?? match.round,
       teamAName: match.teamA?.name ?? "TBD",
       teamBName: match.teamB?.name ?? "TBD",
       winnerTeamId: match.result?.winnerTeamId ?? null,
@@ -908,8 +906,7 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
   const teams = snapshot.teams.filter((team) => team.isActive && team.sportIds.includes(sportId));
   const matches = getMatchesForSport(snapshot, sportId);
   const stages = getStagesForSport(snapshot, sportId);
-  const groups = getGroupsForSport(snapshot, sportId);
-  const standings = buildStandingsRows(teams, matches, groups, sportId, stages);
+  const standings = buildStandingsRows(teams, matches, [], sportId, stages);
 
   return {
     generatedAt,
@@ -919,7 +916,6 @@ export async function getSportPageData(sportId: SportSlug): Promise<SportPageDat
       format: getActiveStage(snapshot, sportId)?.label ? `${sport.format} | ${getActiveStage(snapshot, sportId)?.label}` : sport.format
     },
     stages,
-    groups,
     stageSummaries: buildStageSummaries(snapshot, sportId),
     teams,
     matches,
@@ -1091,10 +1087,6 @@ export async function getAdminMatchesData(profile: Profile): Promise<AdminMatche
     profile.role === "super_admin"
       ? snapshot.stages
       : snapshot.stages.filter((stage) => profile.sportIds.includes(stage.sportId));
-  const groups =
-    profile.role === "super_admin"
-      ? snapshot.groups
-      : snapshot.groups.filter((group) => profile.sportIds.includes(group.sportId));
   const teams = snapshot.teams.filter((team) => team.isActive);
   const integrityIssues = buildIntegrityIssues(matches, stages);
 
@@ -1102,7 +1094,6 @@ export async function getAdminMatchesData(profile: Profile): Promise<AdminMatche
     profile,
     sports,
     stages,
-    groups,
     teams,
     matches,
     days: Array.from(new Set(matches.map((match) => match.day))).sort(),
@@ -1111,8 +1102,7 @@ export async function getAdminMatchesData(profile: Profile): Promise<AdminMatche
       .map((sport) => ({
         sport,
         stages: stages.filter((stage) => stage.sportId === sport.id),
-        groups: groups.filter((group) => group.sportId === sport.id),
-        standings: buildStandingsRows(teams, matches, groups, sport.id, stages),
+        standings: buildStandingsRows(teams, matches, [], sport.id, stages),
         bracket: buildBracketTree(matches.filter((match) => match.sportId === sport.id), stages.filter((stage) => stage.sportId === sport.id)),
         integrityIssues: integrityIssues.filter((issue) => matches.some((match) => match.id === issue.matchId && match.sportId === sport.id)),
         teams: teams.filter((team) => team.sportIds.includes(sport.id))
@@ -1169,4 +1159,3 @@ export function getAdminSeedProfile() {
 export function getSportBySlugFromCollection(sports: Sport[], sportId?: SportSlug) {
   return sports.find((sport) => sport.id === sportId);
 }
-

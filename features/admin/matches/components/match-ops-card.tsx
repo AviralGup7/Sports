@@ -30,7 +30,6 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
         <div>
           <p className="eyebrow">
             {match.sportId} | {match.stage?.label ?? match.round}
-            {match.group ? ` | ${match.group.code}` : ""}
           </p>
           <h2>
             {match.teamA?.name ?? "TBD"} vs {match.teamB?.name ?? "TBD"}

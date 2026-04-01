@@ -60,8 +60,6 @@ export async function performGenerateStructure(formData: FormData) {
   const { profile, supabase } = await requireAdminProfile();
   const tournamentId = await getTournamentWriteId(supabase);
   const sportId = String(formData.get("sportId") ?? "") as SportSlug;
-  const format = String(formData.get("format") ?? "knockout") as "knockout" | "group-knockout";
-  const groupsCount = toNullableNumber(formData.get("groupsCount")) ?? 2;
   const knockoutSize = toNullableNumber(formData.get("knockoutSize")) ?? 4;
 
   if (!canManageSport(profile, sportId)) {
@@ -89,22 +87,16 @@ export async function performGenerateStructure(formData: FormData) {
   }));
 
   const generated = generateCompetitionStructure(seededTeams, sportId, {
-    format,
-    groupsCount,
+    format: "knockout",
     knockoutSize
   });
 
   const stageIds = generated.stages.map((stage) => stage.id);
-  const groupIds = generated.groups.map((group) => group.id);
   const matchIds = generated.matches.map((match) => match.id);
 
   if (matchIds.length > 0) {
     await supabase.from("match_results").delete().in("match_id", matchIds);
     await supabase.from("matches").delete().in("id", matchIds);
-  }
-
-  if (groupIds.length > 0) {
-    await supabase.from("competition_groups").delete().in("id", groupIds);
   }
 
   if (stageIds.length > 0) {
@@ -126,20 +118,6 @@ export async function performGenerateStructure(formData: FormData) {
     redirectWithMessage("/admin/matches?mode=builder", "error", stageError.message);
   }
 
-  if (generated.groups.length > 0) {
-    const groupRows = generated.groups.map((group) => ({
-      id: group.id,
-      stage_id: group.stageId,
-      sport_id: group.sportId,
-      code: group.code,
-      order_index: group.orderIndex
-    }));
-    const { error: groupError } = await supabase.from("competition_groups").upsert(groupRows);
-    if (groupError) {
-      redirectWithMessage("/admin/matches?mode=builder", "error", groupError.message);
-    }
-  }
-
   const generatedMatches = generated.matches.map((match) => ({
     id: match.id,
     tournament_id: tournamentId,
@@ -149,7 +127,7 @@ export async function performGenerateStructure(formData: FormData) {
     start_time: match.startTime,
     venue: match.venue,
     stage_id: match.stageId,
-    group_id: match.groupId,
+    group_id: null,
     round_index: match.roundIndex,
     match_number: match.matchNumber,
     team_a_id: match.teamAId,
@@ -225,7 +203,6 @@ export async function performUpsertMatch(formData: FormData) {
   const teamAId = toNullableString(formData.get("teamAId"));
   const teamBId = toNullableString(formData.get("teamBId"));
   const stageId = toNullableString(formData.get("stageId"));
-  const groupId = toNullableString(formData.get("groupId"));
   const status = getEnumField(formData, "status", ["scheduled", "live", "completed", "postponed", "cancelled"] as const, "Status", "scheduled");
   const roundIndex = toNullableNumber(formData.get("roundIndex")) ?? 1;
   const matchNumber = toNullableNumber(formData.get("matchNumber")) ?? 1;
@@ -269,7 +246,7 @@ export async function performUpsertMatch(formData: FormData) {
     start_time: startTime,
     venue,
     stage_id: stageId,
-    group_id: groupId,
+    group_id: null,
     round_index: roundIndex,
     match_number: matchNumber,
     team_a_id: teamAId,
@@ -446,7 +423,6 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
-
 
 
 
