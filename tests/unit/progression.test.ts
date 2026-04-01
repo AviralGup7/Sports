@@ -11,7 +11,7 @@ const teams: Team[] = [
 ];
 
 const stages: CompetitionStage[] = [
-  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Championship Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
+  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Championship", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "cricket-placement-stage", sportId: "cricket", type: "placement", label: "Bronze Match", orderIndex: 2, advancesCount: 0, isActive: true }
 ];
 

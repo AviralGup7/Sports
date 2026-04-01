@@ -90,8 +90,8 @@ on conflict do nothing;
 
 insert into public.competition_stages (id, sport_id, type, label, order_index, advances_count, is_active)
 values
-  ('cricket-knockout-stage', 'cricket', 'knockout', 'Knockout Bracket', 1, 1, true),
-  ('football-knockout-stage', 'football', 'knockout', 'Cup Bracket', 1, 1, true),
+  ('cricket-knockout-stage', 'cricket', 'knockout', 'Knockout', 1, 1, true),
+  ('football-knockout-stage', 'football', 'knockout', 'Cup', 1, 1, true),
   ('volleyball-knockout-stage', 'volleyball', 'knockout', 'Championship Ladder', 1, 1, true),
   ('athletics-results-stage', 'athletics', 'group', 'Heat and Finals Cards', 1, 0, true)
 on conflict (id) do update
