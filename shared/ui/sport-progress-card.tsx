@@ -22,14 +22,14 @@ export function SportProgressCard({ card, compact = false }: SportProgressCardPr
           <span>
             {card.completedMatches}/{card.totalMatches} results in
           </span>
-          <span>{card.liveMatches} live</span>
+          <span>{card.pendingMatches} pending</span>
         </div>
         <div className="progress-bar">
           <div className="progress-fill" style={{ width: `${card.completionPercent}%` }} />
         </div>
       </div>
       <div className="sport-progress-meta">
-        <span>{card.pendingMatches} pending</span>
+        <span>{card.liveMatches} live</span>
         <span>{card.finalsPending} finals pending</span>
       </div>
       <p>{card.note}</p>

@@ -36,10 +36,10 @@ set logo_asset_path = excluded.logo_asset_path,
 
 insert into public.sports (id, name, color, rules_summary, format)
 values
-  ('cricket', 'Cricket', '#f59e0b', '14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.', '15 teams, knockout'),
-  ('football', 'Football', '#22c55e', '11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.', '12 teams, knockout'),
-  ('volleyball', 'Volleyball', '#38bdf8', '10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.', '11 teams, knockout'),
-  ('athletics', 'Athletics', '#fb7185', 'Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.', '13 associations, elimination runs')
+  ('cricket', 'Cricket', '#f59e0b', 'Knockout fixtures run from 2 April to 5 April, with the public site currently showing the published 2 April opening slate.', '15 teams, knockout'),
+  ('football', 'Football', '#22c55e', 'Football follows a knockout format inside the evening tournament window.', '12 teams, knockout'),
+  ('volleyball', 'Volleyball', '#38bdf8', 'Volleyball follows a knockout format with one live match at a time.', '11 teams, knockout'),
+  ('athletics', 'Athletics', '#fb7185', 'Athletics follows elimination runs, with associations advancing round by round until the final.', '13 associations, elimination runs')
 on conflict (id) do update
 set name = excluded.name,
     color = excluded.color,

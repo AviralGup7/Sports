@@ -4,7 +4,7 @@ import type { MatchPageData } from "@/server/data/public/types";
 import { formatDateTime } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FixtureStrip, ProgressPathCard, ShareMatchButton, StageBadge } from "@/shared/ui";
+import { FixtureStrip, ProgressPathCard, StageBadge } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type MatchCenterScreenProps = {
@@ -41,7 +41,6 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
                 <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
                   {data.sport.name} schedule
                 </Link>
-                <ShareMatchButton href={`/matches/${data.match.id}`} title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`} />
               </>
             }
             aside={

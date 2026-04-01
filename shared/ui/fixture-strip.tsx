@@ -3,9 +3,8 @@ import Link from "next/link";
 
 import { formatDateLabel, formatStatusLabel, formatTimeLabel } from "@/server/data/formatters";
 import type { Match } from "@/domain/matches/types";
-import { getTeamAccent, getTeamInitials } from "@/lib/team-style";
+import { getTeamAccent } from "@/lib/team-style";
 
-import { ShareMatchButton } from "./share-match-button";
 import { StageBadge } from "./stage-badge";
 
 type FixtureStripProps = {
@@ -41,9 +40,6 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
                 className={emphasizeTeamSpacing ? "fixture-team-name fixture-team-name-spaced" : "fixture-team-name"}
                 style={{ "--team-accent": teamAAccent } as CSSProperties}
               >
-                <i className="fixture-team-badge" aria-hidden="true">
-                  {getTeamInitials(match.teamA)}
-                </i>
                 <b>{match.teamA?.name ?? "TBD"}</b>
               </span>
               <span>vs</span>
@@ -51,9 +47,6 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
                 className={emphasizeTeamSpacing ? "fixture-team-name fixture-team-name-spaced" : "fixture-team-name"}
                 style={{ "--team-accent": teamBAccent } as CSSProperties}
               >
-                <i className="fixture-team-badge" aria-hidden="true">
-                  {getTeamInitials(match.teamB)}
-                </i>
                 <b>{match.teamB?.name ?? "TBD"}</b>
               </span>
             </h3>
@@ -65,7 +58,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
           <span>{match.venue}</span>
           <span>{match.round}</span>
           {match.result?.scoreSummary ? <span>{match.result.scoreSummary}</span> : <span>Result Pending</span>}
-          {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : match.isBye ? <span>Bye</span> : <span>TBD</span>}
+          {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : match.isBye ? <span>Bye</span> : null}
         </div>
 
         {match.result?.note ? <p className="fixture-note">{match.result.note}</p> : null}
@@ -77,7 +70,6 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
           <Link href={admin ? "/admin/matches" : `/matches/${match.id}`} className="fixture-link">
             {admin ? "Control match" : "Match Details"}
           </Link>
-          {!admin ? <ShareMatchButton href={`/matches/${match.id}`} title={`${match.teamA?.name ?? "TBD"} vs ${match.teamB?.name ?? "TBD"}`} compact /> : null}
         </div>
       </div>
     </article>

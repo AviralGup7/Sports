@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
-import { BracketPreviewCard, BracketTree, FixtureStrip, SportProgressCard, StageSummaryRail, StandingsTable } from "@/shared/ui";
+import { BracketTree, FixtureStrip, SportProgressCard, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
@@ -42,13 +42,13 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             variant="sport-masthead"
             aside={
               <div className="score-spotlight score-spotlight-tight">
-                <p className="eyebrow">This sport</p>
-                <h2>{liveCount > 0 ? "Live Now" : activeStageLabel}</h2>
-                <strong>{data.teams.length} associations competing</strong>
+                <p className="eyebrow">Summary</p>
+                <h2>{activeStageLabel}</h2>
+                <strong>{data.teams.length} associations</strong>
                 <p>
                   {liveCount > 0
-                    ? `${liveCount} match${liveCount === 1 ? "" : "es"} are live right now.`
-                    : "Use the summary below to check standings, fixtures, and the current title picture."}
+                    ? `${liveCount} live, ${completedCount} result${completedCount === 1 ? "" : "s"} in.`
+                    : `${data.sportProgressCard.pendingMatches} fixture${data.sportProgressCard.pendingMatches === 1 ? "" : "s"} published.`}
                 </p>
               </div>
             }
@@ -60,7 +60,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <div className="section-heading">
           <div>
             <p className="eyebrow">Sport</p>
-            <h2>{activeStageLabel}</h2>
+            <h2>{data.sport.name}</h2>
             <p className="muted">
               {liveCount > 0
                 ? `${liveCount} match${liveCount === 1 ? "" : "es"} live right now, ${completedCount} result${completedCount === 1 ? "" : "s"} already in.`
@@ -76,9 +76,6 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
               View schedule
             </Link>
-            <Link href="/standings" className="button button-ghost">
-              All standings
-            </Link>
           </div>
         </div>
       </MotionIn>
@@ -87,19 +84,12 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         <div className="section-heading">
           <div>
             <p className="eyebrow">Progress</p>
-            <h2>Tournament picture</h2>
+            <h2>Summary</h2>
           </div>
         </div>
         <div className="sport-progress-grid">
           <SportProgressCard card={data.sportProgressCard} />
-          {data.bracketPreview ? <BracketPreviewCard card={data.bracketPreview} /> : null}
         </div>
-        {data.stageSummaries.length > 0 ? (
-          <>
-            <div className="spacer-sm" />
-            <StageSummaryRail summaries={data.stageSummaries} />
-          </>
-        ) : null}
       </MotionIn>
 
       {selectedTab === "overview" ? (
@@ -107,8 +97,8 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
           <section className="section-shell">
             <div className="section-heading">
               <div>
-                <p className="eyebrow">Featured Matches</p>
-                <h2>Current spotlight</h2>
+                <p className="eyebrow">Fixtures</p>
+                <h2>Published matches</h2>
               </div>
             </div>
             <div className="fixture-stack">
@@ -137,7 +127,6 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
                   >
                     <strong>{team.name}</strong>
                     <span>{team.association}</span>
-                    <small>Seed {team.seed}</small>
                     <Link href={`/teams/${team.id}`} className="inline-link">
                       View profile
                     </Link>

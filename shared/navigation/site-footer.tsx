@@ -3,7 +3,6 @@ import { usePathname } from "next/navigation";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
-import { SponsorShowcase } from "@/shared/ui";
 
 import { BrandMark } from "./brand-mark";
 
@@ -22,47 +21,24 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
     <footer className="site-footer" aria-label="Tournament footer">
       <div className="site-footer-grid">
         <section className="site-footer-card">
-          <p className="eyebrow">Event</p>
           <div className="footer-brand-lockup">
             <BrandMark tournament={chrome.tournament} />
           </div>
           <h2>{chrome.tournament.name}</h2>
           <p>{formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate)} at {chrome.tournament.venue}</p>
-        </section>
-
-        <section className="site-footer-card">
-          <p className="eyebrow">Organiser</p>
-          <h2>Inter-Assoc Cultural Sports League Committee</h2>
-          <p>Official public portal for fixtures, standings, notices, and match updates during the tournament.</p>
           <div className="stack-sm">
             {chrome.tournament.contacts.map((contact) => (
               <p key={contact.id}>
-                {contact.name}{contact.role ? `, ${contact.role}` : ""}
+                {contact.name}
+                {contact.role ? `, ${contact.role}` : ""}:{" "}
+                <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="inline-link">
+                  {contact.phone}
+                </a>
               </p>
             ))}
           </div>
         </section>
-
-        <section className="site-footer-card">
-          <p className="eyebrow">Queries</p>
-          <h2>Need help?</h2>
-          <p>Check the latest notices first, then reach the organising team for event-day queries and coordination support.</p>
-          {chrome.tournament.contacts.map((contact) => (
-            <p key={contact.id}>
-              {contact.name}: <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="inline-link">{contact.phone}</a>
-            </p>
-          ))}
-        </section>
       </div>
-
-      <section className="site-footer-card site-footer-sponsors">
-        <SponsorShowcase
-          compact
-          eyebrow="Partners"
-          title="Proudly backed by our sponsors"
-          description="Featured across the tournament portal and event-day touchpoints."
-        />
-      </section>
     </footer>
   );
 }
