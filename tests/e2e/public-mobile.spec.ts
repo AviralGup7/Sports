@@ -24,7 +24,7 @@ test.describe("android public shell", () => {
     await page.goto("/schedule");
     await expectHealthyPage(page);
 
-    await expect(page.locator(".filter-rail")).toBeVisible();
+    await expect(page.locator(".filter-rail")).toHaveCount(0);
     await expect(page.locator(".timeline-group").first()).toBeVisible();
     await expectNoHorizontalOverflow(page);
   });

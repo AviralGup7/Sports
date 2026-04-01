@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
 
 import type { GlobalChromeData } from "@/server/data/public/types";
-import { formatDateRangeLabel } from "@/server/data/formatters";
 
 import { BrandMark } from "./brand-mark";
 
@@ -33,27 +32,8 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
   const mobileMenuId = useId();
   const isAdmin = pathname.startsWith("/admin");
   const isHome = pathname === "/";
-  const rangeLabel = formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate);
-  const dataSourceLabel = chrome.dataState.source === "fallback" ? "Seed data" : "Live data";
   const sportsActive = pathname.startsWith("/sports/") || pathname === "/teams";
   const menuActive = pathname.startsWith("/sports/") || pathname.startsWith("/announcements") || pathname.startsWith("/teams");
-  const currentSectionLabel = isAdmin
-    ? "Organizer lane"
-    : pathname === "/"
-      ? "Home"
-      : pathname.startsWith("/standings")
-        ? "Standings"
-        : pathname.startsWith("/schedule")
-          ? "Schedule"
-          : pathname.startsWith("/sports/")
-            ? "Sports"
-            : pathname.startsWith("/teams")
-              ? "Teams"
-              : pathname.startsWith("/matches/")
-                ? "Match Details"
-                : pathname.startsWith("/announcements")
-                  ? "Notices"
-                  : "Portal";
   const mobileMenuItems = [
     { href: "/announcements", label: "Notices" },
     { href: "/teams", label: "Teams" },
@@ -97,12 +77,6 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
             </span>
           </Link>
 
-          <div className="header-status">
-            <span className="header-chip">{rangeLabel}</span>
-            <span className="header-chip">{chrome.sports.length} sports</span>
-            {!isAdmin ? <span className="header-chip">{dataSourceLabel}</span> : null}
-            <span className="header-chip">{currentSectionLabel}</span>
-          </div>
         </div>
 
         <nav className="nav-links" aria-label="Primary">
