@@ -27,17 +27,35 @@ const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   }
 };
 
+const IST_OFFSET = "+05:30";
+const DEFAULT_LIVE_WINDOW_MINUTES = 90;
+
+function toMatchDateTime(day: string, time: string) {
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+function isLiveNow(match: Match, now: Date) {
+  if (match.status === "completed" || match.status === "cancelled" || match.status === "postponed") {
+    return false;
+  }
+
+  const start = toMatchDateTime(match.day, match.startTime);
+  const end = new Date(start.getTime() + DEFAULT_LIVE_WINDOW_MINUTES * 60 * 1000);
+  return now >= start && now < end;
+}
+
 export function getPublicAnnouncements(snapshot: RepositorySnapshot) {
   return snapshot.announcements.filter((announcement) => announcement.visibility === "public" && announcement.isPublished);
 }
 
 export function getTournamentStatsFromSnapshot(snapshot: RepositorySnapshot): TournamentStats {
+  const now = new Date();
   return {
     sports: snapshot.sports.length,
     teams: snapshot.teams.filter((team) => team.isActive).length,
     matches: snapshot.matches.length,
     completedMatches: snapshot.matches.filter((match) => match.status === "completed").length,
-    liveMatches: snapshot.matches.filter((match) => match.status === "live").length,
+    liveMatches: snapshot.matches.filter((match) => isLiveNow(match, now)).length,
     announcements: getPublicAnnouncements(snapshot).length
   };
 }
@@ -76,10 +94,14 @@ export function buildDayNote(snapshot: RepositorySnapshot, day?: string): DayNot
 export function getActiveStage(snapshot: RepositorySnapshot, sportId: SportSlug) {
   const sportStages = getStagesForSport(snapshot, sportId);
   const matches = getMatchesForSport(snapshot, sportId);
+  const now = new Date();
 
   return (
     sportStages.find((stage: CompetitionStage) =>
-      matches.some((match: Match) => match.stageId === stage.id && (match.status === "live" || match.status === "scheduled" || match.status === "postponed"))
+      matches.some(
+        (match: Match) =>
+          match.stageId === stage.id && (isLiveNow(match, now) || match.status === "scheduled" || match.status === "postponed")
+      )
     ) ??
     sportStages.find((stage: CompetitionStage) => stage.isActive) ??
     sportStages[0] ??

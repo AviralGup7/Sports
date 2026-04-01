@@ -1,7 +1,6 @@
 import type { AdminMatchesData } from "@/server/data/admin/types";
 import { ActionNotice, ActionToast } from "@/shared/feedback";
 import { MotionIn } from "@/shared/motion";
-import { AdminMatchFilters } from "@/features/admin/matches/components/match-filters";
 import { AdminMatchesLiveView } from "@/features/admin/matches/components/admin-matches-live-view";
 import { resolveMatchesScreenState, type MatchesScreenParams } from "@/features/admin/matches/matches-screen-state";
 
@@ -11,7 +10,7 @@ type MatchesScreenProps = {
 };
 
 export function MatchesScreen({ data, params }: MatchesScreenProps) {
-  const { tone, selectedSport, selectedDay, selectedStage, selectedStatus, visibleStages, visibleMatches } = resolveMatchesScreenState(data, params);
+  const { tone, selectedSport, visibleMatches } = resolveMatchesScreenState(data, params);
 
   return (
     <div className="stack-xl">
@@ -32,18 +31,6 @@ export function MatchesScreen({ data, params }: MatchesScreenProps) {
       </MotionIn>
 
       <ActionNotice message={params.message} tone={tone} />
-
-      <MotionIn delay={0.08}>
-        <AdminMatchFilters
-          sports={data.sports}
-          stages={visibleStages}
-          days={data.days}
-          selectedSport={selectedSport}
-          selectedStage={selectedStage}
-          selectedStatus={selectedStatus}
-          selectedDay={selectedDay}
-        />
-      </MotionIn>
 
       <MotionIn className="stack-lg" delay={0.095}>
         <AdminMatchesLiveView data={data} visibleMatches={visibleMatches} />

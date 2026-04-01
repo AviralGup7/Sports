@@ -53,9 +53,35 @@ import { buildDataState, getGeneratedAt } from "@/server/data/shared/query-state
 import { buildDayNote, getActiveStage, getGroupsForSport, getMatchesForSport, getPublicAnnouncements, getStagesForSport, getTournamentStatsFromSnapshot } from "@/server/data/shared/snapshot-selectors";
 
 const IST_OFFSET = "+05:30";
+const DEFAULT_LIVE_WINDOW_MINUTES = 90;
+const LIVE_WINDOW_BY_SPORT: Partial<Record<SportSlug, number>> = {
+  cricket: 90,
+  football: 90,
+  volleyball: 90,
+  athletics: 90
+};
 
 function toMatchDateTime(day: string, time: string) {
   return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+function getLiveWindowMinutes(match: Match) {
+  return LIVE_WINDOW_BY_SPORT[match.sportId] ?? DEFAULT_LIVE_WINDOW_MINUTES;
+}
+
+function isLiveBySlotTime(match: Match, now: Date) {
+  if (match.status === "completed" || match.status === "cancelled" || match.status === "postponed") {
+    return false;
+  }
+
+  const start = toMatchDateTime(match.day, match.startTime);
+  const end = new Date(start.getTime() + getLiveWindowMinutes(match) * 60 * 1000);
+
+  return now >= start && now < end;
+}
+
+function isLiveNow(match: Match, now: Date) {
+  return match.status === "live" || isLiveBySlotTime(match, now);
 }
 
 function getTodayInKolkata() {
@@ -150,8 +176,9 @@ function buildChampionSpotlights(snapshot: RepositorySnapshot): ChampionSpotligh
 
 function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | null {
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+  const now = new Date();
   const match =
-    snapshot.matches.find((item) => item.status === "live") ??
+    snapshot.matches.find((item) => isLiveNow(item, now)) ??
     snapshot.matches.find((item) => item.status === "postponed") ??
     snapshot.matches.find((item) => item.status === "scheduled") ??
     snapshot.matches[0];
@@ -166,8 +193,9 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
   }
 
   const stageLabel = match.stage?.label ?? match.round;
+  const liveNow = isLiveNow(match, now);
   const headline =
-    match.status === "live"
+    liveNow
       ? `${match.teamA?.name ?? "TBD"} and ${match.teamB?.name ?? "TBD"} are live right now`
       : match.status === "postponed"
         ? `${stageLabel} is waiting on a reschedule call`
@@ -178,16 +206,17 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
   return {
     match,
     sport,
-    label: match.status === "live" ? "Live Match" : match.status === "postponed" ? "Schedule Update" : "Featured Match",
+    label: liveNow ? "Live Match" : match.status === "postponed" ? "Schedule Update" : "Featured Match",
     headline,
     summary: match.result?.scoreSummary ?? `${formatDateLabel(match.day)} at ${match.startTime} from ${match.venue}`,
-    urgency: match.status === "live" ? "live" : match.status === "postponed" ? "watch" : "next"
+    urgency: liveNow ? "live" : match.status === "postponed" ? "watch" : "next"
   };
 }
 
 function buildTickerItems(snapshot: RepositorySnapshot): TickerItem[] {
   const ticker: TickerItem[] = [];
-  const liveMatches = snapshot.matches.filter((match) => match.status === "live").slice(0, 2);
+  const now = new Date();
+  const liveMatches = snapshot.matches.filter((match) => isLiveNow(match, now)).slice(0, 2);
   const nextMatch = buildNextMatch(snapshot);
 
   for (const match of liveMatches) {
@@ -286,7 +315,7 @@ function buildNextMatch(snapshot: RepositorySnapshot): NextMatchCountdown | null
   const now = new Date();
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
   const nextMatch = snapshot.matches
-    .filter((match) => match.status === "scheduled" || match.status === "live" || match.status === "postponed")
+    .filter((match) => match.status === "scheduled" || match.status === "postponed")
     .sort((a, b) => toMatchDateTime(a.day, a.startTime).getTime() - toMatchDateTime(b.day, b.startTime).getTime())
     .find((match) => toMatchDateTime(match.day, match.startTime).getTime() >= now.getTime());
 
@@ -326,6 +355,7 @@ function buildScheduleGroups(fixtures: Match[]): ScheduleGroup[] {
 
 function buildStageSummaries(snapshot: RepositorySnapshot, sportId?: SportSlug): StageSummary[] {
   const stages = sportId ? getStagesForSport(snapshot, sportId) : snapshot.stages;
+  const now = new Date();
 
   return stages.map((stage) => {
     const matches = snapshot.matches.filter((match) => match.stageId === stage.id);
@@ -333,7 +363,7 @@ function buildStageSummaries(snapshot: RepositorySnapshot, sportId?: SportSlug):
       stage,
       totalMatches: matches.length,
       completedMatches: matches.filter((match) => match.status === "completed").length,
-      liveMatches: matches.filter((match) => match.status === "live").length,
+      liveMatches: matches.filter((match) => isLiveNow(match, now)).length,
       pendingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed").length,
       groups: snapshot.groups.filter((group) => group.stageId === stage.id)
     };
@@ -342,11 +372,12 @@ function buildStageSummaries(snapshot: RepositorySnapshot, sportId?: SportSlug):
 
 function buildSportProgressCards(snapshot: RepositorySnapshot, sportIds?: SportSlug[]): SportProgressCard[] {
   const sports = sportIds ? snapshot.sports.filter((sport) => sportIds.includes(sport.id)) : snapshot.sports;
+  const now = new Date();
 
   return sports.map((sport) => {
     const matches = getMatchesForSport(snapshot, sport.id);
     const completedMatches = matches.filter((match) => match.status === "completed").length;
-    const liveMatches = matches.filter((match) => match.status === "live").length;
+    const liveMatches = matches.filter((match) => isLiveNow(match, now)).length;
     const pendingMatches = matches.length - completedMatches - liveMatches;
     const finalsPending = matches.filter((match) => isTitleFinalRound(match.round) && match.status !== "completed").length;
     const completionPercent = matches.length > 0 ? Math.round((completedMatches / matches.length) * 100) : 0;
@@ -431,6 +462,7 @@ function getMatchesForTeam(snapshot: RepositorySnapshot, teamId: string) {
 
 function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[] {
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+  const now = new Date();
 
   return snapshot.teams
     .filter((team) => team.isActive)
@@ -439,7 +471,7 @@ function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[] {
       return {
         team,
         sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
-        liveMatches: matches.filter((match) => match.status === "live"),
+        liveMatches: matches.filter((match) => isLiveNow(match, now)),
         upcomingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed"),
         completedMatches: matches.filter((match) => match.status === "completed")
       };
@@ -449,6 +481,7 @@ function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[] {
 
 function buildStandingsSections(snapshot: RepositorySnapshot, selectedSport?: SportSlug): StandingsSportCard[] {
   const sports = selectedSport ? snapshot.sports.filter((sport) => sport.id === selectedSport) : snapshot.sports;
+  const now = new Date();
   const sections: StandingsSportCard[] = [];
 
   for (const sport of sports) {
@@ -465,7 +498,7 @@ function buildStandingsSections(snapshot: RepositorySnapshot, selectedSport?: Sp
     sections.push({
       sport,
       cards,
-      liveMatches: matches.filter((match) => match.status === "live").length,
+      liveMatches: matches.filter((match) => isLiveNow(match, now)).length,
       completedMatches: matches.filter((match) => match.status === "completed").length
     });
   }
@@ -568,7 +601,7 @@ function mapNodeState(match: Match): BracketTreeNode["state"] {
     return "bye";
   }
 
-  if (match.status === "live") {
+  if (isLiveNow(match, new Date())) {
     return "live";
   }
 
@@ -698,7 +731,8 @@ function buildRelatedMatches(snapshot: RepositorySnapshot, match: Match) {
 }
 
 function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: Match[], integrityIssues: IntegrityIssue[]): AdminAttentionItem[] {
-  const liveMatches = visibleMatches.filter((match) => match.status === "live");
+  const now = new Date();
+  const liveMatches = visibleMatches.filter((match) => isLiveNow(match, now));
   const pendingResults = visibleMatches.filter((match) => match.status !== "completed" && match.status !== "cancelled");
   const publicPinned = getPublicAnnouncements(snapshot).filter((announcement) => announcement.pinned);
   const completedMatches = visibleMatches.filter((match) => match.status === "completed");
@@ -831,6 +865,7 @@ export async function getSchedulePageData(
 ): Promise<SchedulePageData> {
   const snapshot = await loadSnapshot();
   const generatedAt = getGeneratedAt();
+  const now = new Date();
   const days = Array.from(new Set(snapshot.matches.map((match) => match.day))).sort();
   const today = getTodayInKolkata();
   const selectedDay = day && days.includes(day) ? day : days.includes(today) ? today : days[0];
@@ -841,7 +876,8 @@ export async function getSchedulePageData(
     (match) =>
       match.day === selectedDay &&
       (!sportId || match.sportId === sportId) &&
-      (!selectedStatus || match.status === selectedStatus)
+      (!selectedStatus ||
+        (selectedStatus === "live" ? isLiveNow(match, now) : match.status === selectedStatus))
   );
 
   return {
@@ -974,6 +1010,7 @@ export async function getTeamProfilePageData(teamId: string): Promise<TeamProfil
 
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
   const matches = getMatchesForTeam(snapshot, team.id);
+  const now = new Date();
   const generatedAt = getGeneratedAt();
 
   return {
@@ -981,7 +1018,7 @@ export async function getTeamProfilePageData(teamId: string): Promise<TeamProfil
     dataState: buildDataState(snapshot, generatedAt),
     team,
     sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
-    liveMatches: matches.filter((match) => match.status === "live"),
+    liveMatches: matches.filter((match) => isLiveNow(match, now)),
     upcomingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed"),
     completedMatches: matches.filter((match) => match.status === "completed"),
     standings: buildTeamStandings(snapshot, team)
@@ -990,9 +1027,10 @@ export async function getTeamProfilePageData(teamId: string): Promise<TeamProfil
 
 export async function getAdminDashboardData(profile: Profile): Promise<AdminDashboardData> {
   const snapshot = await loadSnapshot();
+  const now = new Date();
   const allowedSports = profile.role === "super_admin" ? snapshot.sports.map((sport) => sport.id) : profile.sportIds;
   const visibleMatches = snapshot.matches.filter((match) => allowedSports.includes(match.sportId));
-  const liveMatch = visibleMatches.find((match) => match.status === "live");
+  const liveMatch = visibleMatches.find((match) => isLiveNow(match, now));
   const anchorDay =
     liveMatch?.day ??
     visibleMatches.find((match) => match.status === "scheduled" || match.status === "postponed")?.day ??

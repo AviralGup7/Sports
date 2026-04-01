@@ -14,8 +14,6 @@ test.describe("admin matches", () => {
     await expectHealthyPage(page);
 
     await expect(page.getByRole("heading", { name: "Live Desk" })).toBeVisible();
-    await expect(page.getByText("Sport").first()).toBeVisible();
-    await expect(page.getByText("Status").first()).toBeVisible();
     await expect(page.getByRole("button", { name: /save result/i }).first()).toBeVisible();
   });
 
