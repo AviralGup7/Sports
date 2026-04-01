@@ -77,7 +77,7 @@ values
   ('haryana-cultural', 'cricket'), ('haryana-cultural', 'football'), ('haryana-cultural', 'volleyball'), ('haryana-cultural', 'athletics'),
   ('punjab-cultural', 'cricket'), ('punjab-cultural', 'football'), ('punjab-cultural', 'volleyball'), ('punjab-cultural', 'athletics'),
   ('udgam', 'cricket'), ('udgam', 'football'), ('udgam', 'volleyball'), ('udgam', 'athletics'),
-  ('sangam', 'athletics'),
+  ('sangam', 'cricket'), ('sangam', 'football'), ('sangam', 'volleyball'), ('sangam', 'athletics'),
   ('kairali', 'cricket'), ('kairali', 'football'), ('kairali', 'volleyball'), ('kairali', 'athletics'),
   ('kannada-vedike', 'cricket'), ('kannada-vedike', 'football'), ('kannada-vedike', 'volleyball'),
   ('pilani-tamil-mandram', 'cricket'), ('pilani-tamil-mandram', 'football'), ('pilani-tamil-mandram', 'athletics'),
