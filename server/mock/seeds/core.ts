@@ -7,11 +7,7 @@ export const tournamentSeed: Tournament = {
   endDate: "2026-04-05",
   venue: "GYMG & MedC Grounds",
   logoAssetPath: "/branding/icasl-logo.png",
-  contacts: [
-    { id: "moksh-goel", name: "Moksh Goel", phone: "+91-9971019074", role: "Tournament Coordinator" },
-    { id: "partho-kumar-das", name: "Partho Kumar Das", phone: "+91-7985898426", role: "Operations Coordinator" },
-    { id: "aarav-saxena", name: "Aarav Saxena", phone: "+91-9818650379", role: "Venue Coordinator" }
-  ]
+  contacts: []
 };
 
 export const sportsSeed: Sport[] = [
@@ -52,27 +48,23 @@ export const profilesSeed: Profile[] = [
     email: "lead@college.edu",
     role: "super_admin",
     sportIds: ["cricket", "football", "volleyball", "athletics"]
-  },
-  {
-    id: "00000000-0000-0000-0000-000000000002",
-    name: "Cricket Admin",
-    email: "cricket@college.edu",
-    role: "sport_admin",
-    sportIds: ["cricket"]
   }
 ];
 
 export const competitionStagesSeed: CompetitionStage[] = [
-  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Championship Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "cricket-placement-stage", sportId: "cricket", type: "placement", label: "Bronze Match", orderIndex: 2, advancesCount: 0, isActive: true },
+  { id: "cricket-group-stage", sportId: "cricket", type: "group", label: "Pool Stage", orderIndex: 1, advancesCount: 2, isActive: true },
+  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Championship Bracket", orderIndex: 2, advancesCount: 1, isActive: true },
+  { id: "cricket-placement-stage", sportId: "cricket", type: "placement", label: "Bronze Match", orderIndex: 3, advancesCount: 0, isActive: true },
   { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Cup Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "football-placement-stage", sportId: "football", type: "placement", label: "Third Place", orderIndex: 2, advancesCount: 0, isActive: true },
   { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Championship Ladder", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "volleyball-placement-stage", sportId: "volleyball", type: "placement", label: "Bronze Match", orderIndex: 2, advancesCount: 0, isActive: true },
-  { id: "athletics-knockout-stage", sportId: "athletics", type: "knockout", label: "Sprint Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "athletics-placement-stage", sportId: "athletics", type: "placement", label: "Bronze Race", orderIndex: 2, advancesCount: 0, isActive: true }
+  { id: "athletics-results-stage", sportId: "athletics", type: "group", label: "Results Cards", orderIndex: 1, advancesCount: 0, isActive: true }
 ];
 
-export const competitionGroupsSeed: CompetitionGroup[] = [];
+export const competitionGroupsSeed: CompetitionGroup[] = [
+  { id: "cricket-group-a", stageId: "cricket-group-stage", sportId: "cricket", code: "Group A", orderIndex: 1 },
+  { id: "cricket-group-b", stageId: "cricket-group-stage", sportId: "cricket", code: "Group B", orderIndex: 2 }
+];
 
 export const sportOrder: SportSlug[] = ["cricket", "football", "volleyball", "athletics"];

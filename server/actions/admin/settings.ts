@@ -277,34 +277,36 @@ export async function performResetTournamentData(formData: FormData) {
       }
     }
 
-    const { error: matchesError } = await supabase.from("matches").upsert(
-      matchesSeed.map((match) => ({
-        id: match.id,
-        tournament_id: tournamentSeed.id,
-        sport_id: match.sportId,
-        round: match.round,
-        day: match.day,
-        start_time: match.startTime,
-        venue: match.venue,
-        stage_id: match.stageId,
-        group_id: match.groupId,
-        round_index: match.roundIndex,
-        match_number: match.matchNumber,
-        team_a_id: match.teamAId,
-        team_b_id: match.teamBId,
-        status: match.status,
-        winner_to_match_id: match.winnerToMatchId,
-        winner_to_slot: match.winnerToSlot,
-        loser_to_match_id: match.loserToMatchId,
-        loser_to_slot: match.loserToSlot,
-        next_match_id: match.nextMatchId,
-        next_slot: match.nextSlot,
-        is_bye: match.isBye
-      }))
-    );
+    if (matchesSeed.length > 0) {
+      const { error: matchesError } = await supabase.from("matches").upsert(
+        matchesSeed.map((match) => ({
+          id: match.id,
+          tournament_id: tournamentSeed.id,
+          sport_id: match.sportId,
+          round: match.round,
+          day: match.day,
+          start_time: match.startTime,
+          venue: match.venue,
+          stage_id: match.stageId,
+          group_id: match.groupId,
+          round_index: match.roundIndex,
+          match_number: match.matchNumber,
+          team_a_id: match.teamAId,
+          team_b_id: match.teamBId,
+          status: match.status,
+          winner_to_match_id: match.winnerToMatchId,
+          winner_to_slot: match.winnerToSlot,
+          loser_to_match_id: match.loserToMatchId,
+          loser_to_slot: match.loserToSlot,
+          next_match_id: match.nextMatchId,
+          next_slot: match.nextSlot,
+          is_bye: match.isBye
+        }))
+      );
 
-    if (matchesError) {
-      throw new Error(matchesError.message);
+      if (matchesError) {
+        throw new Error(matchesError.message);
+      }
     }
 
     if (resultsSeed.length > 0) {

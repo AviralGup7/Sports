@@ -15,6 +15,5 @@ export const teamsSeed: Team[] = [
   { id: "maurya-vihar", name: "MV7", association: "Maurya Vihar", sportIds: ["cricket", "athletics"], seed: 12, isActive: true },
   { id: "marudhara", name: "Marudhara", association: "Marudhara", sportIds: ["cricket", "volleyball", "athletics"], seed: 13, isActive: true },
   { id: "moruchhaya", name: "Moruchhaya", association: "Moruchhaya", sportIds: ["cricket"], seed: 14, isActive: true },
-  { id: "maharashtra-mandal", name: "Maharashtra Mandal", association: "Maharashtra Mandal", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 15, isActive: true },
-  { id: "utkal-samaj", name: "Utkal Samaj", association: "Odisha", sportIds: ["cricket", "athletics"], seed: 16, isActive: true }
+  { id: "maharashtra-mandal", name: "Maharashtra Mandal", association: "Maharashtra Mandal", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 15, isActive: true }
 ];

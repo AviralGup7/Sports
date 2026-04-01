@@ -33,3 +33,21 @@ order by id;
 select count(*) as active_team_count
 from public.teams
 where is_active = true;
+
+-- 4) Live score health check (admin updates should appear here)
+select
+  m.id,
+  m.status,
+  m.sport_id,
+  m.round,
+  m.team_a_id,
+  m.team_b_id,
+  mr.score_summary,
+  mr.team_a_score,
+  mr.team_b_score,
+  mr.updated_at
+from public.matches m
+left join public.match_results mr on mr.match_id = m.id
+where m.status in ('live', 'completed')
+order by m.day desc, m.start_time desc
+limit 20;
