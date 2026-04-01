@@ -17,7 +17,6 @@ type TeamsScreenProps = {
 export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
   const selectedSportRecord = data.sports.find((sport) => sport.id === selectedSport);
   const visibleTeams = selectedSport ? data.teams.filter((entry) => entry.sports.some((sport) => sport.id === selectedSport)) : data.teams;
-  const buildHref = (sport?: string) => (sport ? `/teams?sport=${sport}` : "/teams");
 
   return (
     <div className="stack-xl">
@@ -37,10 +36,6 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
                   <span className="aside-label">Visible teams</span>
                   <strong>{visibleTeams.length}</strong>
                 </div>
-                <div>
-                  <span className="aside-label">Filter</span>
-                  <strong>{selectedSportRecord?.name ?? "All sports"}</strong>
-                </div>
                 <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
@@ -48,39 +43,18 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
         </ScrollStorySection>
       </MotionIn>
 
-      <MotionIn className="filter-rail filter-rail-sticky" delay={0.06}>
-        <div className="filter-rail-summary">
+      <MotionIn className="section-shell" delay={0.06}>
+        <div className="section-heading">
           <div>
-            <p className="eyebrow">Browse teams</p>
-            <h2>{selectedSportRecord?.name ?? "All sports"}</h2>
-            <p className="muted">
-              {visibleTeams.length} association{visibleTeams.length === 1 ? "" : "s"} in this view. Use sport filters to cut card noise and find the right roster faster.
-            </p>
+            <p className="eyebrow">Teams</p>
+            <h2>Association list</h2>
           </div>
           <div className="page-guide-actions">
+            <span className="pill">{visibleTeams.length} teams</span>
+            <DataStateBanner state={data.dataState} compact />
             <Link href="/standings" className="button button-ghost">
               View standings
             </Link>
-          </div>
-        </div>
-
-        <div className="filter-rail-meta">
-          <span className="pill">{visibleTeams.length} teams</span>
-          <span className="pill">{data.sports.length} sports</span>
-          <DataStateBanner state={data.dataState} compact />
-        </div>
-
-        <div className="filter-block">
-          <p className="eyebrow">Sport</p>
-          <div className="chip-row">
-            <Link href={buildHref()} className={!selectedSport ? "chip chip-active" : "chip"}>
-              All sports
-            </Link>
-            {data.sports.map((sport) => (
-              <Link key={sport.id} href={buildHref(sport.id)} className={selectedSport === sport.id ? "chip chip-active" : "chip"}>
-                {sport.name}
-              </Link>
-            ))}
           </div>
         </div>
       </MotionIn>

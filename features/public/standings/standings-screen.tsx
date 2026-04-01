@@ -11,8 +11,6 @@ type StandingsScreenProps = {
 };
 
 export function StandingsScreen({ data }: StandingsScreenProps) {
-  const buildHref = (sport?: string) => (sport ? `/standings?sport=${sport}` : "/standings");
-
   return (
     <div className="stack-xl">
       <MotionIn>
@@ -27,22 +25,6 @@ export function StandingsScreen({ data }: StandingsScreenProps) {
             variant="schedule-command"
           />
         </ScrollStorySection>
-      </MotionIn>
-
-      <MotionIn className="filter-rail sticky-filter-card" delay={0.06}>
-        <div className="filter-block">
-          <p className="eyebrow">Sport</p>
-          <div className="chip-row">
-            <Link href={buildHref()} className={!data.selectedSport ? "chip chip-active" : "chip"}>
-              All sports
-            </Link>
-            {data.sports.map((sport) => (
-              <Link key={sport.id} href={buildHref(sport.id)} className={data.selectedSport === sport.id ? "chip chip-active" : "chip"}>
-                {sport.name}
-              </Link>
-            ))}
-          </div>
-        </div>
       </MotionIn>
 
       {data.sections.length > 0 ? (
