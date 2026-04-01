@@ -6,7 +6,7 @@ export const teamsSeed: Team[] = [
   { id: "gurjari", name: "GUJARAT TITANS", association: "Gurjari", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 3, isActive: true },
   { id: "haryana-cultural", name: "HCA", association: "Haryana Cultural Association", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 4, isActive: true },
   { id: "punjab-cultural", name: "PCA", association: "Punjab Cultural Association", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 5, isActive: true },
-  { id: "udgam", name: "Ambulance club", association: "Udgam", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 6, isActive: true },
+  { id: "udgam", name: "Barfila Tendua", association: "Udgam", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 6, isActive: true },
   { id: "sangam", name: "Sangam", association: "Sangam", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 7, isActive: true },
   { id: "kairali", name: "Abrahaminde Sandhadhikal", association: "Kairali", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 8, isActive: true },
   { id: "kannada-vedike", name: "Royal Challengers KV", association: "Kannada Vedike", sportIds: ["cricket", "football", "volleyball"], seed: 9, isActive: true },

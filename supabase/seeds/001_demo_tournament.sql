@@ -26,8 +26,8 @@ values (
   '/branding/icasl-logo.png',
   '[
     {"id":"contact-1","name":"Moksh Goel","phone":"+91-9876543210","role":"Tournament Lead"},
-    {"id":"contact-2","name":"Aarav Sharma","phone":"+91-9876501234","role":"Fixtures"},
-    {"id":"contact-3","name":"Nisha Verma","phone":"+91-9876505678","role":"Operations"}
+    {"id":"contact-2","name":"Aarav Saxena","phone":"+91-9876501234","role":"Fixtures"},
+    {"id":"contact-3","name":"Partho Kumar Das","phone":"+91-9876505678","role":"Operations"}
   ]'::jsonb
 )
 on conflict (tournament_id) do update
@@ -53,7 +53,7 @@ values
   ('gurjari', 'GUJARAT TITANS', 'Gurjari', 3, true),
   ('haryana-cultural', 'HCA', 'Haryana Cultural Association', 4, true),
   ('punjab-cultural', 'PCA', 'Punjab Cultural Association', 5, true),
-  ('udgam', 'Ambulance club', 'Udgam', 6, true),
+  ('udgam', 'Barfila Tendua', 'Udgam', 6, true),
   ('sangam', 'Sangam', 'Sangam', 7, true),
   ('kairali', 'Abrahaminde Sandhadhikal', 'Kairali', 8, true),
   ('kannada-vedike', 'Royal Challengers KV', 'Kannada Vedike', 9, true),
@@ -108,10 +108,10 @@ insert into public.matches (
   winner_to_match_id, winner_to_slot, loser_to_match_id, loser_to_slot, is_bye
 )
 values
-  ('cricket-r1-1', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '18:00', 'Main Cricket Ground', 'haryana-cultural', 'marudhara', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 1, null, null, null, null, false),
-  ('cricket-r1-2', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '19:30', 'Main Cricket Ground', 'madhyansh', 'maurya-vihar', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 2, null, null, null, null, false),
-  ('cricket-r1-3', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '21:00', 'Main Cricket Ground', 'maharashtra-mandal', 'sangam', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 3, null, null, null, null, false),
-  ('cricket-r1-4', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '22:30', 'Main Cricket Ground', 'andhra-samithi', 'capitol', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 4, null, null, null, null, false)
+  ('cricket-r1-1', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '18:00', 'GYMG', 'haryana-cultural', 'marudhara', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 1, null, null, null, null, false),
+  ('cricket-r1-2', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '19:30', 'GYMG', 'madhyansh', 'maurya-vihar', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 2, null, null, null, null, false),
+  ('cricket-r1-3', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '21:00', 'GYMG', 'maharashtra-mandal', 'sangam', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 3, null, null, null, null, false),
+  ('cricket-r1-4', 'icl-2026', 'cricket', 'Round 1', '2026-04-02', '22:30', 'GYMG', 'andhra-samithi', 'capitol', 'scheduled', null, null, 'cricket-knockout-stage', null, 1, 4, null, null, null, null, false)
 on conflict (id) do update
 set tournament_id = excluded.tournament_id,
     sport_id = excluded.sport_id,

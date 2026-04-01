@@ -76,7 +76,7 @@ export function AdminMatchCreatePanel({ sports, stages, groups, teams, action }:
             </label>
             <label className="field">
               <span>Venue</span>
-              <input name="venue" required placeholder="Main Ground" />
+              <input name="venue" required placeholder="GYMG" />
             </label>
             <label className="field">
               <span>Status</span>
