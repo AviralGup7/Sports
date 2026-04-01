@@ -26,7 +26,7 @@ export function NewsBulletin({
     <article className={pinnedHero ? "news-bulletin news-bulletin-hero" : "news-bulletin"}>
       <div className="news-bulletin-scan" aria-hidden="true" />
       <div className="news-topline">
-        <p className="eyebrow">{announcement.pinned ? "Latest Notice" : "Notice"}</p>
+        <p className="eyebrow">{announcement.pinned ? "Main Notice" : "Notice"}</p>
         <StageBadge
           label={announcement.isPublished ? "Published" : "Draft"}
           tone={announcement.isPublished ? "success" : "alert"}
@@ -43,7 +43,7 @@ export function NewsBulletin({
       <p className={compact ? "bulletin-copy bulletin-copy-compact" : "bulletin-copy"}>{announcement.body}</p>
       <div className="news-bulletin-footer">
         <span>{showAdminMeta ? `${announcement.visibility} audience` : "Tournament notice"}</span>
-        <span>{announcement.pinned ? "Pinned notice" : "General update"}</span>
+        <span>{announcement.pinned ? "Priority notice" : "General notice"}</span>
       </div>
     </article>
   );

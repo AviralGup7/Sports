@@ -20,8 +20,8 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
         <ScrollStorySection variant="hero">
           <BroadcastHero
             eyebrow="Notices"
-            title="Updates & Alerts"
-            description="Check the latest schedule changes, venue notices, and important tournament updates in one place."
+            title="Notices"
+            description="Check published schedule changes, venue notices, and tournament updates in one place."
             compact
             tone="crimson"
             intensity="premium"
@@ -29,7 +29,7 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
             aside={
               <div className="hero-aside-list hero-aside-list-cyber">
                 <div>
-                  <span className="aside-label">Lead story</span>
+                  <span className="aside-label">Main notice</span>
                   <strong>{leadItem ? "Ready" : "Waiting"}</strong>
                 </div>
                 <div>
@@ -46,8 +46,8 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
         <MotionIn className="section-shell" delay={0.06}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Lead Story</p>
-              <h2>Read this notice first</h2>
+              <p className="eyebrow">Main Notice</p>
+              <h2>Read this first</h2>
             </div>
           </div>
           <div className="home-news-grid">

@@ -709,7 +709,7 @@ function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: 
       label: "Pending Results",
       value: String(pendingResults.length),
       detail: "Boards waiting for result locks, postponement calls, or progression updates.",
-      href: "/admin/matches?mode=live",
+      href: "/admin/matches",
       tone: pendingResults.length > 0 ? "alert" : "success"
     },
     {
@@ -717,7 +717,7 @@ function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: 
       label: "Live Boards",
       value: String(liveMatches.length),
       detail: liveMatches.length > 0 ? "Fixtures actively running right now." : "No fixtures are currently live.",
-      href: "/admin/matches?mode=live",
+      href: "/admin/matches",
       tone: liveMatches.length > 0 ? "live" : "neutral"
     },
     {
@@ -725,7 +725,7 @@ function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: 
       label: "Tree Issues",
       value: String(integrityIssues.length),
       detail: integrityIssues.length > 0 ? "Bracket routes or results need attention." : "No bracket integrity issues detected.",
-      href: "/admin/matches?mode=tree",
+      href: "/admin/matches",
       tone: integrityIssues.length > 0 ? "alert" : "success"
     },
     {
@@ -741,7 +741,7 @@ function buildAdminAttentionItems(snapshot: RepositorySnapshot, visibleMatches: 
       label: "Completed",
       value: String(completedMatches.length),
       detail: "Results already locked into standings, trees, and archive lanes.",
-      href: "/admin/matches?mode=live",
+      href: "/admin/matches",
       tone: "success"
     }
   ];

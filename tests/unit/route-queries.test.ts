@@ -22,11 +22,11 @@ describe("route-facing queries", () => {
     expect(data?.matches.length).toBe(0);
   });
 
-  it("builds admin matches data with visible builder cards and quick-result candidates", async () => {
+  it("builds admin matches data for the live desk filters", async () => {
     const data = await getAdminMatchesData(profilesSeed[0]);
 
     expect(data.builderCards.length).toBeGreaterThan(0);
-    expect(data.quickResultCandidates.length).toBeGreaterThan(0);
+    expect(data.matches.length).toBeGreaterThan(0);
     expect(data.days.length).toBeGreaterThan(0);
   });
 });

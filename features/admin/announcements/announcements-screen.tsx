@@ -1,5 +1,3 @@
-import Link from "next/link";
-
 import { upsertAnnouncementAction } from "@/app/admin/actions";
 import type { AdminAnnouncementsData } from "@/server/data/admin/types";
 import { ActionNotice, ActionToast, EmptyState } from "@/shared/feedback";
@@ -23,14 +21,11 @@ export function AdminAnnouncementsScreen({ data, message, tone }: AdminAnnouncem
           <div>
             <p className="eyebrow">Notices</p>
             <h1>Write once, publish fast</h1>
-            <p className="hero-text">Keep announcements simple: draft them here, or use the AI desk when you already know what you want to say.</p>
+            <p className="hero-text">Keep announcements short, clear, and ready for public release from one editor.</p>
           </div>
           <div className="operations-hero-side">
             <span className="operations-chip">Total {data.announcements.length}</span>
             <span className="operations-chip">Pinned {data.announcements.filter((item) => item.pinned).length}</span>
-            <Link href="/admin/assistant" className="button button-ghost">
-              AI desk
-            </Link>
           </div>
         </section>
       </MotionIn>

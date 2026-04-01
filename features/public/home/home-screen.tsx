@@ -27,7 +27,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
             eyebrow="Official tournament portal"
             kicker={`${formatDateRangeLabel(tournament.startDate, tournament.endDate)} | ${tournament.venue}`}
             title={tournament.name}
-            description="Follow live scores, upcoming fixtures, standings, and important notices from one polished tournament portal."
+            description="Follow published fixtures, standings, and important notices from one clear tournament portal."
             badge={<HomeBrandBadge tournament={tournament} />}
             tone={highlightMatch?.urgency === "live" ? "crimson" : highlightMatch?.urgency === "watch" ? "crimson" : "blue"}
             intensity="premium"
@@ -90,7 +90,7 @@ export function HomeScreen({ data }: HomeScreenProps) {
           <div className="section-heading">
             <div>
               <p className="eyebrow">Lead Notice</p>
-              <h2>Key update and context</h2>
+              <h2>Main update</h2>
             </div>
             <div className="home-inline-meta">
               {nextMatch ? <CountdownChip startsAt={nextMatch.startsAt} /> : null}

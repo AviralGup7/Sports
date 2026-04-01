@@ -320,7 +320,7 @@ export async function performSubmitResult(formData: FormData) {
   const selectedWinnerTeamId = toNullableString(formData.get("winnerTeamId"));
   const teamAScore = toNullableNumber(formData.get("teamAScore"));
   const teamBScore = toNullableNumber(formData.get("teamBScore"));
-  const scoreSummary = toNullableString(formData.get("scoreSummary"));
+  const scoreSummaryInput = toNullableString(formData.get("scoreSummary"));
   const note = toNullableString(formData.get("note"));
   const decisionType = getEnumField(formData, "decisionType", ["normal", "walkover", "penalties", "retired"] as const, "Decision type", "normal");
 
@@ -346,28 +346,43 @@ export async function performSubmitResult(formData: FormData) {
   }
 
   const baseMatch = sourceMatch!;
+  const hasBothTeams = Boolean(baseMatch.team_a_id && baseMatch.team_b_id);
+  const requiresTeams = status === "live" || status === "completed";
 
-  const inferredWinner =
+  if (requiresTeams && !hasBothTeams && !baseMatch.is_bye) {
+    redirectWithMessage("/admin/matches", "error", "Live or completed matches need both teams assigned.");
+  }
+
+  const scoresProvided = teamAScore !== null && teamBScore !== null;
+  const scoreSummary = scoreSummaryInput ?? (scoresProvided ? `${teamAScore} - ${teamBScore}` : null);
+
+  let inferredWinner =
     baseMatch.is_bye && !selectedWinnerTeamId ? baseMatch.team_a_id ?? baseMatch.team_b_id : selectedWinnerTeamId;
 
-  if (
-    status === "completed" &&
-    !inferredWinner &&
-    !["cancelled"].includes(status)
-  ) {
-    redirectWithMessage("/admin/matches", "error", "Completed results must choose a winner.");
+  if (status === "completed") {
+    if (decisionType === "normal") {
+      if (!scoresProvided) {
+        redirectWithMessage("/admin/matches", "error", "Completed normal results need both scores.");
+      }
+
+      if (teamAScore === teamBScore) {
+        redirectWithMessage("/admin/matches", "error", "Normal results cannot finish level. Use penalties or another decision type.");
+      }
+
+      inferredWinner = teamAScore! > teamBScore! ? baseMatch.team_a_id : baseMatch.team_b_id;
+    } else {
+      if (!inferredWinner) {
+        redirectWithMessage("/admin/matches", "error", "Completed special-case results must choose a winner.");
+      }
+
+      if (decisionType === "penalties" && !scoresProvided) {
+        redirectWithMessage("/admin/matches", "error", "Penalty results need both scores.");
+      }
+    }
   }
 
-  if (
-    inferredWinner &&
-    inferredWinner !== baseMatch.team_a_id &&
-    inferredWinner !== baseMatch.team_b_id
-  ) {
+  if (inferredWinner && inferredWinner !== baseMatch.team_a_id && inferredWinner !== baseMatch.team_b_id) {
     redirectWithMessage("/admin/matches", "error", "Winner must be one of the assigned teams.");
-  }
-
-  if (status === "completed" && decisionType === "normal" && teamAScore !== null && teamBScore !== null && teamAScore === teamBScore) {
-    redirectWithMessage("/admin/matches", "error", "Normal results cannot finish level. Use penalties or another decision type.");
   }
 
   const { error: matchError } = await supabase.from("matches").update({ status }).eq("id", matchId);

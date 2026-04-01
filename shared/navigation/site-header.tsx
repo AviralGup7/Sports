@@ -1,6 +1,5 @@
 "use client";
 
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useId, useState } from "react";
@@ -9,11 +8,6 @@ import type { GlobalChromeData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 
 import { BrandMark } from "./brand-mark";
-
-const LiveTicker = dynamic(() => import("./live-ticker").then((module) => module.LiveTicker), {
-  ssr: false,
-  loading: () => null
-});
 
 type SiteHeaderProps = {
   chrome: GlobalChromeData;
@@ -159,9 +153,6 @@ export function SiteHeader({ chrome }: SiteHeaderProps) {
           })}
         </nav>
       </header>
-
-      {!isAdmin ? <LiveTicker items={chrome.tickerItems} groups={chrome.tickerGroups} /> : null}
-
       {!isAdmin ? (
         <nav className="mobile-dock" aria-label="Bottom navigation">
           {mobileNav.map((item) => {

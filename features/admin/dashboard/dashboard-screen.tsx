@@ -6,8 +6,6 @@ import { ControlPanel } from "@/shared/layout";
 import { DayNoteBanner, FixtureStrip, NewsBulletin } from "@/shared/ui";
 import { MotionIn } from "@/shared/motion";
 
-import { AdminAiCommandPanel } from "@/features/admin/assistant/components/admin-ai-command-panel";
-
 type DashboardScreenProps = {
   data: AdminDashboardData;
   message?: string;
@@ -27,7 +25,7 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
           <div>
             <p className="eyebrow">Admin home</p>
             <h1>Run today from one place</h1>
-            <p className="hero-text">Start with live boards, keep an eye on notices, and use the AI assistant only when a manual workflow would slow you down.</p>
+            <p className="hero-text">Start with the live desk, keep notices tight, and leave the public site clean and explicit.</p>
           </div>
           <div className="operations-hero-side">
             <span className="operations-chip">Live {liveCount}</span>
@@ -47,58 +45,40 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
         <article className="admin-summary-card">
           <p className="eyebrow">Pending</p>
           <strong>{pendingCount}</strong>
-          <span>Boards still needing action</span>
+          <span>Boards still needing a saved result</span>
         </article>
         <article className="admin-summary-card">
           <p className="eyebrow">Notices</p>
           <strong>{data.stats.announcements}</strong>
           <span>Published or draft updates</span>
         </article>
-        <article className="admin-summary-card">
-          <p className="eyebrow">Data</p>
-          <strong>{data.backupStatus.usingFallbackData ? "Seed" : "Live"}</strong>
-          <span>{data.backupStatus.usingFallbackData ? "Fallback snapshot active" : "Supabase connected"}</span>
-        </article>
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.04}>
-        <ControlPanel eyebrow="Quick jumps" title="Open the right editor fast" description="These links keep event-day operations focused on the core control-room tools.">
+        <ControlPanel eyebrow="Quick jumps" title="Open the right desk fast" description="Keep day-of work focused on the few screens staff actually need.">
           <div className="quick-tile-grid">
-            <Link href="/admin/matches?mode=live" className="quick-tile">
-              <strong>Matches</strong>
-              <span>Run live boards, score updates, and time changes.</span>
+            <Link href="/admin/matches" className="quick-tile">
+              <strong>Live Desk</strong>
+              <span>Update scores, statuses, and completed results.</span>
             </Link>
             <Link href="/admin/announcements" className="quick-tile">
               <strong>Notices</strong>
-              <span>Open the full composer and edit published updates.</span>
+              <span>Publish a short update for players and spectators.</span>
             </Link>
             <Link href="/admin/teams" className="quick-tile">
               <strong>Teams</strong>
-              <span>Maintain the registry and team-sport setup.</span>
+              <span>Review the registry and team participation.</span>
             </Link>
             <Link href="/admin/settings" className="quick-tile">
               <strong>Settings</strong>
-              <span>Handle exports, resets, and deployment readiness.</span>
-            </Link>
-            <Link href="/admin/assistant" className="quick-tile">
-              <strong>AI assistant</strong>
-              <span>Optional accelerator for plain-language admin commands once the core workflow is under control.</span>
+              <span>Handle resets, exports, and back-office tasks.</span>
             </Link>
           </div>
         </ControlPanel>
 
-        <ControlPanel eyebrow="Optional AI" title="Use AI when it saves time" description="The assistant stays available, but live boards and notices should remain the primary workflow.">
-          <AdminAiCommandPanel
-            redirectTo="/admin"
-            recentMatches={data.todaysMatches.length > 0 ? data.todaysMatches : data.pendingResults}
-            recentAnnouncements={data.announcements}
-            recentTeams={data.teams}
-          />
+        <ControlPanel eyebrow="Today" title="Current focus" description="Keep an eye on the boards and notices that need immediate attention.">
+          <DayNoteBanner note={data.dayNote} />
         </ControlPanel>
-      </MotionIn>
-
-      <MotionIn delay={0.05}>
-        <DayNoteBanner note={data.dayNote} />
       </MotionIn>
 
       <MotionIn className="split-stage" delay={0.08}>
@@ -107,13 +87,13 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
             {data.todaysMatches.length > 0 ? (
               data.todaysMatches.map((match) => <FixtureStrip key={match.id} match={match} admin />)
             ) : (
-              <EmptyState compact eyebrow="Today" title="No fixtures today" description="Seed or reschedule boards to populate the daily operations queue." />
+              <EmptyState compact eyebrow="Today" title="No fixtures today" description="No matches are scheduled for the current day." />
             )}
           </div>
         </ControlPanel>
 
         <div className="stack-lg">
-          <ControlPanel eyebrow="Pending Results" title="Unresolved boards" description="Matches still waiting on a final result, live closeout, or postponement resolution." dense>
+          <ControlPanel eyebrow="Pending Results" title="Unresolved boards" description="Matches still waiting on a final result or status update." dense>
             <div className="fixture-stack">
               {data.pendingResults.length > 0 ? (
                 data.pendingResults.map((match) => <FixtureStrip key={match.id} match={match} admin />)
@@ -132,24 +112,6 @@ export function DashboardScreen({ data, message, tone }: DashboardScreenProps) {
               )}
             </div>
           </ControlPanel>
-        </div>
-      </MotionIn>
-
-      <MotionIn className="section-shell" delay={0.1}>
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">System</p>
-            <h2>Data readiness</h2>
-          </div>
-        </div>
-        <div className="backup-status-card">
-          <div className={data.backupStatus.envReady ? "status-banner status-banner-success" : "status-banner status-banner-error"}>
-            {data.backupStatus.envReady ? "Supabase environment is connected." : "Supabase environment variables are missing."}
-          </div>
-          <div className={data.backupStatus.usingFallbackData ? "status-banner status-banner-alert" : "status-banner status-banner-success"}>
-            {data.backupStatus.usingFallbackData ? "Fallback tournament snapshot is active." : "Live tournament data is active."}
-          </div>
-          <p className="muted">{data.backupStatus.note}</p>
         </div>
       </MotionIn>
     </div>
