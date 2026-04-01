@@ -2,8 +2,8 @@ import type { Team } from "@/domain";
 
 export const teamsSeed: Team[] = [
   { id: "andhra-samithi", name: "Andhra Samithi", association: "Andhra Samithi", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 1, isActive: true },
-  { id: "capitol", name: "Capitol", association: "Capitol", sportIds: ["cricket", "football", "athletics"], seed: 2, isActive: true },
-  { id: "gurjari", name: "Gujarat Titans", association: "Gurjari", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 3, isActive: true },
+  { id: "capitol", name: "CAPITOL", association: "Capitol", sportIds: ["cricket", "football", "athletics"], seed: 2, isActive: true },
+  { id: "gurjari", name: "GUJARAT TITANS", association: "Gurjari", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 3, isActive: true },
   { id: "haryana-cultural", name: "HCA", association: "Haryana Cultural Association", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 4, isActive: true },
   { id: "punjab-cultural", name: "PCA", association: "Punjab Cultural Association", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 5, isActive: true },
   { id: "udgam", name: "Ambulance club", association: "Udgam", sportIds: ["cricket", "football", "volleyball", "athletics"], seed: 6, isActive: true },

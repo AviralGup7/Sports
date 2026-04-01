@@ -211,7 +211,7 @@ export function hydrateSnapshot(input: {
     sports: [...input.sports].sort((a, b) => sportOrder.indexOf(a.id) - sportOrder.indexOf(b.id)),
     stages: [...input.stages].sort((a, b) => a.orderIndex - b.orderIndex || a.label.localeCompare(b.label)),
     groups: [...input.groups].sort((a, b) => a.orderIndex - b.orderIndex || a.code.localeCompare(b.code)),
-    teams: [...input.teams].sort((a, b) => a.seed - b.seed || a.name.localeCompare(b.name)),
+    teams: [...input.teams].sort((a, b) => (a.seed ?? Number.MAX_SAFE_INTEGER) - (b.seed ?? Number.MAX_SAFE_INTEGER) || a.name.localeCompare(b.name)),
     matches,
     announcements
   };

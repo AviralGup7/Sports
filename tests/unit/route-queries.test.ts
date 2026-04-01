@@ -14,13 +14,14 @@ describe("route-facing queries", () => {
     expect(data.fixtures.every((match) => match.sportId === "football" && match.status === "live")).toBe(true);
   });
 
-  it("returns a bracket for athletics in the public sport center", async () => {
+  it("returns athletics heat cards without forcing a knockout table", async () => {
     const data = await getSportPageData("athletics");
 
     expect(data).not.toBeNull();
     expect(data?.dataState.source).toMatch(/supabase|fallback/);
-    expect(data?.bracket).not.toBeNull();
-    expect(data?.standings.length).toBeGreaterThan(0);
+    expect(data?.matches.length).toBeGreaterThan(0);
+    expect(data?.standings.length).toBe(0);
+    expect(data?.stageSummaries[0]?.stage.label).toBe("Heat and Finals Cards");
   });
 
   it("builds admin matches data with visible builder cards and quick-result candidates", async () => {

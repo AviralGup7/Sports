@@ -5,6 +5,6 @@ export type Team = {
   name: string;
   association: string;
   sportIds: SportSlug[];
-  seed: number;
+  seed?: number;
   isActive: boolean;
 };

@@ -7,7 +7,11 @@ export const tournamentSeed: Tournament = {
   endDate: "2026-04-05",
   venue: "GYMG & MedC Grounds",
   logoAssetPath: "/branding/icasl-logo.png",
-  contacts: []
+  contacts: [
+    { id: "contact-1", name: "Moksh Goel", phone: "+91-9876543210", role: "Tournament Lead" },
+    { id: "contact-2", name: "Aarav Sharma", phone: "+91-9876501234", role: "Fixtures" },
+    { id: "contact-3", name: "Nisha Verma", phone: "+91-9876505678", role: "Operations" }
+  ]
 };
 
 export const sportsSeed: Sport[] = [
@@ -15,29 +19,29 @@ export const sportsSeed: Sport[] = [
     id: "cricket",
     name: "Cricket",
     color: "#f59e0b",
-    rulesSummary: "T20 knockout draw with quarter-finals, semis, a bronze playoff, and the title match on finals day.",
-    format: "8 teams, knockout bracket plus bronze"
+    rulesSummary: "14-team knockout with two byes into the quarter-finals and a venue-tight closeout that still needs one extra cricket slot.",
+    format: "14 teams, Round 1 plus quarter-finals, semis, and final"
   },
   {
     id: "football",
     name: "Football",
     color: "#22c55e",
-    rulesSummary: "Campus cup knockout with quarter-finals, penalty-aware results, a third-place playoff, and the grand final.",
-    format: "8 teams, knockout bracket plus bronze"
+    rulesSummary: "11-team cup bracket with five byes into the quarter-finals and a full finals-night finish that fits the evening plan.",
+    format: "11 teams, Round 1 plus quarter-finals, semis, and final"
   },
   {
     id: "volleyball",
     name: "Volleyball",
     color: "#38bdf8",
-    rulesSummary: "Indoor knockout ladder with straight quarter-finals, semis, a bronze match, and the championship decider.",
-    format: "8 teams, knockout bracket plus bronze"
+    rulesSummary: "10-team ladder with six byes into the quarter-finals; the bracket is exact, but three extra court slots or a second court are still required.",
+    format: "10 teams, Round 1 plus quarter-finals, semis, and final"
   },
   {
     id: "athletics",
     name: "Athletics",
     color: "#fb7185",
-    rulesSummary: "Sprint cup knockout with association head-to-head races feeding semis, a bronze race, and the final.",
-    format: "8 teams, knockout bracket plus bronze"
+    rulesSummary: "Two heat cards feed an 8-association final round, then top 4, top 2, and the final winner run.",
+    format: "14 entries, 2 heats into a three-step final ladder"
   }
 ];
 
@@ -52,19 +56,12 @@ export const profilesSeed: Profile[] = [
 ];
 
 export const competitionStagesSeed: CompetitionStage[] = [
-  { id: "cricket-group-stage", sportId: "cricket", type: "group", label: "Pool Stage", orderIndex: 1, advancesCount: 2, isActive: true },
-  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Championship Bracket", orderIndex: 2, advancesCount: 1, isActive: true },
-  { id: "cricket-placement-stage", sportId: "cricket", type: "placement", label: "Bronze Match", orderIndex: 3, advancesCount: 0, isActive: true },
+  { id: "cricket-knockout-stage", sportId: "cricket", type: "knockout", label: "Knockout Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
   { id: "football-knockout-stage", sportId: "football", type: "knockout", label: "Cup Bracket", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "football-placement-stage", sportId: "football", type: "placement", label: "Third Place", orderIndex: 2, advancesCount: 0, isActive: true },
   { id: "volleyball-knockout-stage", sportId: "volleyball", type: "knockout", label: "Championship Ladder", orderIndex: 1, advancesCount: 1, isActive: true },
-  { id: "volleyball-placement-stage", sportId: "volleyball", type: "placement", label: "Bronze Match", orderIndex: 2, advancesCount: 0, isActive: true },
-  { id: "athletics-results-stage", sportId: "athletics", type: "group", label: "Results Cards", orderIndex: 1, advancesCount: 0, isActive: true }
+  { id: "athletics-results-stage", sportId: "athletics", type: "group", label: "Heat and Finals Cards", orderIndex: 1, advancesCount: 0, isActive: true }
 ];
 
-export const competitionGroupsSeed: CompetitionGroup[] = [
-  { id: "cricket-group-a", stageId: "cricket-group-stage", sportId: "cricket", code: "Group A", orderIndex: 1 },
-  { id: "cricket-group-b", stageId: "cricket-group-stage", sportId: "cricket", code: "Group B", orderIndex: 2 }
-];
+export const competitionGroupsSeed: CompetitionGroup[] = [];
 
 export const sportOrder: SportSlug[] = ["cricket", "football", "volleyball", "athletics"];

@@ -7,22 +7,22 @@ import { formatDateLabel } from "@/server/data/formatters";
 const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   "2026-04-02": {
     title: "Opening day",
-    detail: "Cricket pool play and early athletics results set the tone for the tournament.",
+    detail: "Cricket Round 1 opens with Matches 1 to 3 across the full 6 PM to midnight block.",
     tone: "info"
   },
   "2026-04-03": {
-    title: "Full tournament day",
-    detail: "Every sport is active today, so live scores, schedule changes, and notices matter most.",
+    title: "Football launch night",
+    detail: "Athletics Heat A and the first volleyball tie start the evening before Football Matches 1 to 4 take over the late block.",
     tone: "alert"
   },
   "2026-04-04": {
-    title: "Knockout day",
-    detail: "Semi-finals and late qualification matches tighten the title race across campus.",
+    title: "Carry-forward day",
+    detail: "Athletics Heat B, Volleyball Match 2, late football quarter-finals, and Cricket Match 4 keep the bracket pressure building.",
     tone: "alert"
   },
   "2026-04-05": {
     title: "Finals day",
-    detail: "Championship matches, bronze playoffs, and medal events decide the podium before closeout.",
+    detail: "Athletics runs its final ladder, football crowns a champion, and cricket plus volleyball still need overflow capacity to finish cleanly.",
     tone: "success"
   }
 };

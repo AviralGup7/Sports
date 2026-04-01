@@ -266,7 +266,9 @@ export function generateCompetitionStructure(
     knockoutSize?: number;
   }
 ): GeneratedCompetitionStructure {
-  const activeTeams = [...teams].filter((team) => team.sportIds.includes(sportId) && team.isActive).sort((a, b) => a.seed - b.seed);
+  const activeTeams = [...teams]
+    .filter((team) => team.sportIds.includes(sportId) && team.isActive)
+    .sort((a, b) => (a.seed ?? Number.MAX_SAFE_INTEGER) - (b.seed ?? Number.MAX_SAFE_INTEGER));
   const knockoutSize = Math.min(options.knockoutSize ?? 8, 8);
   const seededTeams = activeTeams.slice(0, knockoutSize);
 
