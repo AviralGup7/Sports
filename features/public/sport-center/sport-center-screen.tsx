@@ -16,8 +16,8 @@ type SportCenterScreenProps = {
 };
 
 export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterScreenProps) {
-  const liveCount = data.matches.filter((match) => match.status === "live").length;
-  const completedCount = data.matches.filter((match) => match.status === "completed").length;
+  const liveCount = data.sportProgressCard.liveMatches;
+  const completedCount = data.sportProgressCard.completedMatches;
   const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Current stage";
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
   const tabs = [

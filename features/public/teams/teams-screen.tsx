@@ -5,9 +5,8 @@ import type { SportSlug } from "@/domain/sports/types";
 import { getTeamAccent } from "@/lib/team-style";
 import type { TeamsPageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { FreshnessStamp } from "@/shared/ui";
 
 type TeamsScreenProps = {
   data: TeamsPageData;
@@ -36,7 +35,6 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
                   <span className="aside-label">Visible teams</span>
                   <strong>{visibleTeams.length}</strong>
                 </div>
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
@@ -51,7 +49,6 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
           </div>
           <div className="page-guide-actions">
             <span className="pill">{visibleTeams.length} teams</span>
-            <DataStateBanner state={data.dataState} compact />
             <Link href="/standings" className="button button-ghost">
               View standings
             </Link>

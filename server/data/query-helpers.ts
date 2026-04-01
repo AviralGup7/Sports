@@ -821,6 +821,7 @@ export async function getGlobalChromeData(): Promise<GlobalChromeData> {
 export async function getHomePageData(): Promise<HomePageData> {
   const snapshot = await loadSnapshot();
   const generatedAt = getGeneratedAt();
+  const now = new Date();
   const stats = getTournamentStatsFromSnapshot(snapshot);
   const highlightMatch = buildHighlightMatch(snapshot);
   const nextMatch = buildNextMatch(snapshot);
@@ -848,7 +849,7 @@ export async function getHomePageData(): Promise<HomePageData> {
       return {
         sport,
         activeStage: getActiveStage(snapshot, sport.id),
-        liveMatches: matches.filter((match) => match.status === "live").length,
+        liveMatches: matches.filter((match) => isLiveNow(match, now)).length,
         completedMatches: matches.filter((match) => match.status === "completed").length,
         totalMatches: matches.length
       };

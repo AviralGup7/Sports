@@ -4,9 +4,9 @@ import Link from "next/link";
 import { getTeamAccent } from "@/lib/team-style";
 import type { TeamProfilePageData } from "@/server/data/public/types";
 import { BroadcastHero } from "@/shared/layout";
-import { DataStateBanner, EmptyState } from "@/shared/feedback";
+import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
-import { FixtureStrip, FreshnessStamp, StandingsTable } from "@/shared/ui";
+import { FixtureStrip, StandingsTable } from "@/shared/ui";
 
 type TeamProfileScreenProps = {
   data: TeamProfilePageData;
@@ -51,7 +51,6 @@ export function TeamProfileScreen({ data }: TeamProfileScreenProps) {
                   <span className="aside-label">Results in</span>
                   <strong>{data.completedMatches.length}</strong>
                 </div>
-                <FreshnessStamp generatedAt={data.generatedAt} />
               </div>
             }
           />
@@ -76,13 +75,6 @@ export function TeamProfileScreen({ data }: TeamProfileScreenProps) {
                 </span>
               ))}
             </div>
-          </article>
-
-          <article className="home-summary-card">
-            <p className="eyebrow">Live data</p>
-            <h3>Freshness and source</h3>
-            <DataStateBanner state={data.dataState} compact />
-            <FreshnessStamp generatedAt={data.generatedAt} />
           </article>
         </div>
       </MotionIn>
