@@ -34,35 +34,37 @@ export function AnnouncementsScreen({ data }: AnnouncementsScreenProps) {
         <MotionIn className="section-shell" delay={0.06}>
           <div className="section-heading">
             <div>
-              <p className="eyebrow">Main Notice</p>
-              <h2>Read this first</h2>
+              <p className="eyebrow">Notice</p>
+              <h2>Latest update</h2>
             </div>
           </div>
           <div className="news-grid news-grid-headline">
             <NewsBulletin announcement={leadItem} pinnedHero={leadItem.pinned} />
           </div>
         </MotionIn>
-      ) : null}
+      ) : (
+        <MotionIn className="section-shell" delay={0.06}>
+          <EmptyState
+            eyebrow="Notices"
+            title="No public notices yet"
+            description="Published schedule updates and venue notices will appear here once organisers post them."
+          />
+        </MotionIn>
+      )}
 
-      <MotionIn className="section-shell" delay={0.1}>
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Feed</p>
-            <h2>More notices</h2>
+      {feedItems.length > 0 ? (
+        <MotionIn className="section-shell" delay={0.1}>
+          <div className="section-heading">
+            <div>
+              <p className="eyebrow">Feed</p>
+              <h2>More notices</h2>
+            </div>
           </div>
-        </div>
-        <div className="news-feed">
-          {feedItems.length > 0 ? (
-            feedItems.map((announcement) => <NewsBulletin key={announcement.id} announcement={announcement} />)
-          ) : (
-            <EmptyState
-              eyebrow="Notices"
-              title="No extra notices in this feed"
-              description="Pinned updates can still appear above, but there are no additional public notices available right now."
-            />
-          )}
-        </div>
-      </MotionIn>
+          <div className="news-feed">
+            {feedItems.map((announcement) => <NewsBulletin key={announcement.id} announcement={announcement} />)}
+          </div>
+        </MotionIn>
+      ) : null}
     </div>
   );
 }

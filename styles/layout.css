@@ -508,6 +508,10 @@ html {
     radial-gradient(circle at top right, rgba(50, 230, 255, 0.12), transparent 36%);
 }
 
+.broadcast-hero[data-has-aside="false"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .broadcast-hero::before {
   background: none;
 }

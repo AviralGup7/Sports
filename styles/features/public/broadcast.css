@@ -472,6 +472,10 @@
   position: relative;
 }
 
+.broadcast-hero[data-has-aside="false"] {
+  grid-template-columns: minmax(0, 1fr);
+}
+
 .broadcast-hero::before,
 .operations-hero::before,
 .backstage-card::before {

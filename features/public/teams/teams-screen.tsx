@@ -29,14 +29,6 @@ export function TeamsScreen({ data, selectedSport }: TeamsScreenProps) {
             tone="amber"
             intensity="premium"
             variant="sport-masthead"
-            aside={
-              <div className="hero-aside-list hero-aside-list-cyber">
-                <div>
-                  <span className="aside-label">Visible teams</span>
-                  <strong>{visibleTeams.length}</strong>
-                </div>
-              </div>
-            }
           />
         </ScrollStorySection>
       </MotionIn>

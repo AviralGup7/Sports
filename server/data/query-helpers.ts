@@ -81,7 +81,7 @@ function isLiveBySlotTime(match: Match, now: Date) {
 }
 
 function isLiveNow(match: Match, now: Date) {
-  return match.status === "live" || isLiveBySlotTime(match, now);
+  return isLiveBySlotTime(match, now);
 }
 
 function getTodayInKolkata() {

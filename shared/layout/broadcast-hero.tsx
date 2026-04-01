@@ -34,7 +34,7 @@ export function BroadcastHero({
   variant = "home-hero"
 }: BroadcastHeroProps) {
   return (
-    <section className={compact ? "broadcast-hero broadcast-hero-compact" : "broadcast-hero"} data-variant={variant}>
+    <section className={compact ? "broadcast-hero broadcast-hero-compact" : "broadcast-hero"} data-variant={variant} data-has-aside={aside ? "true" : "false"}>
       <div className="broadcast-hero-scene" data-tone={tone} data-intensity={intensity} data-variant={variant} aria-hidden="true" />
       <div className="broadcast-hero-shine" aria-hidden="true" />
       <div className="broadcast-hero-main">
@@ -46,9 +46,11 @@ export function BroadcastHero({
         {actions ? <div className="hero-actions">{actions}</div> : null}
         {signals ? <div className="hero-signal-grid">{signals}</div> : null}
       </div>
-      <div className="broadcast-hero-side" style={accent ? ({ "--hero-accent": accent } as CSSProperties) : undefined}>
-        {aside}
-      </div>
+      {aside ? (
+        <div className="broadcast-hero-side" style={accent ? ({ "--hero-accent": accent } as CSSProperties) : undefined}>
+          {aside}
+        </div>
+      ) : null}
     </section>
   );
 }
