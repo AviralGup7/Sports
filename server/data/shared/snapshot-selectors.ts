@@ -7,7 +7,7 @@ import { formatDateLabel } from "@/server/data/formatters";
 const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   "2026-04-02": {
     title: "Opening day",
-    detail: "Cricket owns the full 6 PM to midnight circuit with four 90-minute knockout slots.",
+    detail: "Cricket runs from 7:30 PM to midnight with three 90-minute knockout slots after the 6:00 PM fixture cancellation.",
     tone: "info"
   },
   "2026-04-03": {

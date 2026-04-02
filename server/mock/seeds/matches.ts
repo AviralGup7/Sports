@@ -2,28 +2,6 @@ import type { Match } from "@/domain";
 
 export const matchesSeed: Match[] = [
   {
-    id: "fixture-apr2-1",
-    sportId: "cricket",
-    round: "Opening Fixture",
-    day: "2026-04-02",
-    startTime: "18:00",
-    venue: "GYMG",
-    stageId: "cricket-knockout-stage",
-    groupId: null,
-    roundIndex: 1,
-    matchNumber: 1,
-    teamAId: "haryana-cultural",
-    teamBId: "marudhara",
-    status: "scheduled",
-    winnerToMatchId: null,
-    winnerToSlot: null,
-    loserToMatchId: null,
-    loserToSlot: null,
-    nextMatchId: null,
-    nextSlot: null,
-    isBye: false
-  },
-  {
     id: "fixture-apr2-2",
     sportId: "cricket",
     round: "Opening Fixture",

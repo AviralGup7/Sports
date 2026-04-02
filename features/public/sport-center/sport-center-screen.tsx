@@ -20,12 +20,23 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
   const completedCount = data.sportProgressCard.completedMatches;
   const activeStageLabel = data.stageSummaries[0]?.stage.label ?? "Current stage";
   const tabHref = (tab: string) => `/sports/${sportSlug}?tab=${tab}`;
-  const tabs = [
-    { id: "overview", label: "Overview" },
-    { id: "standings", label: "Standings" },
-    { id: "bracket", label: "Knockouts" },
-    { id: "fixtures", label: "Fixtures" }
-  ];
+  const quickActions =
+    selectedTab === "overview"
+      ? [
+          data.standings.length > 0 ? { id: "standings", label: "Standings" } : null,
+          data.bracket ? { id: "bracket", label: "Knockouts" } : null,
+          data.matches.length > data.overviewMatches.length ? { id: "fixtures", label: "All Fixtures" } : null
+        ].filter((action): action is { id: string; label: string } => Boolean(action)).slice(0, 2)
+      : [
+          { id: "overview", label: "Overview" },
+          selectedTab !== "fixtures" && data.matches.length > 0
+            ? { id: "fixtures", label: "All Fixtures" }
+            : selectedTab !== "standings" && data.standings.length > 0
+              ? { id: "standings", label: "Standings" }
+              : selectedTab !== "bracket" && data.bracket
+                ? { id: "bracket", label: "Knockouts" }
+                : null
+        ].filter((action): action is { id: string; label: string } => Boolean(action));
 
   return (
     <div className="stack-xl">
@@ -68,14 +79,11 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
             </p>
           </div>
           <div className="page-guide-actions">
-            {tabs.map((tab) => (
-              <Link key={tab.id} href={tabHref(tab.id)} className={selectedTab === tab.id ? "button" : "button button-ghost"}>
-                {tab.label}
+            {quickActions.map((action, index) => (
+              <Link key={action.id} href={tabHref(action.id)} className={index === 0 ? "button" : "button button-ghost"}>
+                {action.label}
               </Link>
             ))}
-            <Link href={`/schedule?sport=${data.sport.id}`} className="button button-ghost">
-              View schedule
-            </Link>
           </div>
         </div>
       </MotionIn>
