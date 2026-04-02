@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import type { MatchPageData } from "@/server/data/public/types";
-import { formatDateTime, formatRoundLabel, getMatchDisplayLabel, isMatchCompleteForDisplay, isMatchLiveForDisplay } from "@/server/data/formatters";
+import { formatDateTime, formatRoundLabel, getMatchDisplayLabel, isMatchCompleteForDisplay, isMatchLiveForDisplay, supportsLiveScoring } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { FixtureStrip, ProgressPathCard } from "@/shared/ui";
@@ -15,6 +15,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
   const roundLabel = formatRoundLabel(data.match.round);
   const matchStateLabel = getMatchDisplayLabel(data.match);
   const liveNow = isMatchLiveForDisplay(data.match);
+  const liveScoringEnabled = supportsLiveScoring(data.match.sportId);
   const completeNow = isMatchCompleteForDisplay(data.match);
   const primaryTargetMatch = data.winnerTargetMatch ?? data.loserTargetMatch;
   const progressionSummary = data.winnerTargetMatch && data.loserTargetMatch
@@ -79,7 +80,11 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
           <article className="detail-card detail-card-cyber">
             <p className="eyebrow">State</p>
             <h2>{matchStateLabel}</h2>
-            <p>Live timing and result state are derived automatically from the fixture slot and saved winner data.</p>
+            <p>
+              {liveScoringEnabled
+                ? "Cricket live state is derived from the fixture slot and any saved score updates."
+                : "This sport shows published fixtures until a final result is saved."}
+            </p>
           </article>
         ) : null}
       </MotionIn>

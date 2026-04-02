@@ -5,6 +5,10 @@ export const IST_TIME_ZONE = "Asia/Kolkata";
 const IST_OFFSET = "+05:30";
 const DEFAULT_LIVE_WINDOW_MINUTES = 90;
 
+export function supportsLiveScoring(sportId: SportSlug) {
+  return sportId === "cricket";
+}
+
 function toIstDate(day: string, time = "00:00") {
   return new Date(`${day}T${time}:00${IST_OFFSET}`);
 }
@@ -91,6 +95,10 @@ export function isMatchCompleteForDisplay(match: Match, now: Date = new Date()) 
 }
 
 export function isMatchLiveForDisplay(match: Match, now: Date = new Date()) {
+  if (!supportsLiveScoring(match.sportId)) {
+    return false;
+  }
+
   if (isMatchCompleteForDisplay(match, now) || match.status === "cancelled" || match.status === "postponed") {
     return false;
   }

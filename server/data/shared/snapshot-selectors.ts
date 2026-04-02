@@ -2,7 +2,7 @@ import type { CompetitionStage, Match, SportSlug } from "@/domain";
 import type { RepositorySnapshot } from "@/server/data/snapshot";
 
 import type { DayNote, TournamentStats } from "@/server/data/public/types";
-import { formatDateLabel } from "@/server/data/formatters";
+import { formatDateLabel, supportsLiveScoring } from "@/server/data/formatters";
 
 const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   "2026-04-02": {
@@ -47,6 +47,10 @@ export function isMatchCompleted(match: Match) {
 }
 
 function isLiveNow(match: Match, now: Date) {
+  if (!supportsLiveScoring(match.sportId)) {
+    return false;
+  }
+
   if (isMatchCompleted(match) || isMatchCancelled(match) || isMatchPostponed(match)) {
     return false;
   }

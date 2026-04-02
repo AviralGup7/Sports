@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { generateCompetitionStructure, type NextSlot } from "@/domain/matches";
 import type { SportSlug } from "@/domain/sports/types";
 import { canManageSport, requireAdminProfile } from "@/server/auth";
+import { supportsLiveScoring } from "@/server/data/formatters";
 
 import { ActionValidationError, getEnumField, getRequiredString } from "./form-validation";
 import {
@@ -29,9 +30,13 @@ function toMatchDateTime(day: string, time: string) {
   return new Date(`${day}T${time}:00${IST_OFFSET}`);
 }
 
-function getDerivedMatchStatus(day: string, startTime: string, hasWinner: boolean, isBye: boolean) {
+function getDerivedMatchStatus(sportId: SportSlug, day: string, startTime: string, hasWinner: boolean, isBye: boolean) {
   if (isBye || hasWinner) {
     return "completed" as const;
+  }
+
+  if (!supportsLiveScoring(sportId)) {
+    return "scheduled" as const;
   }
 
   const now = new Date();
@@ -259,7 +264,7 @@ export async function performUpsertMatch(formData: FormData) {
     redirectWithMessage("/admin/matches", "error", "Another fixture already exists for that sport, day, time, and venue.");
   }
 
-  const status = getDerivedMatchStatus(day, startTime, false, isBye);
+  const status = getDerivedMatchStatus(sportId, day, startTime, false, isBye);
 
   const { error } = await supabase.from("matches").upsert({
     id: matchId,
@@ -381,7 +386,7 @@ export async function performSubmitResult(formData: FormData) {
     }
   }
 
-  const status = getDerivedMatchStatus(baseMatch.day, baseMatch.start_time, Boolean(inferredWinner), Boolean(baseMatch.is_bye));
+  const status = getDerivedMatchStatus(sportId, baseMatch.day, baseMatch.start_time, Boolean(inferredWinner), Boolean(baseMatch.is_bye));
   const requiresTeams = Boolean(scoresProvided || inferredWinner || status === "live" || status === "completed");
 
   if (requiresTeams && !hasBothTeams && !baseMatch.is_bye) {
@@ -453,6 +458,5 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
-
 
 

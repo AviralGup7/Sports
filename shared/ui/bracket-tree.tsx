@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { BracketTreeData } from "@/server/data/public/types";
-import { formatRoundLabel } from "@/server/data/formatters";
+import { formatRoundLabel, isMatchLiveForDisplay } from "@/server/data/formatters";
 import { useUICapability } from "@/shared/motion";
 
 import { BracketNode } from "./bracket-node";
@@ -25,7 +25,7 @@ type PathShape = {
 export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
   const capability = useUICapability();
   const initialSelection =
-    bracket.columns.flatMap((column) => column.nodes).find((node) => node.match.status === "live")?.match.id ??
+    bracket.columns.flatMap((column) => column.nodes).find((node) => isMatchLiveForDisplay(node.match))?.match.id ??
     bracket.columns.flatMap((column) => column.nodes).find((node) => node.isHighlighted)?.match.id ??
     bracket.columns[0]?.nodes[0]?.match.id ??
     null;
@@ -203,7 +203,7 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
           </p>
           <p className="bracket-focus-summary">
             {selectedNode.match.result?.scoreSummary ??
-              (selectedNode.match.status === "live"
+              (isMatchLiveForDisplay(selectedNode.match)
                 ? "This match is currently live."
                 : "Waiting for a result and knockout update.")}
           </p>

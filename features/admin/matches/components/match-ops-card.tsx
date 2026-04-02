@@ -1,6 +1,6 @@
 import type { Match } from "@/domain/matches/types";
 import type { Team } from "@/domain/teams/types";
-import { getMatchDisplayLabel } from "@/server/data/formatters";
+import { getMatchDisplayLabel, supportsLiveScoring } from "@/server/data/formatters";
 import { FormCluster, SubmitButton } from "@/shared/ui";
 
 type AdminMatchOpsCardProps = {
@@ -21,6 +21,7 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
   const allowedTeams = teams.filter((team) => team.sportIds.includes(match.sportId));
   const winnerOptions = allowedTeams.filter((team) => team.id === match.teamAId || team.id === match.teamBId);
   const stateLabel = getMatchDisplayLabel(match);
+  const cricketLiveScoring = supportsLiveScoring(match.sportId);
   const scoreLine =
     match.result?.teamAScore !== null && match.result?.teamAScore !== undefined && match.result?.teamBScore !== null && match.result?.teamBScore !== undefined
       ? `${match.result.teamAScore} - ${match.result.teamBScore}`
@@ -89,7 +90,13 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
               <input
                 name="scoreSummary"
                 defaultValue={match.result?.scoreSummary ?? ""}
-                placeholder={match.result?.decisionType === "penalties" ? "1 - 1, 4 - 3 pens" : "2 - 1"}
+                placeholder={
+                  cricketLiveScoring
+                    ? "168/5 vs 149/8"
+                    : match.result?.decisionType === "penalties"
+                      ? "1 - 1, 4 - 3 pens"
+                      : "2 - 1"
+                }
               />
             </label>
 
@@ -107,7 +114,9 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
 
         <div className="result-bay-footer">
           <p className="muted">
-            Normal completed results require both scores and the winner is inferred automatically. Use winner override only for walkover, penalties, or retired results.
+            {cricketLiveScoring
+              ? "Cricket can use live score updates. Keep numeric team scores filled for winner logic, and use score summary for cricket notation like 168/5 vs 149/8."
+              : "For non-cricket sports, boards stay fixture-only until a final result is saved. Use score summary for the final result format you want shown publicly."}
           </p>
           <div className="admin-quick-actions">
             <span className="pill">{formatDecisionLabel(match.result?.decisionType)}</span>
