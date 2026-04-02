@@ -19,11 +19,8 @@ import type {
 } from "@/server/data/snapshot/types";
 
 function mapTournamentContacts(value: unknown, fallbackContacts: TournamentContact[]): TournamentContact[] {
-  if (!Array.isArray(value)) {
-    return fallbackContacts;
-  }
-
-  const contacts = value
+  const contacts = Array.isArray(value)
+    ? value
     .map((entry, index): TournamentContact | null => {
       if (!entry || typeof entry !== "object") {
         return null;
@@ -46,9 +43,27 @@ function mapTournamentContacts(value: unknown, fallbackContacts: TournamentConta
         role
       };
     })
-    .filter((contact): contact is TournamentContact => contact !== null);
+    .filter((contact): contact is TournamentContact => contact !== null)
+    : [];
 
-  return contacts.length > 0 ? contacts : fallbackContacts;
+  if (contacts.length === 0) {
+    return fallbackContacts;
+  }
+
+  const merged = new Map<string, TournamentContact>();
+
+  for (const contact of fallbackContacts) {
+    merged.set(contact.id, contact);
+  }
+
+  for (const contact of contacts) {
+    merged.set(contact.id, {
+      ...merged.get(contact.id),
+      ...contact
+    });
+  }
+
+  return Array.from(merged.values());
 }
 
 export function mapTournamentRow(row: TournamentRow, settings: TournamentSettingsRow | null, fallbackTournament: Tournament): Tournament {

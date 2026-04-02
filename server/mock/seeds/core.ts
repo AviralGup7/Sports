@@ -12,7 +12,7 @@ export const tournamentSeed: Tournament = {
     { id: "contact-2", name: "Aarav Saxena", phone: "+91-9876501234", role: "Fixtures" },
     { id: "contact-3", name: "Partho Kumar Das", phone: "+91-9876505678", role: "Operations" },
     { id: "contact-4", name: "Aditya Vashishth", phone: "+91-8076252678", role: "Social Media Coordinator" },
-    { id: "contact-5", name: "Aviral Gupta", phone: "+91-7985813567", role: "Digital Platform Lead" }
+    { id: "contact-5", name: "Aviral Gupta", phone: "+91-7985813567", role: "Website Coordinator" }
   ]
 };
 
