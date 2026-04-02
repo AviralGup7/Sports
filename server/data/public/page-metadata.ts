@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 
-const siteName = "Inter-Assoc Cultural Sports League";
+const siteName = "Inter Cultural Assoc Sports League";
 const siteDescription = "Public-facing sports portal for live scores, schedules, standings, notices, and match details.";
 
 export function buildTournamentPageMetadata(title: string, description: string): Metadata {
