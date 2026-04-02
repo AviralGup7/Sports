@@ -21,4 +21,5 @@ export * from "@/shared/ui/stage-timeline";
 export * from "@/shared/ui/standings-table";
 export * from "@/shared/ui/submit-button";
 export * from "@/shared/ui/athletics-event-board";
+export * from "@/shared/ui/tournament-contact-card";
 

@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 
 import { PublicMotionShell, RuntimeCapabilityFlags } from "@/shared/motion";
 import { LiveScoreRefresh } from "@/shared/navigation/live-score-refresh";
-import { SiteFooter, SiteHeader } from "@/shared/navigation";
+import { GlobalSupport, SiteFooter, SiteHeader } from "@/shared/navigation";
 import { getDefaultSiteMetadata } from "@/server/data/public/page-metadata";
 import { getGlobalChromeData } from "@/server/data/public/global-chrome-query";
 
@@ -64,6 +64,7 @@ export default async function RootLayout({
         <main id="main-content" className="page-shell" tabIndex={-1}>
           {children}
         </main>
+        <GlobalSupport tournament={chrome.tournament} />
         <SiteFooter chrome={chrome} />
       </body>
     </html>

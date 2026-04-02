@@ -26,17 +26,6 @@ export function SiteFooter({ chrome }: SiteFooterProps) {
           </div>
           <h2>{chrome.tournament.name}</h2>
           <p>{formatDateRangeLabel(chrome.tournament.startDate, chrome.tournament.endDate)} at {chrome.tournament.venue}</p>
-          <div className="stack-sm">
-            {chrome.tournament.contacts.map((contact) => (
-              <p key={contact.id}>
-                {contact.name}
-                {contact.role ? `, ${contact.role}` : ""}:{" "}
-                <a href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`} className="inline-link">
-                  {contact.phone}
-                </a>
-              </p>
-            ))}
-          </div>
         </section>
       </div>
     </footer>
