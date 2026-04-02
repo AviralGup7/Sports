@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import type { BracketTreeData } from "@/server/data/public/types";
+import { formatRoundLabel } from "@/server/data/formatters";
 import { useUICapability } from "@/shared/motion";
 
 import { BracketNode } from "./bracket-node";
@@ -47,6 +48,9 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
   const loserRouteLabel =
     (selectedNode?.match.loserToMatchId ? nodesByMatchId.get(selectedNode.match.loserToMatchId)?.match.round : null) ??
     (selectedNode?.match.loserToMatchId ?? "None");
+  const selectedRoundLabel = selectedNode ? formatRoundLabel(selectedNode.match.round) : null;
+  const winnerRouteDisplay = typeof winnerRouteLabel === "string" ? formatRoundLabel(winnerRouteLabel) : winnerRouteLabel;
+  const loserRouteDisplay = typeof loserRouteLabel === "string" ? formatRoundLabel(loserRouteLabel) : loserRouteLabel;
 
   useLayoutEffect(() => {
     if (capability.bracketMode === "minimal") {
@@ -187,7 +191,7 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
         <aside className="bracket-focus-panel">
           <div className="bracket-focus-head">
             <p className="eyebrow">Selected match</p>
-            <h3>{selectedNode.match.round}</h3>
+            <h3>{selectedRoundLabel}</h3>
           </div>
           <div className="bracket-focus-score">
             <strong>{selectedNode.match.teamA?.name ?? "TBD"}</strong>
@@ -206,11 +210,11 @@ export function BracketTree({ bracket, admin = false }: BracketTreeProps) {
           <div className="bracket-focus-route-grid">
             <div>
               <span>Winner route</span>
-              <strong>{winnerRouteLabel}</strong>
+              <strong>{winnerRouteDisplay}</strong>
             </div>
             <div>
               <span>Loser route</span>
-              <strong>{loserRouteLabel}</strong>
+              <strong>{loserRouteDisplay}</strong>
             </div>
           </div>
           <div className="bracket-focus-actions">

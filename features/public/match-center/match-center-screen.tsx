@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 import type { MatchPageData } from "@/server/data/public/types";
-import { formatDateTime } from "@/server/data/formatters";
+import { formatDateTime, formatRoundLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { FixtureStrip, ProgressPathCard, StageBadge } from "@/shared/ui";
@@ -12,13 +12,14 @@ type MatchCenterScreenProps = {
 };
 
 export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
+  const roundLabel = formatRoundLabel(data.match.round);
   const primaryTargetMatch = data.winnerTargetMatch ?? data.loserTargetMatch;
   const progressionSummary = data.winnerTargetMatch && data.loserTargetMatch
-    ? `Winner moves into ${data.match.winnerToSlot} of ${data.winnerTargetMatch.round}; loser moves into ${data.match.loserToSlot} of ${data.loserTargetMatch.round}.`
+    ? `Winner moves into ${data.match.winnerToSlot} of ${formatRoundLabel(data.winnerTargetMatch.round)}; loser moves into ${data.match.loserToSlot} of ${formatRoundLabel(data.loserTargetMatch.round)}.`
     : data.winnerTargetMatch
-      ? `Winner moves into ${data.match.winnerToSlot} of ${data.winnerTargetMatch.round}.`
+      ? `Winner moves into ${data.match.winnerToSlot} of ${formatRoundLabel(data.winnerTargetMatch.round)}.`
       : data.loserTargetMatch
-        ? `Loser moves into ${data.match.loserToSlot} of ${data.loserTargetMatch.round}.`
+        ? `Loser moves into ${data.match.loserToSlot} of ${formatRoundLabel(data.loserTargetMatch.round)}.`
         : "This match does not feed into another knockout fixture.";
 
   return (
@@ -26,7 +27,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
       <MotionIn>
         <ScrollStorySection variant="hero">
           <BroadcastHero
-            eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? data.match.round}`}
+            eyebrow={`${data.sport.name} | ${data.match.stage?.label ?? roundLabel}`}
             kicker={formatDateTime(data.match.day, data.match.startTime)}
             title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
             description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Result Pending"}`}
@@ -63,7 +64,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
       <MotionIn className="detail-grid detail-grid-compact" delay={0.08}>
         <article className="detail-card detail-card-cyber">
           <p className="eyebrow">Matchday</p>
-          <h2>{data.match.stage?.label ?? data.match.round}</h2>
+          <h2>{data.match.stage?.label ?? roundLabel}</h2>
           <p>
             {data.match.venue} | {formatDateTime(data.match.day, data.match.startTime)}
           </p>

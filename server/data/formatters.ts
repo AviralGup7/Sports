@@ -51,6 +51,28 @@ export function formatStatusLabel(status: string) {
     .join(" ");
 }
 
+export function formatRoundLabel(round: string) {
+  const normalized = round.trim().toLowerCase();
+
+  if (!normalized) {
+    return "";
+  }
+
+  if (normalized === "opening fixtures") {
+    return "Opening Fixture";
+  }
+
+  if (normalized.includes("bronze") || normalized.includes("third")) {
+    return "Bronze Match";
+  }
+
+  if (normalized.includes("placement")) {
+    return "Placement Match";
+  }
+
+  return round;
+}
+
 export function getStatusTone(status: MatchStatus) {
   if (status === "completed") {
     return "complete";

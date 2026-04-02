@@ -4,7 +4,7 @@ import Link from "next/link";
 import type { SportSlug } from "@/domain/sports/types";
 import { getTeamAccent } from "@/lib/team-style";
 import type { SportPageData } from "@/server/data/public/types";
-import { BracketTree, FixtureStrip, SportProgressCard, StandingsTable } from "@/shared/ui";
+import { BracketTree, FixtureStrip, StandingsTable } from "@/shared/ui";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
@@ -80,20 +80,8 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
         </div>
       </MotionIn>
 
-      <MotionIn className="section-shell" delay={0.1}>
-        <div className="section-heading">
-          <div>
-            <p className="eyebrow">Progress</p>
-            <h2>Summary</h2>
-          </div>
-        </div>
-        <div className="sport-progress-grid">
-          <SportProgressCard card={data.sportProgressCard} />
-        </div>
-      </MotionIn>
-
       {selectedTab === "overview" ? (
-        <MotionIn className="split-stage" delay={0.14}>
+        <MotionIn className="split-stage" delay={0.1}>
           <section className="section-shell">
             <div className="section-heading">
               <div>
@@ -141,7 +129,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "standings" ? (
-        <MotionIn id="sport-standings" className="section-shell section-anchor-target" delay={0.14}>
+        <MotionIn id="sport-standings" className="section-shell section-anchor-target" delay={0.1}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Standings</p>
@@ -157,7 +145,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "bracket" ? (
-        <MotionIn className="section-shell section-shell-bracket" delay={0.14}>
+        <MotionIn className="section-shell section-shell-bracket" delay={0.1}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Knockouts</p>
@@ -173,7 +161,7 @@ export function SportCenterScreen({ sportSlug, selectedTab, data }: SportCenterS
       ) : null}
 
       {selectedTab === "fixtures" ? (
-        <MotionIn className="section-shell" delay={0.14}>
+        <MotionIn className="section-shell" delay={0.1}>
           <div className="section-heading">
             <div>
               <p className="eyebrow">Fixtures</p>

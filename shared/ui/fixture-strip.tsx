@@ -1,7 +1,7 @@
 import { CSSProperties } from "react";
 import Link from "next/link";
 
-import { formatDateLabel, formatStatusLabel, formatTimeLabel } from "@/server/data/formatters";
+import { formatDateLabel, formatRoundLabel, formatStatusLabel, formatTimeLabel } from "@/server/data/formatters";
 import type { Match } from "@/domain/matches/types";
 import { getTeamAccent } from "@/lib/team-style";
 
@@ -17,6 +17,7 @@ type FixtureStripProps = {
 
 export function FixtureStrip({ match, showSport = false, compact = false, admin = false, emphasizeTeamSpacing = false }: FixtureStripProps) {
   const sportLabel = match.sportId.charAt(0).toUpperCase() + match.sportId.slice(1);
+  const roundLabel = formatRoundLabel(match.round);
   const teamAAccent = getTeamAccent(match.teamA);
   const teamBAccent = getTeamAccent(match.teamB);
 
@@ -33,7 +34,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
           <div className="fixture-copy">
             <p className="eyebrow">
               {showSport ? `${sportLabel} | ` : ""}
-              {match.stage?.label ?? match.round}
+              {match.stage?.label ?? roundLabel}
             </p>
             <h3 className="fixture-teamline">
               <span
@@ -56,7 +57,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
 
         <div className="fixture-meta-row">
           <span>{match.venue}</span>
-          <span>{match.round}</span>
+          <span>{roundLabel}</span>
           {match.result?.scoreSummary ? <span>{match.result.scoreSummary}</span> : <span>Result Pending</span>}
           {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : match.isBye ? <span>Bye</span> : null}
         </div>

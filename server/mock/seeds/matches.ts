@@ -4,7 +4,7 @@ export const matchesSeed: Match[] = [
   {
     id: "fixture-apr2-1",
     sportId: "cricket",
-    round: "Opening Fixtures",
+    round: "Opening Fixture",
     day: "2026-04-02",
     startTime: "18:00",
     venue: "GYMG",
@@ -26,7 +26,7 @@ export const matchesSeed: Match[] = [
   {
     id: "fixture-apr2-2",
     sportId: "cricket",
-    round: "Opening Fixtures",
+    round: "Opening Fixture",
     day: "2026-04-02",
     startTime: "19:30",
     venue: "GYMG",
@@ -48,7 +48,7 @@ export const matchesSeed: Match[] = [
   {
     id: "fixture-apr2-3",
     sportId: "cricket",
-    round: "Opening Fixtures",
+    round: "Opening Fixture",
     day: "2026-04-02",
     startTime: "21:00",
     venue: "GYMG",
@@ -70,7 +70,7 @@ export const matchesSeed: Match[] = [
   {
     id: "fixture-apr2-4",
     sportId: "cricket",
-    round: "Opening Fixtures",
+    round: "Opening Fixture",
     day: "2026-04-02",
     startTime: "22:30",
     venue: "GYMG",

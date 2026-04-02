@@ -27,25 +27,17 @@ const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   }
 };
 
-const IST_OFFSET = "+05:30";
-const DEFAULT_LIVE_WINDOW_MINUTES = 90;
-
-function toMatchDateTime(day: string, time: string) {
-  return new Date(`${day}T${time}:00${IST_OFFSET}`);
-}
-
 function isLiveNow(match: Match, now: Date) {
-  if (match.status === "completed" || match.status === "cancelled" || match.status === "postponed") {
-    return false;
-  }
-
-  const start = toMatchDateTime(match.day, match.startTime);
-  const end = new Date(start.getTime() + DEFAULT_LIVE_WINDOW_MINUTES * 60 * 1000);
-  return now >= start && now < end;
+  void now;
+  return match.status === "live";
 }
 
 export function getPublicAnnouncements(snapshot: RepositorySnapshot) {
   return snapshot.announcements.filter((announcement) => announcement.visibility === "public" && announcement.isPublished);
+}
+
+export function isMatchLiveNow(match: Match, now: Date = new Date()) {
+  return isLiveNow(match, now);
 }
 
 export function getTournamentStatsFromSnapshot(snapshot: RepositorySnapshot): TournamentStats {

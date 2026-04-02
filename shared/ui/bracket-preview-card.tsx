@@ -27,7 +27,7 @@ export function BracketPreviewCard({ card }: BracketPreviewCardProps) {
         ))}
       </div>
       <p className="bracket-preview-champion">
-        <span>Champion watch</span>
+        <span>Champion</span>
         <strong>{card.championLabel}</strong>
       </p>
     </Link>
