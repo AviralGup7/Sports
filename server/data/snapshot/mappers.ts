@@ -180,6 +180,8 @@ export function hydrateSnapshot(input: {
   const groupsById = new Map(input.groups.map((group) => [group.id, group]));
   const resultsByMatchId = new Map(input.results.map((result) => [result.matchId, result]));
 
+  const isSmokeTestValue = (value: string | null | undefined) => (value ?? "").toLowerCase().includes("smoke test");
+
   const matches = input.matches
     .map((match) => {
       const result = resultsByMatchId.get(match.id) ?? null;
@@ -199,6 +201,7 @@ export function hydrateSnapshot(input: {
           : null
       };
     })
+    .filter((match) => !isSmokeTestValue(match.round) && !isSmokeTestValue(match.result?.note) && !isSmokeTestValue(match.result?.scoreSummary))
     .sort((a, b) => `${a.day}T${a.startTime}`.localeCompare(`${b.day}T${b.startTime}`));
 
   const announcements = [...input.announcements].sort(
@@ -216,4 +219,3 @@ export function hydrateSnapshot(input: {
     announcements
   };
 }
-

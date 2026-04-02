@@ -8,7 +8,7 @@ describe("snapshot mappers", () => {
     const mapped = mapTournamentRow(
       {
         id: "icl-2026",
-        name: "Inter-Assoc Cultural Sports League",
+        name: "Inter Cultural Assoc Sports League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
         venue: "GYMG & MedC Grounds"
@@ -18,7 +18,7 @@ describe("snapshot mappers", () => {
     );
 
     expect(mapped.logoAssetPath).toBe("/branding/icasl-logo.png");
-    expect(mapped.contacts).toHaveLength(3);
+    expect(mapped.contacts).toHaveLength(5);
     expect(mapped.contacts[0]?.name).toBe("Moksh Goel");
   });
 
@@ -26,7 +26,7 @@ describe("snapshot mappers", () => {
     const mapped = mapTournamentRow(
       {
         id: "icl-2026",
-        name: "Inter-Assoc Cultural Sports League",
+        name: "Inter Cultural Assoc Sports League",
         start_date: "2026-04-02",
         end_date: "2026-04-05",
         venue: "GYMG & MedC Grounds"
