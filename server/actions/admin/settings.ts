@@ -23,7 +23,7 @@ import {
 function readTournamentContacts(formData: FormData): TournamentContact[] {
   const contacts: TournamentContact[] = [];
 
-  for (let index = 0; index < 3; index += 1) {
+  for (let index = 0; index < 5; index += 1) {
     const id = `contact-${index + 1}`;
     const name = getOptionalString(formData, `contactName_${index}`);
     const phone = getOptionalString(formData, `contactPhone_${index}`);

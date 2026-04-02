@@ -94,7 +94,7 @@ export function SettingsScreen({ data, message, tone }: SettingsScreenProps) {
               </label>
 
               <div className="stack-md">
-                {Array.from({ length: 3 }).map((_, index) => {
+                {Array.from({ length: 5 }).map((_, index) => {
                   const contact = data.tournament.contacts[index];
                   return (
                     <div key={`contact-${index}`} className="form-grid">
