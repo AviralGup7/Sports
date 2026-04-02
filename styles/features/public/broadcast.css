@@ -1972,11 +1972,13 @@
 
 .cricket-scoreboard-team {
   display: grid;
-  gap: 0.45rem;
-  padding: 0.9rem 1rem;
+  gap: 0.7rem;
+  padding: 0.95rem 1rem;
   border-radius: 1.15rem;
   border: 1px solid rgba(114, 197, 255, 0.12);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    radial-gradient(circle at top right, rgba(92, 184, 255, 0.08), transparent 32%);
 }
 
 .cricket-scoreboard-name {
@@ -1985,23 +1987,33 @@
 }
 
 .cricket-scoreboard-metrics {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.45rem 0.6rem;
-  color: #dce8ff;
-  font-family: var(--font-mono), monospace;
-  font-size: 0.82rem;
-  letter-spacing: 0.04em;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.6rem;
 }
 
-.cricket-scoreboard-metrics span {
-  display: inline-flex;
-  align-items: center;
-  min-height: 1.9rem;
-  padding: 0.32rem 0.7rem;
-  border-radius: 999px;
+.cricket-scoreboard-metric {
+  display: grid;
+  gap: 0.18rem;
+  min-height: 3.35rem;
+  padding: 0.55rem 0.7rem;
+  border-radius: 0.95rem;
   border: 1px solid rgba(114, 197, 255, 0.12);
-  background: rgba(7, 13, 22, 0.62);
+  background: rgba(7, 13, 22, 0.5);
+}
+
+.cricket-scoreboard-label {
+  color: #8ea6c8;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.cricket-scoreboard-value {
+  color: #f4fbff;
+  font-size: 1.15rem;
+  line-height: 1.05;
 }
 
 .cricket-scoreboard-compact {
@@ -2013,6 +2025,19 @@
 }
 
 .cricket-scoreboard-compact .cricket-scoreboard-name {
+  font-size: 1rem;
+}
+
+.cricket-scoreboard-compact .cricket-scoreboard-metrics {
+  gap: 0.5rem;
+}
+
+.cricket-scoreboard-compact .cricket-scoreboard-metric {
+  min-height: 3rem;
+  padding: 0.48rem 0.62rem;
+}
+
+.cricket-scoreboard-compact .cricket-scoreboard-value {
   font-size: 1rem;
 }
 

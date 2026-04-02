@@ -40,9 +40,13 @@ function toMatchDateTime(day: string, time: string) {
   return new Date(`${day}T${time}:00${IST_OFFSET}`);
 }
 
-function getDerivedMatchStatus(sportId: SportSlug, day: string, startTime: string, hasWinner: boolean, isBye: boolean) {
+function getDerivedMatchStatus(sportId: SportSlug, day: string, startTime: string, hasWinner: boolean, isBye: boolean, forceOngoing = false) {
   if (isBye || hasWinner) {
     return "completed" as const;
+  }
+
+  if (forceOngoing) {
+    return supportsLiveScoring(sportId) ? ("live" as const) : ("scheduled" as const);
   }
 
   if (!supportsLiveScoring(sportId)) {
@@ -340,6 +344,7 @@ export async function performSubmitResult(formData: FormData) {
   const teamBWickets = toNullableNumber(formData.get("teamBWickets")) ?? 0;
   const teamAOvers = toOversString(formData.get("teamAOvers"));
   const teamBOvers = toOversString(formData.get("teamBOvers"));
+  const matchOngoing = formData.get("matchOngoing") === "on";
   const note = toNullableString(formData.get("note"));
   const decisionType = getEnumField(formData, "decisionType", ["normal", "walkover", "penalties", "retired"] as const, "Decision type", "normal");
 
@@ -381,8 +386,12 @@ export async function performSubmitResult(formData: FormData) {
   let inferredWinner =
     baseMatch.is_bye && !selectedWinnerTeamId ? baseMatch.team_a_id ?? baseMatch.team_b_id : selectedWinnerTeamId;
 
-  if (!inferredWinner && decisionType === "normal" && scoresProvided && teamAScore !== teamBScore) {
+  if (!matchOngoing && !inferredWinner && decisionType === "normal" && scoresProvided && teamAScore !== teamBScore) {
     inferredWinner = teamAScore! > teamBScore! ? baseMatch.team_a_id : baseMatch.team_b_id;
+  }
+
+  if (matchOngoing) {
+    inferredWinner = null;
   }
 
   if (inferredWinner) {
@@ -407,7 +416,14 @@ export async function performSubmitResult(formData: FormData) {
     }
   }
 
-  const status = getDerivedMatchStatus(sportId, baseMatch.day, baseMatch.start_time, Boolean(inferredWinner), Boolean(baseMatch.is_bye));
+  const status = getDerivedMatchStatus(
+    sportId,
+    baseMatch.day,
+    baseMatch.start_time,
+    Boolean(inferredWinner),
+    Boolean(baseMatch.is_bye),
+    matchOngoing
+  );
   const requiresTeams = Boolean(scoresProvided || inferredWinner || status === "live" || status === "completed");
 
   if (requiresTeams && !hasBothTeams && !baseMatch.is_bye) {
@@ -479,4 +495,3 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
-

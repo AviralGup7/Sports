@@ -44,7 +44,6 @@ export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawe
               <input type="hidden" name="matchId" value={match.id} />
               <input type="hidden" name="sportId" value={match.sportId} />
               <input type="hidden" name="decisionType" value="normal" />
-              <input type="hidden" name="winnerTeamId" value={winnerTeamId} />
 
               <div className="quick-result-options">
                 {[match.teamA, match.teamB].filter(Boolean).map((team) => (
@@ -89,6 +88,14 @@ export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawe
                   </>
                 ) : null}
                 <label className="field field-wide">
+                  <span>Match state</span>
+                  <label className="field-checkbox">
+                    <input type="checkbox" name="matchOngoing" defaultChecked={match.status === "live"} />
+                    <span>Match ongoing, do not declare winner yet</span>
+                  </label>
+                </label>
+                <input type="hidden" name="winnerTeamId" value={winnerTeamId} />
+                <label className="field field-wide">
                   <span>Score summary</span>
                   <input
                     name="scoreSummary"
@@ -104,7 +111,7 @@ export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawe
 
               <div className="form-actions">
                 <SubmitButton className="button" pendingLabel="Saving result...">
-                  Confirm winner
+                  Save update
                 </SubmitButton>
               </div>
             </form>

@@ -114,6 +114,14 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
             </label>
 
             <label className="field">
+              <span>Match state</span>
+              <label className="field-checkbox">
+                <input type="checkbox" name="matchOngoing" defaultChecked={match.status === "live"} />
+                <span>Match ongoing, do not declare winner yet</span>
+              </label>
+            </label>
+
+            <label className="field">
               <span>Score summary</span>
               <input
                 name="scoreSummary"
@@ -143,8 +151,8 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
         <div className="result-bay-footer">
           <p className="muted">
             {cricketLiveScoring
-              ? "Cricket updates save runs, wickets, and overs into one shared score summary, and numeric runs still drive winner logic."
-              : "For non-cricket sports, boards stay fixture-only until a final result is saved. Use score summary for the final result format you want shown publicly."}
+              ? "Use match ongoing while play is in progress. That saves runs, wickets, and overs without inferring a winner."
+              : "Use match ongoing to save an in-progress update without declaring a winner yet. Final results can still be saved later."}
           </p>
           <div className="admin-quick-actions">
             <span className="pill">{formatDecisionLabel(match.result?.decisionType)}</span>
