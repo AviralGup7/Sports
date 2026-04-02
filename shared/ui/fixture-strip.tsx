@@ -5,6 +5,8 @@ import { formatDateLabel, formatRoundLabel, formatTimeLabel, getMatchDisplayLabe
 import type { Match } from "@/domain/matches/types";
 import { getTeamAccent } from "@/lib/team-style";
 
+import { CricketScoreboard } from "./cricket-scoreboard";
+
 type FixtureStripProps = {
   match: Match;
   showSport?: boolean;
@@ -57,9 +59,11 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
         <div className="fixture-meta-row">
           <span>{match.venue}</span>
           <span>{roundLabel}</span>
-          {match.result?.scoreSummary ? <span>{match.result.scoreSummary}</span> : <span>Result Pending</span>}
+          {match.sportId === "cricket" ? null : match.result?.scoreSummary ? <span>{match.result.scoreSummary}</span> : <span>Result Pending</span>}
           {match.result?.winner ? <span>Winner: {match.result.winner.name}</span> : match.isBye ? <span>Bye</span> : null}
         </div>
+
+        {match.sportId === "cricket" ? <CricketScoreboard match={match} compact /> : null}
 
         {match.result?.note ? <p className="fixture-note">{match.result.note}</p> : null}
       </div>

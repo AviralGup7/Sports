@@ -1,5 +1,6 @@
 import type { Match } from "@/domain/matches/types";
 import type { Team } from "@/domain/teams/types";
+import { getCricketScoreboardEntries } from "@/lib/cricket-score";
 import { getMatchDisplayLabel, supportsLiveScoring } from "@/server/data/formatters";
 import { FormCluster, SubmitButton } from "@/shared/ui";
 
@@ -22,8 +23,11 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
   const winnerOptions = allowedTeams.filter((team) => team.id === match.teamAId || team.id === match.teamBId);
   const stateLabel = getMatchDisplayLabel(match);
   const cricketLiveScoring = supportsLiveScoring(match.sportId);
+  const cricketEntries = getCricketScoreboardEntries(match);
   const scoreLine =
-    match.result?.teamAScore !== null && match.result?.teamAScore !== undefined && match.result?.teamBScore !== null && match.result?.teamBScore !== undefined
+    cricketLiveScoring
+      ? match.result?.scoreSummary ?? "0/0 (0.0 ov) vs 0/0 (0.0 ov)"
+      : match.result?.teamAScore !== null && match.result?.teamAScore !== undefined && match.result?.teamBScore !== null && match.result?.teamBScore !== undefined
       ? `${match.result.teamAScore} - ${match.result.teamBScore}`
       : "No score saved";
 
@@ -64,14 +68,38 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
             </label>
 
             <label className="field">
-              <span>{match.teamA?.name ?? "Team A"} score</span>
+              <span>{match.teamA?.name ?? "Team A"} {cricketLiveScoring ? "runs" : "score"}</span>
               <input name="teamAScore" type="number" min="0" step="1" defaultValue={match.result?.teamAScore ?? undefined} />
             </label>
 
             <label className="field">
-              <span>{match.teamB?.name ?? "Team B"} score</span>
+              <span>{match.teamB?.name ?? "Team B"} {cricketLiveScoring ? "runs" : "score"}</span>
               <input name="teamBScore" type="number" min="0" step="1" defaultValue={match.result?.teamBScore ?? undefined} />
             </label>
+
+            {cricketLiveScoring ? (
+              <>
+                <label className="field">
+                  <span>{match.teamA?.name ?? "Team A"} wickets</span>
+                  <input name="teamAWickets" type="number" min="0" step="1" defaultValue={cricketEntries[0]?.line.wickets ?? 0} />
+                </label>
+
+                <label className="field">
+                  <span>{match.teamB?.name ?? "Team B"} wickets</span>
+                  <input name="teamBWickets" type="number" min="0" step="1" defaultValue={cricketEntries[1]?.line.wickets ?? 0} />
+                </label>
+
+                <label className="field">
+                  <span>{match.teamA?.name ?? "Team A"} overs</span>
+                  <input name="teamAOvers" inputMode="decimal" defaultValue={cricketEntries[0]?.line.overs ?? "0.0"} />
+                </label>
+
+                <label className="field">
+                  <span>{match.teamB?.name ?? "Team B"} overs</span>
+                  <input name="teamBOvers" inputMode="decimal" defaultValue={cricketEntries[1]?.line.overs ?? "0.0"} />
+                </label>
+              </>
+            ) : null}
 
             <label className="field">
               <span>Winner override</span>
@@ -92,7 +120,7 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
                 defaultValue={match.result?.scoreSummary ?? ""}
                 placeholder={
                   cricketLiveScoring
-                    ? "168/5 vs 149/8"
+                    ? "168/5 (20.0 ov) vs 149/8 (20.0 ov)"
                     : match.result?.decisionType === "penalties"
                       ? "1 - 1, 4 - 3 pens"
                       : "2 - 1"
@@ -115,7 +143,7 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
         <div className="result-bay-footer">
           <p className="muted">
             {cricketLiveScoring
-              ? "Cricket can use live score updates. Keep numeric team scores filled for winner logic, and use score summary for cricket notation like 168/5 vs 149/8."
+              ? "Cricket updates save runs, wickets, and overs into one shared score summary, and numeric runs still drive winner logic."
               : "For non-cricket sports, boards stay fixture-only until a final result is saved. Use score summary for the final result format you want shown publicly."}
           </p>
           <div className="admin-quick-actions">

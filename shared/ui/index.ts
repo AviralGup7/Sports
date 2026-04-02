@@ -4,6 +4,7 @@ export * from "@/shared/ui/bracket-tree";
 export * from "@/shared/ui/day-note-banner";
 export * from "@/shared/ui/disclosure-panel";
 export * from "@/shared/ui/countdown-chip";
+export * from "@/shared/ui/cricket-scoreboard";
 export * from "@/shared/ui/fixture-strip";
 export * from "@/shared/ui/freshness-stamp";
 export * from "@/shared/ui/form-cluster";

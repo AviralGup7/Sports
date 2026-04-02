@@ -3,6 +3,8 @@
 import { useState } from "react";
 
 import type { Match } from "@/domain/matches/types";
+import { getCricketScoreboardEntries } from "@/lib/cricket-score";
+import { supportsLiveScoring } from "@/server/data/formatters";
 import type { QuickResultCandidate } from "@/server/data/admin/types";
 import { SubmitButton } from "@/shared/ui";
 
@@ -15,6 +17,8 @@ type QuickResultDrawerProps = {
 export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawerProps) {
   const [open, setOpen] = useState(false);
   const [winnerTeamId, setWinnerTeamId] = useState(candidate.winnerTeamId ?? match.teamAId ?? match.teamBId ?? "");
+  const cricketLiveScoring = supportsLiveScoring(match.sportId);
+  const cricketEntries = getCricketScoreboardEntries(match);
 
   return (
     <>
@@ -57,16 +61,40 @@ export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawe
 
               <div className="form-grid">
                 <label className="field">
-                  <span>Team A score</span>
+                  <span>{match.teamA?.name ?? "Team A"} {cricketLiveScoring ? "runs" : "score"}</span>
                   <input name="teamAScore" type="number" step="1" defaultValue={match.result?.teamAScore ?? undefined} />
                 </label>
                 <label className="field">
-                  <span>Team B score</span>
+                  <span>{match.teamB?.name ?? "Team B"} {cricketLiveScoring ? "runs" : "score"}</span>
                   <input name="teamBScore" type="number" step="1" defaultValue={match.result?.teamBScore ?? undefined} />
                 </label>
+                {cricketLiveScoring ? (
+                  <>
+                    <label className="field">
+                      <span>{match.teamA?.name ?? "Team A"} wickets</span>
+                      <input name="teamAWickets" type="number" min="0" step="1" defaultValue={cricketEntries[0]?.line.wickets ?? 0} />
+                    </label>
+                    <label className="field">
+                      <span>{match.teamB?.name ?? "Team B"} wickets</span>
+                      <input name="teamBWickets" type="number" min="0" step="1" defaultValue={cricketEntries[1]?.line.wickets ?? 0} />
+                    </label>
+                    <label className="field">
+                      <span>{match.teamA?.name ?? "Team A"} overs</span>
+                      <input name="teamAOvers" inputMode="decimal" defaultValue={cricketEntries[0]?.line.overs ?? "0.0"} />
+                    </label>
+                    <label className="field">
+                      <span>{match.teamB?.name ?? "Team B"} overs</span>
+                      <input name="teamBOvers" inputMode="decimal" defaultValue={cricketEntries[1]?.line.overs ?? "0.0"} />
+                    </label>
+                  </>
+                ) : null}
                 <label className="field field-wide">
                   <span>Score summary</span>
-                  <input name="scoreSummary" defaultValue={candidate.scoreSummary ?? ""} placeholder="2 - 1" />
+                  <input
+                    name="scoreSummary"
+                    defaultValue={candidate.scoreSummary ?? ""}
+                    placeholder={cricketLiveScoring ? "168/5 (20.0 ov) vs 149/8 (20.0 ov)" : "2 - 1"}
+                  />
                 </label>
                 <label className="field field-wide">
                   <span>Note</span>

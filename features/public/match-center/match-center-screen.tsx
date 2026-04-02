@@ -4,7 +4,7 @@ import type { MatchPageData } from "@/server/data/public/types";
 import { formatDateTime, formatRoundLabel, getMatchDisplayLabel, isMatchCompleteForDisplay, isMatchLiveForDisplay, supportsLiveScoring } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FixtureStrip, ProgressPathCard } from "@/shared/ui";
+import { CricketScoreboard, FixtureStrip, ProgressPathCard } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type MatchCenterScreenProps = {
@@ -52,8 +52,14 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
               <div className="score-spotlight score-spotlight-tight">
                 <p className="eyebrow">Match status</p>
                 <span className="pill">{matchStateLabel}</span>
-                <h2>{data.match.result?.winner?.name ?? "TBD"}</h2>
-                <strong>{data.match.result?.scoreSummary ?? "Result Pending"}</strong>
+                {data.match.sportId === "cricket" ? (
+                  <CricketScoreboard match={data.match} />
+                ) : (
+                  <>
+                    <h2>{data.match.result?.winner?.name ?? "TBD"}</h2>
+                    <strong>{data.match.result?.scoreSummary ?? "Result Pending"}</strong>
+                  </>
+                )}
                 <p>{data.match.result?.note ?? progressionSummary}</p>
               </div>
             }

@@ -1964,6 +1964,62 @@
   letter-spacing: 0.04em;
 }
 
+.cricket-scoreboard {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 0.9rem;
+}
+
+.cricket-scoreboard-team {
+  display: grid;
+  gap: 0.45rem;
+  padding: 0.9rem 1rem;
+  border-radius: 1.15rem;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02));
+}
+
+.cricket-scoreboard-name {
+  color: #f4fbff;
+  font-size: 1.1rem;
+}
+
+.cricket-scoreboard-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem 0.6rem;
+  color: #dce8ff;
+  font-family: var(--font-mono), monospace;
+  font-size: 0.82rem;
+  letter-spacing: 0.04em;
+}
+
+.cricket-scoreboard-metrics span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.9rem;
+  padding: 0.32rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(114, 197, 255, 0.12);
+  background: rgba(7, 13, 22, 0.62);
+}
+
+.cricket-scoreboard-compact {
+  gap: 0.65rem;
+}
+
+.cricket-scoreboard-compact .cricket-scoreboard-team {
+  padding: 0.78rem 0.85rem;
+}
+
+.cricket-scoreboard-compact .cricket-scoreboard-name {
+  font-size: 1rem;
+}
+
+.score-spotlight .cricket-scoreboard {
+  margin-top: 0;
+}
+
 .fixture-tail {
   display: flex;
   flex-direction: column;

@@ -2,6 +2,7 @@ import { revalidatePath } from "next/cache";
 
 import { generateCompetitionStructure, type NextSlot } from "@/domain/matches";
 import type { SportSlug } from "@/domain/sports/types";
+import { buildCricketScoreSummary } from "@/lib/cricket-score";
 import { canManageSport, requireAdminProfile } from "@/server/auth";
 import { supportsLiveScoring } from "@/server/data/formatters";
 
@@ -21,6 +22,15 @@ function toNullableNumber(value: FormDataEntryValue | null) {
 
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
+}
+
+function toOversString(value: FormDataEntryValue | null) {
+  if (typeof value !== "string" || value.trim().length === 0) {
+    return "0.0";
+  }
+
+  const normalized = value.trim();
+  return /^[0-9]+(?:\.[0-9])?$/.test(normalized) ? normalized : "0.0";
 }
 
 const IST_OFFSET = "+05:30";
@@ -326,6 +336,10 @@ export async function performSubmitResult(formData: FormData) {
   const teamAScore = toNullableNumber(formData.get("teamAScore"));
   const teamBScore = toNullableNumber(formData.get("teamBScore"));
   const scoreSummaryInput = toNullableString(formData.get("scoreSummary"));
+  const teamAWickets = toNullableNumber(formData.get("teamAWickets")) ?? 0;
+  const teamBWickets = toNullableNumber(formData.get("teamBWickets")) ?? 0;
+  const teamAOvers = toOversString(formData.get("teamAOvers"));
+  const teamBOvers = toOversString(formData.get("teamBOvers"));
   const note = toNullableString(formData.get("note"));
   const decisionType = getEnumField(formData, "decisionType", ["normal", "walkover", "penalties", "retired"] as const, "Decision type", "normal");
 
@@ -355,7 +369,14 @@ export async function performSubmitResult(formData: FormData) {
   const baseMatch = sourceMatch!;
   const hasBothTeams = Boolean(baseMatch.team_a_id && baseMatch.team_b_id);
   const scoresProvided = teamAScore !== null && teamBScore !== null;
-  const scoreSummary = scoreSummaryInput ?? (scoresProvided ? `${teamAScore} - ${teamBScore}` : null);
+  const cricketSummary =
+    supportsLiveScoring(sportId) && (scoresProvided || scoreSummaryInput)
+      ? buildCricketScoreSummary(
+          { runs: teamAScore ?? 0, wickets: teamAWickets, overs: teamAOvers },
+          { runs: teamBScore ?? 0, wickets: teamBWickets, overs: teamBOvers }
+        )
+      : null;
+  const scoreSummary = cricketSummary ?? scoreSummaryInput ?? (scoresProvided ? `${teamAScore} - ${teamBScore}` : null);
 
   let inferredWinner =
     baseMatch.is_bye && !selectedWinnerTeamId ? baseMatch.team_a_id ?? baseMatch.team_b_id : selectedWinnerTeamId;
@@ -458,5 +479,4 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
-
 
