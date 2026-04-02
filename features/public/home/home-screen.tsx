@@ -6,9 +6,10 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { CountdownChip, NewsBulletin } from "@/shared/ui";
+import { CountdownChip, NewsBulletin, SponsorShowcase } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
+import { HomeContactCard } from "@/features/public/home/components/home-contact-card";
 
 type HomeScreenProps = {
   data: HomePageData;
@@ -112,6 +113,15 @@ export function HomeScreen({ data }: HomeScreenProps) {
               />
             )}
           </div>
+        </section>
+      </MotionIn>
+
+      <MotionIn delay={0.08}>
+        <section className="home-support-grid" aria-label="Organisers and sponsors">
+          <HomeContactCard tournament={tournament} />
+          <section className="home-support-card">
+            <SponsorShowcase compact title="Sponsors" description="Tournament partners supporting the people behind the event." />
+          </section>
         </section>
       </MotionIn>
     </div>
