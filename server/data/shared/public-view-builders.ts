@@ -2,7 +2,7 @@ import { buildStandingsRows } from "@/domain/matches";
 import type { Sport, SportSlug, Team } from "@/domain";
 import type { RepositorySnapshot } from "@/server/data/snapshot";
 import type { StandingsSportCard, TeamListCard, TeamStandingsSnippet } from "@/server/data/public/types";
-import { getMatchesForSport, getStagesForSport } from "@/server/data/shared/snapshot-selectors";
+import { getMatchesForSport, getStagesForSport, isMatchCompleted, isMatchLiveNow, isMatchPostponed, isMatchUpcoming } from "@/server/data/shared/snapshot-selectors";
 
 function getMatchesForTeam(snapshot: RepositorySnapshot, teamId: string) {
   return snapshot.matches
@@ -12,6 +12,7 @@ function getMatchesForTeam(snapshot: RepositorySnapshot, teamId: string) {
 
 export function buildStandingsSections(snapshot: RepositorySnapshot, selectedSport?: SportSlug): StandingsSportCard[] {
   const sports = selectedSport ? snapshot.sports.filter((sport) => sport.id === selectedSport) : snapshot.sports;
+  const now = new Date();
   const sections: StandingsSportCard[] = [];
 
   for (const sport of sports) {
@@ -27,8 +28,8 @@ export function buildStandingsSections(snapshot: RepositorySnapshot, selectedSpo
     sections.push({
       sport,
       cards,
-      liveMatches: matches.filter((match) => match.status === "live").length,
-      completedMatches: matches.filter((match) => match.status === "completed").length
+      liveMatches: matches.filter((match) => isMatchLiveNow(match, now)).length,
+      completedMatches: matches.filter((match) => isMatchCompleted(match)).length
     });
   }
 
@@ -37,6 +38,7 @@ export function buildStandingsSections(snapshot: RepositorySnapshot, selectedSpo
 
 export function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[] {
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
+  const now = new Date();
 
   return snapshot.teams
     .filter((team) => team.isActive)
@@ -45,9 +47,9 @@ export function buildTeamListCards(snapshot: RepositorySnapshot): TeamListCard[]
       return {
         team,
         sports: team.sportIds.map((sportId) => sportsById.get(sportId)).filter((sport): sport is Sport => Boolean(sport)),
-        liveMatches: matches.filter((match) => match.status === "live"),
-        upcomingMatches: matches.filter((match) => match.status === "scheduled" || match.status === "postponed"),
-        completedMatches: matches.filter((match) => match.status === "completed")
+        liveMatches: matches.filter((match) => isMatchLiveNow(match, now)),
+        upcomingMatches: matches.filter((match) => isMatchUpcoming(match, now) || isMatchPostponed(match)),
+        completedMatches: matches.filter((match) => isMatchCompleted(match))
       };
     })
     .sort((a, b) => a.team.name.localeCompare(b.team.name));

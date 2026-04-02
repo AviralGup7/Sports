@@ -22,6 +22,29 @@ function toNullableNumber(value: FormDataEntryValue | null) {
   return Number.isFinite(parsed) ? parsed : null;
 }
 
+const IST_OFFSET = "+05:30";
+const LIVE_WINDOW_MINUTES = 90;
+
+function toMatchDateTime(day: string, time: string) {
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+function getDerivedMatchStatus(day: string, startTime: string, hasWinner: boolean, isBye: boolean) {
+  if (isBye || hasWinner) {
+    return "completed" as const;
+  }
+
+  const now = new Date();
+  const start = toMatchDateTime(day, startTime);
+  const end = new Date(start.getTime() + LIVE_WINDOW_MINUTES * 60 * 1000);
+
+  if (now >= start && now < end) {
+    return "live" as const;
+  }
+
+  return "scheduled" as const;
+}
+
 function getLoserTeamId(teamAId: string | null, teamBId: string | null, winnerTeamId: string | null) {
   if (!winnerTeamId) {
     return null;
@@ -203,7 +226,6 @@ export async function performUpsertMatch(formData: FormData) {
   const teamAId = toNullableString(formData.get("teamAId"));
   const teamBId = toNullableString(formData.get("teamBId"));
   const stageId = toNullableString(formData.get("stageId"));
-  const status = getEnumField(formData, "status", ["scheduled", "live", "completed", "postponed", "cancelled"] as const, "Status", "scheduled");
   const roundIndex = toNullableNumber(formData.get("roundIndex")) ?? 1;
   const matchNumber = toNullableNumber(formData.get("matchNumber")) ?? 1;
   const winnerToMatchId = toNullableString(formData.get("winnerToMatchId"));
@@ -217,8 +239,8 @@ export async function performUpsertMatch(formData: FormData) {
     redirectWithMessage("/admin/matches", "error", "A match cannot assign the same team to both sides.");
   }
 
-  if (!isBye && ["live", "completed"].includes(status) && (!teamAId || !teamBId)) {
-    redirectWithMessage("/admin/matches", "error", "Live or completed matches need both teams assigned.");
+  if (!isBye && (!teamAId || !teamBId) && toMatchDateTime(day, startTime).getTime() <= Date.now()) {
+    redirectWithMessage("/admin/matches", "error", "Started fixtures need both teams assigned.");
   }
 
   const { data: duplicateMatches, error: duplicateError } = await supabase
@@ -236,6 +258,8 @@ export async function performUpsertMatch(formData: FormData) {
   if ((duplicateMatches ?? []).some((match) => match.id !== existingId)) {
     redirectWithMessage("/admin/matches", "error", "Another fixture already exists for that sport, day, time, and venue.");
   }
+
+  const status = getDerivedMatchStatus(day, startTime, false, isBye);
 
   const { error } = await supabase.from("matches").upsert({
     id: matchId,
@@ -293,7 +317,6 @@ export async function performSubmitResult(formData: FormData) {
     redirectWithMessage("/admin/matches", "error", "You cannot edit that sport.");
   }
 
-  const status = getEnumField(formData, "status", ["scheduled", "live", "completed", "postponed", "cancelled"] as const, "Status", "scheduled");
   const selectedWinnerTeamId = toNullableString(formData.get("winnerTeamId"));
   const teamAScore = toNullableNumber(formData.get("teamAScore"));
   const teamBScore = toNullableNumber(formData.get("teamBScore"));
@@ -303,12 +326,14 @@ export async function performSubmitResult(formData: FormData) {
 
   const { data: sourceMatch, error: sourceError } = await supabase
     .from("matches")
-    .select("id, sport_id, stage_id, team_a_id, team_b_id, winner_to_match_id, winner_to_slot, loser_to_match_id, loser_to_slot, is_bye")
+    .select("id, sport_id, stage_id, day, start_time, team_a_id, team_b_id, winner_to_match_id, winner_to_slot, loser_to_match_id, loser_to_slot, is_bye")
     .eq("id", matchId)
     .single<{
       id: string;
       sport_id: string;
       stage_id: string | null;
+      day: string;
+      start_time: string;
       team_a_id: string | null;
       team_b_id: string | null;
       winner_to_match_id: string | null;
@@ -324,19 +349,17 @@ export async function performSubmitResult(formData: FormData) {
 
   const baseMatch = sourceMatch!;
   const hasBothTeams = Boolean(baseMatch.team_a_id && baseMatch.team_b_id);
-  const requiresTeams = status === "live" || status === "completed";
-
-  if (requiresTeams && !hasBothTeams && !baseMatch.is_bye) {
-    redirectWithMessage("/admin/matches", "error", "Live or completed matches need both teams assigned.");
-  }
-
   const scoresProvided = teamAScore !== null && teamBScore !== null;
   const scoreSummary = scoreSummaryInput ?? (scoresProvided ? `${teamAScore} - ${teamBScore}` : null);
 
   let inferredWinner =
     baseMatch.is_bye && !selectedWinnerTeamId ? baseMatch.team_a_id ?? baseMatch.team_b_id : selectedWinnerTeamId;
 
-  if (status === "completed") {
+  if (!inferredWinner && decisionType === "normal" && scoresProvided && teamAScore !== teamBScore) {
+    inferredWinner = teamAScore! > teamBScore! ? baseMatch.team_a_id : baseMatch.team_b_id;
+  }
+
+  if (inferredWinner) {
     if (decisionType === "normal") {
       if (!scoresProvided) {
         redirectWithMessage("/admin/matches", "error", "Completed normal results need both scores.");
@@ -356,6 +379,13 @@ export async function performSubmitResult(formData: FormData) {
         redirectWithMessage("/admin/matches", "error", "Penalty results need both scores.");
       }
     }
+  }
+
+  const status = getDerivedMatchStatus(baseMatch.day, baseMatch.start_time, Boolean(inferredWinner), Boolean(baseMatch.is_bye));
+  const requiresTeams = Boolean(scoresProvided || inferredWinner || status === "live" || status === "completed");
+
+  if (requiresTeams && !hasBothTeams && !baseMatch.is_bye) {
+    redirectWithMessage("/admin/matches", "error", "Scored or active fixtures need both teams assigned.");
   }
 
   if (inferredWinner && inferredWinner !== baseMatch.team_a_id && inferredWinner !== baseMatch.team_b_id) {
@@ -423,9 +453,6 @@ export async function performSubmitResult(formData: FormData) {
 
   redirectWithMessage("/admin/matches", "success", "Result saved.");
 }
-
-
-
 
 
 

@@ -27,9 +27,33 @@ const tournamentDayNotes: Record<string, Omit<DayNote, "id">> = {
   }
 };
 
+const IST_OFFSET = "+05:30";
+const DEFAULT_LIVE_WINDOW_MINUTES = 90;
+
+function toMatchDateTime(day: string, time: string) {
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+export function isMatchCancelled(match: Match) {
+  return match.status === "cancelled";
+}
+
+export function isMatchPostponed(match: Match) {
+  return match.status === "postponed";
+}
+
+export function isMatchCompleted(match: Match) {
+  return Boolean(match.isBye || match.result?.winnerTeamId || match.status === "completed");
+}
+
 function isLiveNow(match: Match, now: Date) {
-  void now;
-  return match.status === "live";
+  if (isMatchCompleted(match) || isMatchCancelled(match) || isMatchPostponed(match)) {
+    return false;
+  }
+
+  const start = toMatchDateTime(match.day, match.startTime);
+  const end = new Date(start.getTime() + DEFAULT_LIVE_WINDOW_MINUTES * 60 * 1000);
+  return now >= start && now < end;
 }
 
 export function getPublicAnnouncements(snapshot: RepositorySnapshot) {
@@ -38,6 +62,18 @@ export function getPublicAnnouncements(snapshot: RepositorySnapshot) {
 
 export function isMatchLiveNow(match: Match, now: Date = new Date()) {
   return isLiveNow(match, now);
+}
+
+export function isMatchUpcoming(match: Match, now: Date = new Date()) {
+  if (isMatchCompleted(match) || isMatchCancelled(match) || isMatchPostponed(match) || isLiveNow(match, now)) {
+    return false;
+  }
+
+  return toMatchDateTime(match.day, match.startTime).getTime() >= now.getTime();
+}
+
+export function hasMatchStarted(match: Match, now: Date = new Date()) {
+  return toMatchDateTime(match.day, match.startTime).getTime() <= now.getTime();
 }
 
 export function getTournamentStatsFromSnapshot(snapshot: RepositorySnapshot): TournamentStats {

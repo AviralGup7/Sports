@@ -1,11 +1,9 @@
 import { CSSProperties } from "react";
 import Link from "next/link";
 
-import { formatDateLabel, formatRoundLabel, formatStatusLabel, formatTimeLabel } from "@/server/data/formatters";
+import { formatDateLabel, formatRoundLabel, formatTimeLabel, getMatchDisplayLabel } from "@/server/data/formatters";
 import type { Match } from "@/domain/matches/types";
 import { getTeamAccent } from "@/lib/team-style";
-
-import { StageBadge } from "./stage-badge";
 
 type FixtureStripProps = {
   match: Match;
@@ -18,6 +16,7 @@ type FixtureStripProps = {
 export function FixtureStrip({ match, showSport = false, compact = false, admin = false, emphasizeTeamSpacing = false }: FixtureStripProps) {
   const sportLabel = match.sportId.charAt(0).toUpperCase() + match.sportId.slice(1);
   const roundLabel = formatRoundLabel(match.round);
+  const stateLabel = getMatchDisplayLabel(match);
   const teamAAccent = getTeamAccent(match.teamA);
   const teamBAccent = getTeamAccent(match.teamB);
 
@@ -52,7 +51,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
               </span>
             </h3>
           </div>
-          <StageBadge status={match.status} label={formatStatusLabel(match.status)} />
+          <span className="pill">{stateLabel}</span>
         </div>
 
         <div className="fixture-meta-row">
@@ -66,7 +65,7 @@ export function FixtureStrip({ match, showSport = false, compact = false, admin 
       </div>
 
       <div className="fixture-tail">
-        <span className="fixture-tail-line">{match.status === "live" ? "LIVE" : match.status === "completed" ? "Result In" : match.status === "postponed" ? "Postponed" : "Coming Up"}</span>
+        <span className="fixture-tail-line">{stateLabel}</span>
         <div className="fixture-actions">
           <Link href={admin ? "/admin/matches" : `/matches/${match.id}`} className="fixture-link">
             {admin ? "Control match" : "Match Details"}

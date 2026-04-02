@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import type { CompetitionStage } from "@/domain/matches/types";
 import type { Sport } from "@/domain/sports/types";
-import { formatDateLabel, formatStatusLabel } from "@/server/data/formatters";
+import { formatDateLabel } from "@/server/data/formatters";
 
 type AdminMatchFiltersProps = {
   sports: Sport[];
@@ -10,7 +10,6 @@ type AdminMatchFiltersProps = {
   days: string[];
   selectedSport?: string;
   selectedStage?: string;
-  selectedStatus?: string;
   selectedDay?: string;
   mode?: string;
 };
@@ -21,11 +20,10 @@ export function AdminMatchFilters({
   days,
   selectedSport,
   selectedStage,
-  selectedStatus,
   selectedDay,
   mode
 }: AdminMatchFiltersProps) {
-  const hasActiveFilters = Boolean(selectedSport || selectedStage || selectedStatus || selectedDay);
+  const hasActiveFilters = Boolean(selectedSport || selectedStage || selectedDay);
 
   const buildHref = (overrides: Record<string, string | undefined>) => {
     const params = new URLSearchParams();
@@ -33,7 +31,6 @@ export function AdminMatchFilters({
       mode,
       sport: selectedSport,
       stage: selectedStage,
-      statusFilter: selectedStatus,
       day: selectedDay,
       ...overrides
     };
@@ -84,23 +81,6 @@ export function AdminMatchFilters({
         </div>
       </div>
       <div className="filter-block">
-        <p className="eyebrow">Status</p>
-        <div className="chip-row">
-          <Link href={buildHref({ statusFilter: undefined })} className={!selectedStatus ? "chip chip-active" : "chip"}>
-            Any status
-          </Link>
-          {["scheduled", "live", "completed", "postponed", "cancelled"].map((status) => (
-            <Link
-              key={status}
-              href={buildHref({ statusFilter: status })}
-              className={selectedStatus === status ? "chip chip-active" : "chip"}
-            >
-              {formatStatusLabel(status)}
-            </Link>
-          ))}
-        </div>
-      </div>
-      <div className="filter-block">
         <p className="eyebrow">Day</p>
         <div className="chip-row">
           <Link href={buildHref({ day: undefined })} className={!selectedDay ? "chip chip-active" : "chip"}>
@@ -121,8 +101,8 @@ export function AdminMatchFilters({
       {hasActiveFilters ? (
         <div className="filter-block filter-block-compact">
           <p className="eyebrow">Reset</p>
-          <div className="chip-row">
-            <Link href={buildHref({ sport: undefined, stage: undefined, statusFilter: undefined, day: undefined })} className="chip">
+        <div className="chip-row">
+            <Link href={buildHref({ sport: undefined, stage: undefined, day: undefined })} className="chip">
               Clear filters
             </Link>
           </div>

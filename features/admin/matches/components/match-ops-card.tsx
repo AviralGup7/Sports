@@ -1,6 +1,7 @@
 import type { Match } from "@/domain/matches/types";
 import type { Team } from "@/domain/teams/types";
-import { FormCluster, StageBadge, SubmitButton } from "@/shared/ui";
+import { getMatchDisplayLabel } from "@/server/data/formatters";
+import { FormCluster, SubmitButton } from "@/shared/ui";
 
 type AdminMatchOpsCardProps = {
   match: Match;
@@ -19,13 +20,14 @@ function formatDecisionLabel(decisionType: string | null | undefined) {
 export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsCardProps) {
   const allowedTeams = teams.filter((team) => team.sportIds.includes(match.sportId));
   const winnerOptions = allowedTeams.filter((team) => team.id === match.teamAId || team.id === match.teamBId);
+  const stateLabel = getMatchDisplayLabel(match);
   const scoreLine =
     match.result?.teamAScore !== null && match.result?.teamAScore !== undefined && match.result?.teamBScore !== null && match.result?.teamBScore !== undefined
       ? `${match.result.teamAScore} - ${match.result.teamBScore}`
       : "No score saved";
 
   return (
-    <section className={`match-ops-card match-ops-${match.status}`}>
+    <section className="match-ops-card">
       <div className="match-ops-head">
         <div>
           <p className="eyebrow">
@@ -39,7 +41,7 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
           </p>
         </div>
         <div className="match-ops-status">
-          <StageBadge status={match.status} label={match.status} />
+          <span className="pill">{stateLabel}</span>
           <span className="pill">{scoreLine}</span>
         </div>
       </div>
@@ -50,17 +52,6 @@ export function AdminMatchOpsCard({ match, teams, resultAction }: AdminMatchOpsC
 
         <FormCluster label="Live Desk" title="Update score and result">
           <div className="form-grid">
-            <label className="field">
-              <span>Match status</span>
-              <select name="status" defaultValue={match.status}>
-                <option value="scheduled">Scheduled</option>
-                <option value="live">Live</option>
-                <option value="completed">Completed</option>
-                <option value="postponed">Postponed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </label>
-
             <label className="field">
               <span>Decision type</span>
               <select name="decisionType" defaultValue={match.result?.decisionType ?? "normal"}>

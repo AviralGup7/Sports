@@ -66,16 +66,6 @@ export function AdminMatchCreatePanel({ sports, stages, teams, action }: AdminMa
               <span>Venue</span>
               <input name="venue" required placeholder="GYMG" />
             </label>
-            <label className="field">
-              <span>Status</span>
-              <select name="status" defaultValue="scheduled">
-                <option value="scheduled">Scheduled</option>
-                <option value="live">Live</option>
-                <option value="completed">Completed</option>
-                <option value="postponed">Postponed</option>
-                <option value="cancelled">Cancelled</option>
-              </select>
-            </label>
           </div>
         </FormCluster>
 

@@ -10,7 +10,6 @@ type AdminMatchesPageProps = {
     day?: string;
     stage?: string;
     mode?: string;
-    statusFilter?: string;
   }>;
 };
 

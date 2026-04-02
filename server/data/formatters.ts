@@ -1,5 +1,8 @@
-import type { MatchStatus } from "@/domain/matches/types";
+import type { Match, MatchStatus } from "@/domain/matches/types";
 import type { Sport, SportSlug } from "@/domain/sports/types";
+
+const IST_OFFSET = "+05:30";
+const DEFAULT_LIVE_WINDOW_MINUTES = 90;
 
 export function formatDateLabel(dateString: string) {
   return new Intl.DateTimeFormat("en-IN", {
@@ -71,6 +74,45 @@ export function formatRoundLabel(round: string) {
   }
 
   return round;
+}
+
+function toMatchDateTime(day: string, time: string) {
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
+export function isMatchCompleteForDisplay(match: Match, now: Date = new Date()) {
+  void now;
+  return Boolean(match.isBye || match.result?.winnerTeamId || match.status === "completed");
+}
+
+export function isMatchLiveForDisplay(match: Match, now: Date = new Date()) {
+  if (isMatchCompleteForDisplay(match, now) || match.status === "cancelled" || match.status === "postponed") {
+    return false;
+  }
+
+  const start = toMatchDateTime(match.day, match.startTime);
+  const end = new Date(start.getTime() + DEFAULT_LIVE_WINDOW_MINUTES * 60 * 1000);
+  return now >= start && now < end;
+}
+
+export function getMatchDisplayLabel(match: Match, now: Date = new Date()) {
+  if (match.status === "cancelled") {
+    return "Cancelled";
+  }
+
+  if (match.status === "postponed") {
+    return "Rescheduled";
+  }
+
+  if (isMatchCompleteForDisplay(match, now)) {
+    return "Result In";
+  }
+
+  if (isMatchLiveForDisplay(match, now)) {
+    return "Live Now";
+  }
+
+  return toMatchDateTime(match.day, match.startTime).getTime() < now.getTime() ? "Awaiting Result" : "Scheduled";
 }
 
 export function getStatusTone(status: MatchStatus) {

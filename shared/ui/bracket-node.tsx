@@ -1,9 +1,7 @@
 "use client";
 
 import type { BracketTreeNode as BracketTreeNodeModel } from "@/server/data/public/types";
-import { formatRoundLabel } from "@/server/data/formatters";
-
-import { StageBadge } from "./stage-badge";
+import { formatRoundLabel, getMatchDisplayLabel } from "@/server/data/formatters";
 
 type BracketNodeProps = {
   node: BracketTreeNodeModel;
@@ -15,6 +13,7 @@ type BracketNodeProps = {
 
 export function BracketNode({ node, active = false, linked = false, onSelect, admin = false }: BracketNodeProps) {
   const roundLabel = formatRoundLabel(node.match.round);
+  const stateLabel = getMatchDisplayLabel(node.match);
 
   return (
     <button
@@ -25,11 +24,7 @@ export function BracketNode({ node, active = false, linked = false, onSelect, ad
       <div className="bracket-node-shine" aria-hidden="true" />
       <div className="bracket-node-topline">
         <p className="eyebrow">{roundLabel}</p>
-        <StageBadge
-          status={node.match.status}
-          label={node.state === "bye" ? "Bye" : node.match.status === "live" ? "LIVE" : node.match.status === "completed" ? "Final" : node.match.status === "postponed" ? "Postponed" : "Upcoming"}
-          tone={node.state === "bye" ? "alert" : undefined}
-        />
+        <span className="pill">{node.state === "bye" ? "Bye" : stateLabel}</span>
       </div>
       <div className="bracket-node-team">
         <strong>{node.match.teamA?.name ?? "TBD"}</strong>

@@ -1,10 +1,10 @@
 import Link from "next/link";
 
 import type { MatchPageData } from "@/server/data/public/types";
-import { formatDateTime, formatRoundLabel } from "@/server/data/formatters";
+import { formatDateTime, formatRoundLabel, getMatchDisplayLabel, isMatchCompleteForDisplay, isMatchLiveForDisplay } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { FixtureStrip, ProgressPathCard, StageBadge } from "@/shared/ui";
+import { FixtureStrip, ProgressPathCard } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 
 type MatchCenterScreenProps = {
@@ -13,6 +13,9 @@ type MatchCenterScreenProps = {
 
 export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
   const roundLabel = formatRoundLabel(data.match.round);
+  const matchStateLabel = getMatchDisplayLabel(data.match);
+  const liveNow = isMatchLiveForDisplay(data.match);
+  const completeNow = isMatchCompleteForDisplay(data.match);
   const primaryTargetMatch = data.winnerTargetMatch ?? data.loserTargetMatch;
   const progressionSummary = data.winnerTargetMatch && data.loserTargetMatch
     ? `Winner moves into ${data.match.winnerToSlot} of ${formatRoundLabel(data.winnerTargetMatch.round)}; loser moves into ${data.match.loserToSlot} of ${formatRoundLabel(data.loserTargetMatch.round)}.`
@@ -31,7 +34,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             kicker={formatDateTime(data.match.day, data.match.startTime)}
             title={`${data.match.teamA?.name ?? "TBD"} vs ${data.match.teamB?.name ?? "TBD"}`}
             description={`${data.match.venue} | ${data.match.result?.scoreSummary ?? "Result Pending"}`}
-            tone={data.match.status === "live" ? "crimson" : data.match.status === "postponed" ? "crimson" : "blue"}
+            tone={matchStateLabel === "Rescheduled" ? "crimson" : liveNow ? "crimson" : "blue"}
             intensity="premium"
             variant={data.match.winnerToMatchId || data.match.loserToMatchId ? "bracket-showcase" : "sport-masthead"}
             actions={
@@ -47,11 +50,7 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             aside={
               <div className="score-spotlight score-spotlight-tight">
                 <p className="eyebrow">Match status</p>
-                <StageBadge
-                  status={data.match.status}
-                  label={data.match.status === "live" ? "LIVE" : data.match.status === "completed" ? "Final" : data.match.status === "postponed" ? "Postponed" : "Upcoming"}
-                  tone={data.match.status === "live" ? "live" : undefined}
-                />
+                <span className="pill">{matchStateLabel}</span>
                 <h2>{data.match.result?.winner?.name ?? "TBD"}</h2>
                 <strong>{data.match.result?.scoreSummary ?? "Result Pending"}</strong>
                 <p>{data.match.result?.note ?? progressionSummary}</p>
@@ -74,6 +73,13 @@ export function MatchCenterScreen({ data }: MatchCenterScreenProps) {
             <p className="eyebrow">Knockout Path</p>
             <h2>{primaryTargetMatch?.round ?? "Linked fixture"}</h2>
             <p>{progressionSummary}</p>
+          </article>
+        ) : null}
+        {!primaryTargetMatch && !data.match.winnerToMatchId && !data.match.loserToMatchId && !completeNow ? (
+          <article className="detail-card detail-card-cyber">
+            <p className="eyebrow">State</p>
+            <h2>{matchStateLabel}</h2>
+            <p>Live timing and result state are derived automatically from the fixture slot and saved winner data.</p>
           </article>
         ) : null}
       </MotionIn>

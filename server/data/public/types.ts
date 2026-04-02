@@ -224,7 +224,6 @@ export type SchedulePageData = {
   days: string[];
   selectedDay: string;
   selectedSport?: string;
-  selectedStatus?: string;
   sports: Sport[];
   dayNote: DayNote;
   fixtures: Match[];

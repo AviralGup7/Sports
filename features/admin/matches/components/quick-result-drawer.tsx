@@ -39,7 +39,6 @@ export function QuickResultDrawer({ match, candidate, action }: QuickResultDrawe
             <form action={action} className="stack-lg">
               <input type="hidden" name="matchId" value={match.id} />
               <input type="hidden" name="sportId" value={match.sportId} />
-              <input type="hidden" name="status" value="completed" />
               <input type="hidden" name="decisionType" value="normal" />
               <input type="hidden" name="winnerTeamId" value={winnerTeamId} />
 
