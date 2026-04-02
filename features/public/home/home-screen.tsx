@@ -6,7 +6,7 @@ import type { HomePageData } from "@/server/data/public/types";
 import { formatDateRangeLabel } from "@/server/data/formatters";
 import { BroadcastHero } from "@/shared/layout";
 import { EmptyState } from "@/shared/feedback";
-import { CountdownChip, NewsBulletin } from "@/shared/ui";
+import { CountdownChip, CricketScoreboard, NewsBulletin } from "@/shared/ui";
 import { MotionIn, ScrollStorySection } from "@/shared/motion";
 import { HomeBrandBadge } from "@/features/public/home/components/home-brand-badge";
 
@@ -61,8 +61,9 @@ export function HomeScreen({ data }: HomeScreenProps) {
                       {highlightMatch.match.teamB?.name ?? "TBD"}
                     </span>
                   </h2>
+                  {highlightMatch.sport.id === "cricket" ? <CricketScoreboard match={highlightMatch.match} compact /> : null}
                   <p>{highlightMatch.headline}</p>
-                  <strong>{highlightMatch.summary}</strong>
+                  {highlightMatch.sport.id === "cricket" ? null : <strong>{highlightMatch.summary}</strong>}
                   {nextMatch ? <CountdownChip startsAt={nextMatch.startsAt} /> : null}
                   <div className="spotlight-actions">
                     <Link href={`/matches/${highlightMatch.match.id}`} className="inline-link">
