@@ -73,12 +73,13 @@
 }
 
 .site-footer-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: flex;
+  justify-content: center;
   gap: 1rem;
 }
 
 .site-footer-card {
+  width: min(100%, 36rem);
   padding: 1.1rem 1.15rem;
   border-radius: 1.5rem;
   border: 1px solid rgba(114, 197, 255, 0.14);
