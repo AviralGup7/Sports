@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 
+import { IST_TIME_ZONE } from "@/server/data/formatters";
+
 type FreshnessStampProps = {
   generatedAt: string;
   prefix?: string;
@@ -37,7 +39,8 @@ function formatAbsolute(generatedAt: string) {
     day: "numeric",
     hour: "numeric",
     minute: "2-digit",
-    timeZone: "Asia/Kolkata"
+    timeZone: IST_TIME_ZONE,
+    timeZoneName: "short"
   }).format(new Date(generatedAt));
 }
 

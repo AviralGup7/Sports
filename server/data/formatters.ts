@@ -1,46 +1,51 @@
 import type { Match, MatchStatus } from "@/domain/matches/types";
 import type { Sport, SportSlug } from "@/domain/sports/types";
 
+export const IST_TIME_ZONE = "Asia/Kolkata";
 const IST_OFFSET = "+05:30";
 const DEFAULT_LIVE_WINDOW_MINUTES = 90;
 
+function toIstDate(day: string, time = "00:00") {
+  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+}
+
 export function formatDateLabel(dateString: string) {
   return new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     weekday: "short",
     month: "short",
     day: "numeric"
-  }).format(new Date(dateString));
+  }).format(toIstDate(dateString));
 }
 
 export function formatDateRangeLabel(startDate: string, endDate: string) {
   const format = new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     month: "short",
     day: "numeric"
   });
 
-  return `${format.format(new Date(startDate))} - ${format.format(new Date(endDate))}`;
+  return `${format.format(toIstDate(startDate))} - ${format.format(toIstDate(endDate))}`;
 }
 
 export function formatTimeLabel(timeString: string) {
-  const [hours, minutes] = timeString.split(":");
-  const date = new Date("2026-01-01T00:00:00");
-  date.setHours(Number(hours), Number(minutes));
   return new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     hour: "numeric",
-    minute: "2-digit"
-  }).format(date);
+    minute: "2-digit",
+    timeZoneName: "short"
+  }).format(toIstDate("2026-01-01", timeString));
 }
 
 export function formatDateTime(dateString: string, timeString: string) {
-  const [hours, minutes] = timeString.split(":");
-  const date = new Date(dateString);
-  date.setHours(Number(hours), Number(minutes));
   return new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
-  }).format(date);
+    minute: "2-digit",
+    timeZoneName: "short"
+  }).format(toIstDate(dateString, timeString));
 }
 
 export function formatStatusLabel(status: string) {
@@ -77,7 +82,7 @@ export function formatRoundLabel(round: string) {
 }
 
 function toMatchDateTime(day: string, time: string) {
-  return new Date(`${day}T${time}:00${IST_OFFSET}`);
+  return toIstDate(day, time);
 }
 
 export function isMatchCompleteForDisplay(match: Match, now: Date = new Date()) {

@@ -363,15 +363,18 @@
 
   .mobile-dock {
     position: fixed;
-    left: 0.75rem;
-    right: 0.75rem;
-    bottom: max(0.75rem, env(safe-area-inset-bottom, 0px));
+    left: 50%;
+    right: auto;
+    bottom: 0;
+    transform: translateX(-50%);
+    width: min(calc(100% - 0.9rem), 42rem);
     z-index: 60;
     display: grid !important;
     grid-template-columns: repeat(4, minmax(0, 1fr));
+    align-items: stretch;
     gap: 0.45rem;
-    padding: 0.45rem;
-    border-radius: 18px;
+    padding: 0.45rem 0.45rem calc(0.45rem + env(safe-area-inset-bottom, 0px));
+    border-radius: 18px 18px 0 0;
     border: 1px solid rgba(255, 255, 255, 0.1);
     background: rgba(8, 12, 20, 0.92);
     backdrop-filter: blur(16px);
@@ -391,6 +394,9 @@
   }
 
   .mobile-dock-menu-panel {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
     width: min(14rem, calc(100vw - 1rem));
   }
 
@@ -476,10 +482,10 @@
   }
 
   .mobile-dock {
-    left: 0.45rem;
-    right: 0.45rem;
+    width: min(calc(100% - 0.45rem), 32rem);
     gap: 0.3rem;
     padding: 0.35rem;
+    padding-bottom: calc(0.35rem + env(safe-area-inset-bottom, 0px));
   }
 
   .mobile-dock-link {

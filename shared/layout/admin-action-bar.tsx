@@ -2,6 +2,7 @@ import { ReactNode } from "react";
 import Link from "next/link";
 
 import type { Profile } from "@/domain/admin/types";
+import { IST_TIME_ZONE } from "@/server/data/formatters";
 
 type AdminActionBarProps = {
   profile: Profile;
@@ -10,6 +11,7 @@ type AdminActionBarProps = {
 
 export function AdminActionBar({ profile, onSignOut }: AdminActionBarProps) {
   const currentDate = new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     weekday: "short",
     month: "short",
     day: "numeric"

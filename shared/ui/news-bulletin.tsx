@@ -1,4 +1,5 @@
 import { Announcement } from "@/domain";
+import { IST_TIME_ZONE } from "@/server/data/formatters";
 
 import { StageBadge } from "./stage-badge";
 
@@ -16,10 +17,12 @@ export function NewsBulletin({
   pinnedHero = false
 }: NewsBulletinProps) {
   const publishedLabel = new Intl.DateTimeFormat("en-IN", {
+    timeZone: IST_TIME_ZONE,
     month: "short",
     day: "numeric",
     hour: "numeric",
-    minute: "2-digit"
+    minute: "2-digit",
+    timeZoneName: "short"
   }).format(new Date(announcement.publishedAt));
 
   return (

@@ -32,7 +32,7 @@
   --space-compact: 0.9rem;
   --mobile-shell-width: min(100% - 0.9rem, 42rem);
   --mobile-header-gap: 0.7rem;
-  --mobile-bottom-clearance: calc(6.6rem + env(safe-area-inset-bottom, 0px));
+  --mobile-bottom-clearance: calc(8rem + env(safe-area-inset-bottom, 0px));
   --page-bottom-breathing-room: 6rem;
   --touch-target-min: 3rem;
   --sticky-top-offset: 1rem;
