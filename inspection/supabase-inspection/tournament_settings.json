@@ -1,0 +1,35 @@
+{
+  "meta": {
+    "name": "tournament_settings",
+    "rowCount": 1,
+    "readable": true,
+    "error": null,
+    "durationMs": 322
+  },
+  "rows": [
+    {
+      "tournament_id": "icl-2026",
+      "logo_asset_path": "/branding/icasl-logo.png",
+      "contacts_json": [
+        {
+          "id": "contact-1",
+          "name": "Moksh Goel",
+          "role": "Tournament Lead",
+          "phone": "+91-9876543210"
+        },
+        {
+          "id": "contact-2",
+          "name": "Aarav Saxena",
+          "role": "Fixtures",
+          "phone": "+91-9876501234"
+        },
+        {
+          "id": "contact-3",
+          "name": "Partho Kumar Das",
+          "role": "Operations",
+          "phone": "+91-9876505678"
+        }
+      ]
+    }
+  ]
+}

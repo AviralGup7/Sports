@@ -1,0 +1,90 @@
+{
+  "fetchedAt": "2026-04-02T11:11:34.050Z",
+  "supabaseUrl": "https://injuzpqculpfimvmdvvr.supabase.co",
+  "tables": [
+    {
+      "name": "tournaments",
+      "rowCount": 2,
+      "readable": true,
+      "error": null,
+      "durationMs": 2188
+    },
+    {
+      "name": "tournament_settings",
+      "rowCount": 1,
+      "readable": true,
+      "error": null,
+      "durationMs": 322
+    },
+    {
+      "name": "sports",
+      "rowCount": 4,
+      "readable": true,
+      "error": null,
+      "durationMs": 314
+    },
+    {
+      "name": "competition_stages",
+      "rowCount": 7,
+      "readable": true,
+      "error": null,
+      "durationMs": 389
+    },
+    {
+      "name": "competition_groups",
+      "rowCount": 0,
+      "readable": true,
+      "error": null,
+      "durationMs": 329
+    },
+    {
+      "name": "teams",
+      "rowCount": 15,
+      "readable": true,
+      "error": null,
+      "durationMs": 621
+    },
+    {
+      "name": "team_sports",
+      "rowCount": 51,
+      "readable": true,
+      "error": null,
+      "durationMs": 319
+    },
+    {
+      "name": "matches",
+      "rowCount": 5,
+      "readable": true,
+      "error": null,
+      "durationMs": 325
+    },
+    {
+      "name": "match_results",
+      "rowCount": 1,
+      "readable": true,
+      "error": null,
+      "durationMs": 349
+    },
+    {
+      "name": "announcements",
+      "rowCount": 0,
+      "readable": true,
+      "error": null,
+      "durationMs": 313
+    },
+    {
+      "name": "profiles",
+      "rowCount": 0,
+      "readable": true,
+      "error": null,
+      "durationMs": 318
+    },
+    {
+      "name": "admin_sports",
+      "rowCount": 0,
+      "readable": true,
+      "error": null,
+      "durationMs": 322
+    }
+  ]
+}

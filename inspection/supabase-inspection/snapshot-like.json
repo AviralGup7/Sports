@@ -1,0 +1,586 @@
+{
+  "tournaments": [
+    {
+      "id": "iasl-2026",
+      "name": "Inter Association Sports League",
+      "start_date": "2026-04-02",
+      "end_date": "2026-04-05",
+      "venue": "Central College Grounds"
+    },
+    {
+      "id": "icl-2026",
+      "name": "Inter-Assoc Cultural Sports League",
+      "start_date": "2026-04-02",
+      "end_date": "2026-04-05",
+      "venue": "GYMG & MedC Grounds"
+    }
+  ],
+  "tournament_settings": [
+    {
+      "tournament_id": "icl-2026",
+      "logo_asset_path": "/branding/icasl-logo.png",
+      "contacts_json": [
+        {
+          "id": "contact-1",
+          "name": "Moksh Goel",
+          "role": "Tournament Lead",
+          "phone": "+91-9876543210"
+        },
+        {
+          "id": "contact-2",
+          "name": "Aarav Saxena",
+          "role": "Fixtures",
+          "phone": "+91-9876501234"
+        },
+        {
+          "id": "contact-3",
+          "name": "Partho Kumar Das",
+          "role": "Operations",
+          "phone": "+91-9876505678"
+        }
+      ]
+    }
+  ],
+  "sports": [
+    {
+      "id": "cricket",
+      "name": "Cricket",
+      "color": "#f59e0b",
+      "rules_summary": "Knockout fixtures run from 2 April to 5 April, with the public site currently showing the published 2 April opening slate.",
+      "format": "15 teams, knockout"
+    },
+    {
+      "id": "football",
+      "name": "Football",
+      "color": "#22c55e",
+      "rules_summary": "Football follows a knockout format inside the evening tournament window.",
+      "format": "12 teams, knockout"
+    },
+    {
+      "id": "volleyball",
+      "name": "Volleyball",
+      "color": "#38bdf8",
+      "rules_summary": "Volleyball follows a knockout format with one live match at a time.",
+      "format": "11 teams, knockout"
+    },
+    {
+      "id": "athletics",
+      "name": "Athletics",
+      "color": "#fb7185",
+      "rules_summary": "Athletics follows elimination runs, with associations advancing round by round until the final.",
+      "format": "13 associations, elimination runs"
+    }
+  ],
+  "competition_stages": [
+    {
+      "id": "cricket-placement-stage",
+      "sport_id": "cricket",
+      "type": "placement",
+      "label": "Bronze Match",
+      "order_index": 3,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "football-placement-stage",
+      "sport_id": "football",
+      "type": "placement",
+      "label": "Third Place",
+      "order_index": 2,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "volleyball-knockout-stage",
+      "sport_id": "volleyball",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 1,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "volleyball-placement-stage",
+      "sport_id": "volleyball",
+      "type": "placement",
+      "label": "Bronze Match",
+      "order_index": 2,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "cricket-knockout-stage",
+      "sport_id": "cricket",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 2,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "football-knockout-stage",
+      "sport_id": "football",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 1,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "athletics-results-stage",
+      "sport_id": "athletics",
+      "type": "knockout",
+      "label": "Elimination",
+      "order_index": 1,
+      "advances_count": 0,
+      "is_active": true
+    }
+  ],
+  "competition_groups": [],
+  "teams": [
+    {
+      "id": "udgam",
+      "name": "Barfila Tendua",
+      "association": "Udgam",
+      "seed": 6,
+      "is_active": true
+    },
+    {
+      "id": "andhra-samithi",
+      "name": "Andhra Samithi",
+      "association": "Andhra Samithi",
+      "seed": 1,
+      "is_active": true
+    },
+    {
+      "id": "capitol",
+      "name": "Capitol",
+      "association": "Capitol",
+      "seed": 2,
+      "is_active": true
+    },
+    {
+      "id": "gurjari",
+      "name": "Gujarat Titans",
+      "association": "Gurjari",
+      "seed": 3,
+      "is_active": true
+    },
+    {
+      "id": "haryana-cultural",
+      "name": "HCA",
+      "association": "Haryana Cultural Association",
+      "seed": 4,
+      "is_active": true
+    },
+    {
+      "id": "punjab-cultural",
+      "name": "PCA",
+      "association": "Punjab Cultural Association",
+      "seed": 5,
+      "is_active": true
+    },
+    {
+      "id": "sangam",
+      "name": "Sangam",
+      "association": "Sangam",
+      "seed": 7,
+      "is_active": true
+    },
+    {
+      "id": "kairali",
+      "name": "Abrahaminde Sandhadhikal",
+      "association": "Kairali",
+      "seed": 8,
+      "is_active": true
+    },
+    {
+      "id": "kannada-vedike",
+      "name": "Royal Challengers KV",
+      "association": "Kannada Vedike",
+      "seed": 9,
+      "is_active": true
+    },
+    {
+      "id": "pilani-tamil-mandram",
+      "name": "PTM",
+      "association": "Pilani Tamil Mandram",
+      "seed": 10,
+      "is_active": true
+    },
+    {
+      "id": "madhyansh",
+      "name": "Tigers of M.P",
+      "association": "Madhyansh",
+      "seed": 11,
+      "is_active": true
+    },
+    {
+      "id": "maurya-vihar",
+      "name": "MV7",
+      "association": "Maurya Vihar",
+      "seed": 12,
+      "is_active": true
+    },
+    {
+      "id": "marudhara",
+      "name": "Marudhara",
+      "association": "Marudhara",
+      "seed": 13,
+      "is_active": true
+    },
+    {
+      "id": "moruchhaya",
+      "name": "Moruchhaya",
+      "association": "Moruchhaya",
+      "seed": 14,
+      "is_active": true
+    },
+    {
+      "id": "maharashtra-mandal",
+      "name": "Maharashtra Mandal",
+      "association": "Maharashtra Mandal",
+      "seed": 15,
+      "is_active": true
+    }
+  ],
+  "team_sports": [
+    {
+      "team_id": "sangam",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "maurya-vihar",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maurya-vihar",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "moruchhaya",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "athletics"
+    }
+  ],
+  "matches": [
+    {
+      "id": "smoke-live-1",
+      "tournament_id": "icl-2026",
+      "sport_id": "football",
+      "round": "Live Smoke Test",
+      "day": "2026-04-01",
+      "start_time": "18:00:00",
+      "venue": "Football Turf",
+      "team_a_id": "punjab-cultural",
+      "team_b_id": "kannada-vedike",
+      "status": "live",
+      "next_match_id": null,
+      "next_slot": null,
+      "stage_id": "football-knockout-stage",
+      "group_id": null,
+      "round_index": 1,
+      "match_number": 999,
+      "winner_to_match_id": null,
+      "winner_to_slot": null,
+      "loser_to_match_id": null,
+      "loser_to_slot": null,
+      "is_bye": false
+    },
+    {
+      "id": "fixture-apr2-1",
+      "tournament_id": "icl-2026",
+      "sport_id": "cricket",
+      "round": "Opening Fixtures",
+      "day": "2026-04-02",
+      "start_time": "18:00:00",
+      "venue": "GYMG",
+      "team_a_id": "haryana-cultural",
+      "team_b_id": "marudhara",
+      "status": "scheduled",
+      "next_match_id": null,
+      "next_slot": null,
+      "stage_id": "cricket-knockout-stage",
+      "group_id": null,
+      "round_index": 1,
+      "match_number": 1,
+      "winner_to_match_id": null,
+      "winner_to_slot": null,
+      "loser_to_match_id": null,
+      "loser_to_slot": null,
+      "is_bye": false
+    },
+    {
+      "id": "fixture-apr2-2",
+      "tournament_id": "icl-2026",
+      "sport_id": "cricket",
+      "round": "Opening Fixtures",
+      "day": "2026-04-02",
+      "start_time": "19:30:00",
+      "venue": "GYMG",
+      "team_a_id": "madhyansh",
+      "team_b_id": "maurya-vihar",
+      "status": "scheduled",
+      "next_match_id": null,
+      "next_slot": null,
+      "stage_id": "cricket-knockout-stage",
+      "group_id": null,
+      "round_index": 1,
+      "match_number": 2,
+      "winner_to_match_id": null,
+      "winner_to_slot": null,
+      "loser_to_match_id": null,
+      "loser_to_slot": null,
+      "is_bye": false
+    },
+    {
+      "id": "fixture-apr2-3",
+      "tournament_id": "icl-2026",
+      "sport_id": "cricket",
+      "round": "Opening Fixtures",
+      "day": "2026-04-02",
+      "start_time": "21:00:00",
+      "venue": "GYMG",
+      "team_a_id": "maharashtra-mandal",
+      "team_b_id": "sangam",
+      "status": "scheduled",
+      "next_match_id": null,
+      "next_slot": null,
+      "stage_id": "cricket-knockout-stage",
+      "group_id": null,
+      "round_index": 1,
+      "match_number": 3,
+      "winner_to_match_id": null,
+      "winner_to_slot": null,
+      "loser_to_match_id": null,
+      "loser_to_slot": null,
+      "is_bye": false
+    },
+    {
+      "id": "fixture-apr2-4",
+      "tournament_id": "icl-2026",
+      "sport_id": "cricket",
+      "round": "Opening Fixtures",
+      "day": "2026-04-02",
+      "start_time": "22:30:00",
+      "venue": "GYMG",
+      "team_a_id": "andhra-samithi",
+      "team_b_id": "capitol",
+      "status": "scheduled",
+      "next_match_id": null,
+      "next_slot": null,
+      "stage_id": "cricket-knockout-stage",
+      "group_id": null,
+      "round_index": 1,
+      "match_number": 4,
+      "winner_to_match_id": null,
+      "winner_to_slot": null,
+      "loser_to_match_id": null,
+      "loser_to_slot": null,
+      "is_bye": false
+    }
+  ],
+  "match_results": [
+    {
+      "match_id": "smoke-live-1",
+      "winner_team_id": null,
+      "score_summary": "1 - 0 (Live)",
+      "note": "Smoke test row for live-score validation.",
+      "updated_by": null,
+      "updated_at": "2026-04-01T13:26:13.902699+00:00",
+      "team_a_score": 1,
+      "team_b_score": 0,
+      "decision_type": "normal"
+    }
+  ],
+  "announcements": [],
+  "profiles": [],
+  "admin_sports": []
+}

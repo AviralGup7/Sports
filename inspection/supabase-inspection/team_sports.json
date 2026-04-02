@@ -1,0 +1,215 @@
+{
+  "meta": {
+    "name": "team_sports",
+    "rowCount": 51,
+    "readable": true,
+    "error": null,
+    "durationMs": 319
+  },
+  "rows": [
+    {
+      "team_id": "sangam",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "andhra-samithi",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "capitol",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "gurjari",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "haryana-cultural",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "punjab-cultural",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "udgam",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "sangam",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "kairali",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "kannada-vedike",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "pilani-tamil-mandram",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "madhyansh",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "maurya-vihar",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maurya-vihar",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "marudhara",
+      "sport_id": "athletics"
+    },
+    {
+      "team_id": "moruchhaya",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "cricket"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "football"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "volleyball"
+    },
+    {
+      "team_id": "maharashtra-mandal",
+      "sport_id": "athletics"
+    }
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "meta": {
+    "name": "competition_stages",
+    "rowCount": 7,
+    "readable": true,
+    "error": null,
+    "durationMs": 389
+  },
+  "rows": [
+    {
+      "id": "cricket-placement-stage",
+      "sport_id": "cricket",
+      "type": "placement",
+      "label": "Bronze Match",
+      "order_index": 3,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "football-placement-stage",
+      "sport_id": "football",
+      "type": "placement",
+      "label": "Third Place",
+      "order_index": 2,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "volleyball-knockout-stage",
+      "sport_id": "volleyball",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 1,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "volleyball-placement-stage",
+      "sport_id": "volleyball",
+      "type": "placement",
+      "label": "Bronze Match",
+      "order_index": 2,
+      "advances_count": 0,
+      "is_active": true
+    },
+    {
+      "id": "cricket-knockout-stage",
+      "sport_id": "cricket",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 2,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "football-knockout-stage",
+      "sport_id": "football",
+      "type": "knockout",
+      "label": "Knockout",
+      "order_index": 1,
+      "advances_count": 1,
+      "is_active": true
+    },
+    {
+      "id": "athletics-results-stage",
+      "sport_id": "athletics",
+      "type": "knockout",
+      "label": "Elimination",
+      "order_index": 1,
+      "advances_count": 0,
+      "is_active": true
+    }
+  ]
+}

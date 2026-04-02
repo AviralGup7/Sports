@@ -1,0 +1,116 @@
+{
+  "meta": {
+    "name": "teams",
+    "rowCount": 15,
+    "readable": true,
+    "error": null,
+    "durationMs": 621
+  },
+  "rows": [
+    {
+      "id": "udgam",
+      "name": "Barfila Tendua",
+      "association": "Udgam",
+      "seed": 6,
+      "is_active": true
+    },
+    {
+      "id": "andhra-samithi",
+      "name": "Andhra Samithi",
+      "association": "Andhra Samithi",
+      "seed": 1,
+      "is_active": true
+    },
+    {
+      "id": "capitol",
+      "name": "Capitol",
+      "association": "Capitol",
+      "seed": 2,
+      "is_active": true
+    },
+    {
+      "id": "gurjari",
+      "name": "Gujarat Titans",
+      "association": "Gurjari",
+      "seed": 3,
+      "is_active": true
+    },
+    {
+      "id": "haryana-cultural",
+      "name": "HCA",
+      "association": "Haryana Cultural Association",
+      "seed": 4,
+      "is_active": true
+    },
+    {
+      "id": "punjab-cultural",
+      "name": "PCA",
+      "association": "Punjab Cultural Association",
+      "seed": 5,
+      "is_active": true
+    },
+    {
+      "id": "sangam",
+      "name": "Sangam",
+      "association": "Sangam",
+      "seed": 7,
+      "is_active": true
+    },
+    {
+      "id": "kairali",
+      "name": "Abrahaminde Sandhadhikal",
+      "association": "Kairali",
+      "seed": 8,
+      "is_active": true
+    },
+    {
+      "id": "kannada-vedike",
+      "name": "Royal Challengers KV",
+      "association": "Kannada Vedike",
+      "seed": 9,
+      "is_active": true
+    },
+    {
+      "id": "pilani-tamil-mandram",
+      "name": "PTM",
+      "association": "Pilani Tamil Mandram",
+      "seed": 10,
+      "is_active": true
+    },
+    {
+      "id": "madhyansh",
+      "name": "Tigers of M.P",
+      "association": "Madhyansh",
+      "seed": 11,
+      "is_active": true
+    },
+    {
+      "id": "maurya-vihar",
+      "name": "MV7",
+      "association": "Maurya Vihar",
+      "seed": 12,
+      "is_active": true
+    },
+    {
+      "id": "marudhara",
+      "name": "Marudhara",
+      "association": "Marudhara",
+      "seed": 13,
+      "is_active": true
+    },
+    {
+      "id": "moruchhaya",
+      "name": "Moruchhaya",
+      "association": "Moruchhaya",
+      "seed": 14,
+      "is_active": true
+    },
+    {
+      "id": "maharashtra-mandal",
+      "name": "Maharashtra Mandal",
+      "association": "Maharashtra Mandal",
+      "seed": 15,
+      "is_active": true
+    }
+  ]
+}

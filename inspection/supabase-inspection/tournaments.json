@@ -1,0 +1,25 @@
+{
+  "meta": {
+    "name": "tournaments",
+    "rowCount": 2,
+    "readable": true,
+    "error": null,
+    "durationMs": 2188
+  },
+  "rows": [
+    {
+      "id": "iasl-2026",
+      "name": "Inter Association Sports League",
+      "start_date": "2026-04-02",
+      "end_date": "2026-04-05",
+      "venue": "Central College Grounds"
+    },
+    {
+      "id": "icl-2026",
+      "name": "Inter-Assoc Cultural Sports League",
+      "start_date": "2026-04-02",
+      "end_date": "2026-04-05",
+      "venue": "GYMG & MedC Grounds"
+    }
+  ]
+}

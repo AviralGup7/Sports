@@ -1,0 +1,22 @@
+{
+  "meta": {
+    "name": "match_results",
+    "rowCount": 1,
+    "readable": true,
+    "error": null,
+    "durationMs": 349
+  },
+  "rows": [
+    {
+      "match_id": "smoke-live-1",
+      "winner_team_id": null,
+      "score_summary": "1 - 0 (Live)",
+      "note": "Smoke test row for live-score validation.",
+      "updated_by": null,
+      "updated_at": "2026-04-01T13:26:13.902699+00:00",
+      "team_a_score": 1,
+      "team_b_score": 0,
+      "decision_type": "normal"
+    }
+  ]
+}
