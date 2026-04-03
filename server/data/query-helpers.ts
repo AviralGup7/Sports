@@ -164,11 +164,15 @@ function buildChampionSpotlights(snapshot: RepositorySnapshot): ChampionSpotligh
 function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | null {
   const sportsById = new Map(snapshot.sports.map((sport) => [sport.id, sport]));
   const now = new Date();
+  const preferCricket = (matches: Match[]) => matches.find((item) => item.sportId === "cricket") ?? matches[0];
+  const liveMatches = snapshot.matches.filter((item) => isMatchLiveNow(item, now));
+  const postponedMatches = snapshot.matches.filter((item) => isMatchPostponed(item));
+  const upcomingMatches = snapshot.matches.filter((item) => isMatchUpcoming(item, now));
   const match =
-    snapshot.matches.find((item) => isMatchLiveNow(item, now)) ??
-    snapshot.matches.find((item) => isMatchPostponed(item)) ??
-    snapshot.matches.find((item) => isMatchUpcoming(item, now)) ??
-    snapshot.matches[0];
+    preferCricket(liveMatches) ??
+    preferCricket(postponedMatches) ??
+    preferCricket(upcomingMatches) ??
+    preferCricket(snapshot.matches);
 
   if (!match) {
     return null;
