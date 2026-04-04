@@ -77,8 +77,8 @@ export function HomeScreen({ data }: HomeScreenProps) {
               ) : (
                 <div className="score-spotlight">
                   <p className="eyebrow">Featured Match</p>
-                  <h2>No match featured yet</h2>
-                  <p>As soon as fixtures are confirmed, the biggest live or upcoming match will appear here.</p>
+                  <h2>Wait for new fixtures</h2>
+                  <p>There is no next match right now. This section will update once upcoming fixtures are added.</p>
                 </div>
               )
             }

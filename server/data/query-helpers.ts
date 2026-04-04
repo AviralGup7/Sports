@@ -171,8 +171,7 @@ function buildHighlightMatch(snapshot: RepositorySnapshot): HighlightMatch | nul
   const match =
     preferCricket(liveMatches) ??
     preferCricket(postponedMatches) ??
-    preferCricket(upcomingMatches) ??
-    preferCricket(snapshot.matches);
+    preferCricket(upcomingMatches);
 
   if (!match) {
     return null;
