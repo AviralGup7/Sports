@@ -53,7 +53,7 @@ export function StandingsTable({ cards }: StandingsTableProps) {
                       <td>{row.played}</td>
                       <td>{row.wins}</td>
                       <td>{row.draws}</td>
-                      <td>{row.losses}</td>
+                      <td className={row.losses === 1 ? "standings-loss-glow" : undefined}>{row.losses}</td>
                     </tr>
                   );
                 })}
